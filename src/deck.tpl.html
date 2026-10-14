@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="hu" data-rev="v6" data-durations='{"basics":30,"walk":40,"lunch":60,"r1":20,"p1":10,"r2":20,"p2":10,"brk":10,"r3":20,"p3":10,"sum":30,"rep":5}' data-sound="1">
+<html lang="hu" data-rev="v6" data-durations='{"basics":30,"walk":40,"lunch":60,"r1":20,"r2":20,"brk":10,"r3":20,"sum":30,"rep":5}' data-sound="1">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -326,6 +326,8 @@ body.editing [data-e]:hover{outline-color:rgba(79,209,232,.8)}
 body.editing [data-e]:focus{outline:2px solid var(--cyan);outline-offset:4px;background:rgba(79,209,232,.06)}
 body.moving [data-e]{cursor:inherit}
 body.moving [data-m]{outline:2px dashed rgba(255,197,107,.65);outline-offset:6px;cursor:grab}
+body.editing:not(.moving) .calc[data-calc^="min:"]:not([data-calc^="min:p"]){outline:2px dashed var(--amber);outline-offset:3px;border-radius:4px;cursor:pointer}
+body.editing .calc.dur-on{outline:2px solid var(--amber);background:rgba(255,197,107,.15);cursor:text}
 body.moving [data-m]:hover{outline-color:var(--amber);background:rgba(255,197,107,.05)}
 body.moving [data-m].dragging{cursor:grabbing;outline-style:solid}
 .calc{font-variant-numeric:tabular-nums}
@@ -1104,7 +1106,7 @@ body.editing #sheets-view{top:58px}
     <h3>Az órák</h3>
     <p>Óra csak a három csapatkörben és a körök utáni csapatbeszámolókban van (körönként A és B csapat). Diára lépéskor egyik sem indul el: a feladat elmagyarázása után indítsd. A szünet megőrzi a hátralévő időt, a visszaállítás alaphelyzetbe teszi az órát. Az órák valós időből számolnak, ezért háttérbe tett böngészőben sem csúsznak el. A futó óra másik dián is fut, a jobb felső jelzés visszavisz hozzá. Ugyanebben a böngészőlapban az újratöltés sem nullázza az órákat.</p>
     <h3>Szerkesztés</h3>
-    <p>Kattints a <b>Szerkesztés</b> gombra (vagy nyomd meg az <kbd>E</kbd> billentyűt), és írd át bármelyik szöveget közvetlenül a dián. A <b>Mozgatás</b> gombbal a szövegdobozokat egérrel áthelyezheted, az <b>A− / A+</b> a kijelölt szöveg méretét, a <b>Betűköz − / +</b> a betűk közti távolságot állítja, a <b>B</b> gomb (vagy Ctrl+B) a kijelölt szöveget félkövérré teszi. A <b>+ Szövegdoboz</b> új szöveget tesz az aktuális diára; a Mozgatás gombbal helyezheted el, a <b>Doboz törlése</b> eltávolítja. A jegyzetek a jegyzetpanelben, a munkalapok a Munkalapok nézetben írhatók át. A <b>Dia elrejtése</b> előadáskor kihagyja a diát. Az összegző táblázat celláiba előadás közben is írhatsz.</p>
+    <p>Kattints a <b>Szerkesztés</b> gombra (vagy nyomd meg az <kbd>E</kbd> billentyűt), és írd át bármelyik szöveget közvetlenül a dián. A <b>Mozgatás</b> gombbal a szövegdobozokat egérrel áthelyezheted, az <b>A− / A+</b> a kijelölt szöveg méretét, a <b>Betűköz − / +</b> a betűk közti távolságot állítja, a <b>B</b> gomb (vagy Ctrl+B) a kijelölt szöveget félkövérré teszi. Az időtartamok (például a szünetek és az ebéd hossza) szerkesztés módban a számra kattintva írhatók át, a dián és a menetrendben is; Enter: mentés, Esc: mégse. A <b>+ Szövegdoboz</b> új szöveget tesz az aktuális diára; a Mozgatás gombbal helyezheted el, a <b>Doboz törlése</b> eltávolítja. A jegyzetek a jegyzetpanelben, a munkalapok a Munkalapok nézetben írhatók át. A <b>Dia elrejtése</b> előadáskor kihagyja a diát. Az összegző táblázat celláiba előadás közben is írhatsz.</p>
     <p>A webes változatban (fonte-viva-workshop.vercel.app) minden módosítás egy másodpercen belül a közös tárhelyre mentődik, így bárki, akinek megvan a link, ugyanazt látja. A vezérlősáv jelzője mutatja az állapotot: Mentve, Mentésre vár, Offline vagy Ütközés. Más böngészők 15 másodpercenként frissülnek. Ha ketten egyszerre mentenek, választhatsz: az övék betöltése vagy az enyém maradjon.</p>
     <p>Helyi fájlként megnyitva a módosítások csak ebben a böngészőben mentődnek. Továbbadáshoz használd a <b>Mentés HTML-fájlként</b> gombot: egy új, önálló fájlt kapsz, amely minden módosítást tartalmaz.</p>
     <h3>Források</h3>
@@ -1149,7 +1151,7 @@ const AM=['basics','walk'],PM=['r1','p1','r2','p2','brk','r3','p3','sum'];
 const BLOCKS={open:'Nyitás',basics:'Elméleti alapok',walk:'Folyamatbejárás',lunch:'Ebédszünet',r1:'1. kör',p1:'1. kör: Csapatbeszámolók',r2:'2. kör',p2:'2. kör: Csapatbeszámolók',brk:'Szünet',r3:'3. kör',p3:'3. kör: Csapatbeszámolók',sum:'Összegzés'};
 const TIMERS={r1:'1. kör',r2:'2. kör',r3:'3. kör',p1A:'1. kör · A csapat beszámolója',p1B:'1. kör · B csapat beszámolója',p2A:'2. kör · A csapat beszámolója',p2B:'2. kör · B csapat beszámolója',p3A:'3. kör · A csapat beszámolója',p3B:'3. kör · B csapat beszámolója'};
 const DKEY=k=>/^p\d[AB]$/.test(k)?'rep':k;
-const minOf=k=>+DUR[DKEY(k)]||0;
+const minOf=k=>/^p\d$/.test(k)?2*(+DUR.rep||0):(+DUR[DKEY(k)]||0);
 const sumOf=ks=>ks.reduce((a,k)=>a+minOf(k),0);
 const total=()=>sumOf(AM)+sumOf(PM);
 function split(D,parts){const B=parts.reduce((a,b)=>a+b,0);const raw=parts.map(p=>p*D/B);const fl=raw.map(Math.floor);let rem=D-fl.reduce((a,b)=>a+b,0);raw.map((r,i)=>[r-fl[i],i]).sort((a,b)=>b[0]-a[0]).forEach(([,i])=>{if(rem>0){fl[i]++;rem--}});return fl}
@@ -1261,6 +1263,23 @@ function pill(){
   p.innerHTML=`<i></i>${TIMERS[pick]} · ${s.st==='done'?'Lejárt':fmt(leftMs(pick))}${s.st==='pause'?' · szünetel':''}`;
   p.onclick=()=>go(slides.findIndex(sl=>$(`.timer[data-timer="${pick}"]`,sl)));
 }
+/* durations are editable in place: click a number (edit mode), type, Enter */
+function setDur(k,v){DUR[k]=v;root.dataset.durations=JSON.stringify(DUR);E.dur={...DUR};persist();renderCalcs();buildTicks();paintAll();tick()}
+function editDur(el){
+  const k=el.dataset.calc.slice(4);if(/^p\d$/.test(k)){toast('A beszámolók ideje a csapatonkénti időből adódik: kattints a „Csapatonként” melletti számra.');return}if(!(k in DUR))return;
+  const busy=Object.keys(TIMERS).filter(x=>x===k||DKEY(x)===k).some(x=>TS[x].st!=='idle');
+  if(busy){toast('Ez az óra fut, szünetel vagy lejárt: előbb állítsd vissza a diáján.');return}
+  const host=el.parentElement&&el.parentElement.closest('[contenteditable="true"]');if(host)host.setAttribute('contenteditable','false');
+  el.textContent=DUR[k];el.classList.add('dur-on');el.setAttribute('contenteditable','true');el.focus();
+  const rg=document.createRange();rg.selectNodeContents(el);const s=getSelection();s.removeAllRanges();s.addRange(rg);
+  let cancel=false;
+  const key=ev=>{if(ev.key==='Enter'){ev.preventDefault();el.blur()}else if(ev.key==='Escape'){ev.preventDefault();ev.stopPropagation();cancel=true;el.blur()}else if(ev.key.length===1&&!/[0-9]/.test(ev.key)&&!ev.ctrlKey&&!ev.metaKey)ev.preventDefault()};
+  const done=()=>{el.removeEventListener('keydown',key);el.removeEventListener('blur',done);el.classList.remove('dur-on');el.setAttribute('contenteditable','false');if(host)applyEditable();
+    const v=Math.round(+el.textContent.replace(/[^0-9]/g,''));
+    if(!cancel&&v>=1&&v<=240&&v!==DUR[k]){setDur(k,v);toast((k==='rep'?'Beszámoló csapatonként':phaseName(k)||'Időtartam')+': '+v+' perc · a menetrend frissült')}else renderCalcs()};
+  el.addEventListener('keydown',key);el.addEventListener('blur',done);
+}
+stage.addEventListener('click',e=>{const c=e.target.closest('.calc[data-calc^="min:"]');if(c&&editing&&!moving&&!c.classList.contains('dur-on')){e.preventDefault();e.stopPropagation();editDur(c)}},true);
 stage.addEventListener('click',e=>{const b=e.target.closest('.t-btn');if(!b||moving)return;const k=b.closest('.timer').dataset.timer;b.dataset.act==='toggle'?tToggle(k):tReset(k)});
 setInterval(tick,200);document.addEventListener('visibilitychange',tick);
 
@@ -1348,11 +1367,11 @@ function openDur(){
   const box=$('#durs');box.innerHTML='';
   const add=(k,lab,timed)=>{const locked=timed===2?Object.keys(TIMERS).some(x=>DKEY(x)==='rep'&&TS[x].st!=='idle'):timed&&TS[k].st!=='idle';const d=document.createElement('label');d.className='dur';d.innerHTML=`<span></span><input type="number" min="1" max="180" step="1" data-k="${k}" id="dur-${k}"><span>perc</span>`;$('span',d).textContent=lab;const inp=$('input',d);inp.value=DUR[k];inp.disabled=locked;if(locked){const sm=document.createElement('small');sm.textContent='Ez az óra fut, szünetel vagy lejárt: előbb állítsd vissza a diáján.';d.appendChild(sm)}box.appendChild(d)};
   const h=t=>{const p=document.createElement('p');p.className='dsec';p.textContent=t;box.appendChild(p)};
-  h('Blokkok a menetrendben');ORDER.forEach(k=>add(k,phaseName(k)||BLOCKS[k],['r1','r2','r3'].includes(k)));
+  h('Blokkok a menetrendben');ORDER.filter(k=>!/^p\d$/.test(k)).forEach(k=>add(k,phaseName(k)||BLOCKS[k],['r1','r2','r3'].includes(k)));
   h('Csapatbeszámolók');add('rep','Egy csapat beszámolója (mind a hat órára)',2);
   $('#snd').checked=root.dataset.sound==='1';updDurTotal();openDlg('#dlg-dur');
 }
-function updDurTotal(){const tmp={...DUR};$$('#durs input').forEach(i=>tmp[i.dataset.k]=+i.value||0);const m=ks=>ks.reduce((a,k)=>a+(+tmp[k]||0),0);$('#dur-total').textContent=`Délelőtt ${m(AM)} · délután ${m(PM)} · összesen ${m(AM)+m(PM)} perc (+ ebéd ${+tmp.lunch||0})`}
+function updDurTotal(){const tmp={...DUR};$$('#durs input').forEach(i=>tmp[i.dataset.k]=+i.value||0);const m=ks=>ks.reduce((a,k)=>a+(/^p\d$/.test(k)?2*(+tmp.rep||0):(+tmp[k]||0)),0);$('#dur-total').textContent=`Délelőtt ${m(AM)} · délután ${m(PM)} · összesen ${m(AM)+m(PM)} perc (+ ebéd ${+tmp.lunch||0})`}
 $('#durs').addEventListener('input',updDurTotal);
 const quick=m=>{['r1','r2','r3'].forEach(k=>{const i=$(`#durs input[data-k="${k}"]`);if(i&&!i.disabled)i.value=m});updDurTotal()};
 $('#q15').onclick=()=>quick(15);$('#q20').onclick=()=>quick(20);
@@ -1376,7 +1395,7 @@ $('#b-full').onclick=full;
 const plainOK=(()=>{const d=document.createElement('div');d.setAttribute('contenteditable','plaintext-only');return d.contentEditable==='plaintext-only'})();
 const CE='true';
 try{document.execCommand('styleWithCSS',false,false)}catch(e){}
-document.addEventListener('keydown',e=>{const t=e.target;if(e.key==='Enter'&&t&&t.isContentEditable&&t.closest('#stage')){e.preventDefault();document.execCommand('insertLineBreak')}},true);
+document.addEventListener('keydown',e=>{const t=e.target;if(e.key==='Enter'&&t&&t.isContentEditable&&t.closest('#stage')&&!t.classList.contains('calc')){e.preventDefault();document.execCommand('insertLineBreak')}},true);
 function applyEditable(){
   $$('[data-e]').forEach(el=>{if(el.classList.contains('notes'))return;const live=el.hasAttribute('data-live');(editing||live)&&!moving?el.setAttribute('contenteditable',CE):el.removeAttribute('contenteditable')});
   $$('.calc').forEach(c=>c.setAttribute('contenteditable','false'));
