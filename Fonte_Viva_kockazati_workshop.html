@@ -480,6 +480,8 @@ body.editing #sheets-view{top:58px}
   <button class="eb" id="eb-move" aria-pressed="false" title="Szövegdobozok áthelyezése egérrel">✥ Mozgatás</button>
   <button class="eb" id="eb-smaller" title="A kijelölt szöveg kisebb">A−</button>
   <button class="eb" id="eb-bigger" title="A kijelölt szöveg nagyobb">A+</button>
+  <button class="eb" id="eb-tight" title="Szűkebb betűköz a kijelölt szövegben">Betűköz −</button>
+  <button class="eb" id="eb-loose" title="Tágabb betűköz a kijelölt szövegben">Betűköz +</button>
   <span class="sep"></span>
   <button class="eb" id="eb-skip" title="A dia előadáskor kimarad, de megmarad a fájlban">Dia elrejtése</button>
   <button class="eb" id="eb-reset-slide" title="Ennek a diának minden szövegét és elrendezését visszaállítja">Dia visszaállítása</button>
@@ -1130,7 +1132,7 @@ body.editing #sheets-view{top:58px}
     <h3>Az órák</h3>
     <p>Óra csak a három csapatkörben és a körök utáni csapatbeszámolókban van (körönként A és B csapat). Diára lépéskor egyik sem indul el: a feladat elmagyarázása után indítsd. A szünet megőrzi a hátralévő időt, a visszaállítás alaphelyzetbe teszi az órát. Az órák valós időből számolnak, ezért háttérbe tett böngészőben sem csúsznak el. A futó óra másik dián is fut, a jobb felső jelzés visszavisz hozzá. Ugyanebben a böngészőlapban az újratöltés sem nullázza az órákat.</p>
     <h3>Szerkesztés</h3>
-    <p>Kattints a <b>Szerkesztés</b> gombra (vagy nyomd meg az <kbd>E</kbd> billentyűt), és írd át bármelyik szöveget közvetlenül a dián. A <b>Mozgatás</b> gombbal a szövegdobozokat egérrel áthelyezheted, az <b>A− / A+</b> a kijelölt szöveg méretét állítja. A jegyzetek a jegyzetpanelben, a munkalapok a Munkalapok nézetben írhatók át. A <b>Dia elrejtése</b> előadáskor kihagyja a diát. Az összegző táblázat celláiba előadás közben is írhatsz.</p>
+    <p>Kattints a <b>Szerkesztés</b> gombra (vagy nyomd meg az <kbd>E</kbd> billentyűt), és írd át bármelyik szöveget közvetlenül a dián. A <b>Mozgatás</b> gombbal a szövegdobozokat egérrel áthelyezheted, az <b>A− / A+</b> a kijelölt szöveg méretét, a <b>Betűköz − / +</b> a betűk közti távolságot állítja. A jegyzetek a jegyzetpanelben, a munkalapok a Munkalapok nézetben írhatók át. A <b>Dia elrejtése</b> előadáskor kihagyja a diát. Az összegző táblázat celláiba előadás közben is írhatsz.</p>
     <p>A módosítások azonnal mentődnek ebben a böngészőben. Végleges mentéshez és továbbadáshoz használd a <b>Mentés HTML-fájlként</b> gombot: egy új, önálló fájlt kapsz, amely minden módosítást tartalmaz. Legközelebb ezt nyisd meg.</p>
     <h3>Források</h3>
     <ul style="margin:0;padding-left:18px">
@@ -1204,6 +1206,7 @@ for(const[id,v]of Object.entries(E.t)){const el=EDS[+id];if(!el)continue;if(v.h!
 E.skip.forEach(i=>slides[i]&&slides[i].setAttribute('data-skip',''));
 let saveT=0;
 function persist(){clearTimeout(saveT);saveT=setTimeout(()=>{const ok=store.set(EKEY,E);status(ok?'Mentve ebben a böngészőben · '+new Date().toLocaleTimeString('hu-HU',{hour:'2-digit',minute:'2-digit'}):'A böngésző nem engedi a helyi mentést. Használd a Mentés HTML-fájlként gombot.')},300)}
+addEventListener('pagehide',()=>{clearTimeout(saveT);store.set(EKEY,E)});
 function record(el){const id=el.dataset.eid;if(id==null)return;const r=E.t[id]||{};if(el.hasAttribute('data-e'))r.h=el.innerHTML;r.s=el.getAttribute('style')||'';E.t[id]=r;persist()}
 function status(t){const s=$('#eb-status');if(s)s.textContent=t}
 const isBlank=t=>/^[\s—-]*$/.test(t);
@@ -1409,6 +1412,9 @@ let lastEd=null;document.addEventListener('focusin',e=>{const el=e.target.closes
 function resize(f){const el=lastEd;if(!el||!editing){toast('Előbb kattints egy szövegre.');return}const cs=parseFloat(getComputedStyle(el).fontSize);el.style.fontSize=Math.round(cs*f*10)/10+'px';record(el)}
 $('#eb-smaller').onmousedown=e=>e.preventDefault();$('#eb-bigger').onmousedown=e=>e.preventDefault();
 $('#eb-smaller').onclick=()=>resize(.92);$('#eb-bigger').onclick=()=>resize(1.08);
+function spacing(d){const el=lastEd;if(!el||!editing){toast('Előbb kattints egy szövegre.');return}const cs=getComputedStyle(el),fs=parseFloat(cs.fontSize)||1;const cur=cs.letterSpacing==='normal'?0:parseFloat(cs.letterSpacing)/fs;const v=Math.max(-.1,Math.min(.4,Math.round((cur+d)*1000)/1000));el.style.letterSpacing=v+'em';record(el);status('Betűköz: '+v.toFixed(3).replace('.',',')+' em')}
+$('#eb-tight').onmousedown=e=>e.preventDefault();$('#eb-loose').onmousedown=e=>e.preventDefault();
+$('#eb-tight').onclick=()=>spacing(-.01);$('#eb-loose').onclick=()=>spacing(.01);
 function toggleSkip(i){const s=slides[i];if(s.hasAttribute('data-skip'))s.removeAttribute('data-skip');else s.setAttribute('data-skip','');E.skip=slides.map((s,j)=>s.hasAttribute('data-skip')?j:-1).filter(j=>j>=0);persist();go(cur)}
 $('#eb-skip').onclick=()=>toggleSkip(cur);
 let resetArm=0;
