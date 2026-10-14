@@ -6,7 +6,7 @@ Live: https://fonte-viva-workshop.vercel.app · source: `deploy/` (served as the
 
 A single self-contained HTML deck (`index.html`) plus one Vercel serverless function, `api/deck.js`. The function keeps the deck's edits as one JSON document in Vercel Blob. Every save writes a new file `fonte-viva-workshop/deck-<timestamp>.json`; the newest file is the current state, and only the 10 newest are kept. The browser auto-saves about one second after an edit, uses the timestamp as a version for optimistic concurrency, and polls every 15 seconds (and on tab focus) for other people's changes. There is no login: anyone with the link can read and write.
 
-Only the edits are stored, not the deck: text and style changes per editable element, hidden slides, durations and the sound setting. Timer state is never shared.
+Only the edits are stored, not the deck: text and style changes per editable element (`t`), text boxes created in edit mode (`boxes`: id, slide index, HTML, style), hidden slides, durations and the sound setting. Timer state is never shared. Stored HTML is filtered on load to formatting tags (b, i, br, span, p, div …) with only `class` and `data-calc` attributes, so shared edits cannot inject scripts.
 
 ## 2. Vercel setup
 

@@ -278,6 +278,7 @@ body.editing .qd{cursor:text}
 .close .next .lbl{color:var(--cyan)}
 
 /* ===================== editing ===================== */
+.xbox{position:absolute;left:120px;top:420px;z-index:4;min-width:80px;max-width:1360px;font-size:27px;line-height:1.5;font-weight:500;color:var(--ink);white-space:pre-wrap}
 body.editing [data-e]{outline:1px dashed rgba(79,209,232,.35);outline-offset:4px;border-radius:4px;cursor:text}
 body.editing [data-e]:hover{outline-color:rgba(79,209,232,.8)}
 body.editing [data-e]:focus{outline:2px solid var(--cyan);outline-offset:4px;background:rgba(79,209,232,.06)}
@@ -487,6 +488,10 @@ body.editing #sheets-view{top:58px}
   <button class="eb" id="eb-bigger" title="A kijelölt szöveg nagyobb">A+</button>
   <button class="eb" id="eb-tight" title="Szűkebb betűköz a kijelölt szövegben">Betűköz −</button>
   <button class="eb" id="eb-loose" title="Tágabb betűköz a kijelölt szövegben">Betűköz +</button>
+  <button class="eb" id="eb-bold" title="A kijelölt szöveg félkövér (Ctrl+B)"><b>B</b></button>
+  <span class="sep"></span>
+  <button class="eb" id="eb-addbox" title="Új szövegdoboz ezen a dián">+ Szövegdoboz</button>
+  <button class="eb" id="eb-delbox" title="A kijelölt szövegdoboz törlése">Doboz törlése</button>
   <span class="sep"></span>
   <button class="eb" id="eb-skip" title="A dia előadáskor kimarad, de megmarad a fájlban">Dia elrejtése</button>
   <button class="eb" id="eb-reset-slide" title="Ennek a diának minden szövegét és elrendezését visszaállítja">Dia visszaállítása</button>
@@ -1147,7 +1152,7 @@ body.editing #sheets-view{top:58px}
     <h3>Az órák</h3>
     <p>Óra csak a három csapatkörben és a körök utáni csapatbeszámolókban van (körönként A és B csapat). Diára lépéskor egyik sem indul el: a feladat elmagyarázása után indítsd. A szünet megőrzi a hátralévő időt, a visszaállítás alaphelyzetbe teszi az órát. Az órák valós időből számolnak, ezért háttérbe tett böngészőben sem csúsznak el. A futó óra másik dián is fut, a jobb felső jelzés visszavisz hozzá. Ugyanebben a böngészőlapban az újratöltés sem nullázza az órákat.</p>
     <h3>Szerkesztés</h3>
-    <p>Kattints a <b>Szerkesztés</b> gombra (vagy nyomd meg az <kbd>E</kbd> billentyűt), és írd át bármelyik szöveget közvetlenül a dián. A <b>Mozgatás</b> gombbal a szövegdobozokat egérrel áthelyezheted, az <b>A− / A+</b> a kijelölt szöveg méretét, a <b>Betűköz − / +</b> a betűk közti távolságot állítja. A jegyzetek a jegyzetpanelben, a munkalapok a Munkalapok nézetben írhatók át. A <b>Dia elrejtése</b> előadáskor kihagyja a diát. Az összegző táblázat celláiba előadás közben is írhatsz.</p>
+    <p>Kattints a <b>Szerkesztés</b> gombra (vagy nyomd meg az <kbd>E</kbd> billentyűt), és írd át bármelyik szöveget közvetlenül a dián. A <b>Mozgatás</b> gombbal a szövegdobozokat egérrel áthelyezheted, az <b>A− / A+</b> a kijelölt szöveg méretét, a <b>Betűköz − / +</b> a betűk közti távolságot állítja, a <b>B</b> gomb (vagy Ctrl+B) a kijelölt szöveget félkövérré teszi. A <b>+ Szövegdoboz</b> új szöveget tesz az aktuális diára; a Mozgatás gombbal helyezheted el, a <b>Doboz törlése</b> eltávolítja. A jegyzetek a jegyzetpanelben, a munkalapok a Munkalapok nézetben írhatók át. A <b>Dia elrejtése</b> előadáskor kihagyja a diát. Az összegző táblázat celláiba előadás közben is írhatsz.</p>
     <p>A webes változatban (fonte-viva-workshop.vercel.app) minden módosítás egy másodpercen belül a közös tárhelyre mentődik, így bárki, akinek megvan a link, ugyanazt látja. A vezérlősáv jelzője mutatja az állapotot: Mentve, Mentésre vár, Offline vagy Ütközés. Más böngészők 15 másodpercenként frissülnek. Ha ketten egyszerre mentenek, választhatsz: az övék betöltése vagy az enyém maradjon.</p>
     <p>Helyi fájlként megnyitva a módosítások csak ebben a böngészőben mentődnek. Továbbadáshoz használd a <b>Mentés HTML-fájlként</b> gombot: egy új, önálló fájlt kapsz, amely minden módosítást tartalmaz.</p>
     <h3>Források</h3>
@@ -1219,12 +1224,17 @@ let E=store.get(EKEY)||{t:{},skip:[]};
 E.t=E.t||{};E.skip=E.skip||[];
 if(E.dur)DUR={...DUR,...E.dur};
 if(E.sound!=null)root.dataset.sound=E.sound?'1':'0';
-for(const[id,v]of Object.entries(E.t)){const el=EDS[+id];if(!el)continue;if(v.h!=null&&el.hasAttribute('data-e'))el.innerHTML=v.h;if(v.s!=null)el.setAttribute('style',v.s)}
+/* stored and shared text is limited to formatting markup */
+const OK_TAGS=new Set(['B','STRONG','I','EM','S','U','BR','SPAN','P','DIV','SMALL','SUB','SUP']);
+function clean(html){const tpl=document.createElement('template');tpl.innerHTML=String(html);(function walk(n){[...n.childNodes].forEach(c=>{if(c.nodeType===1){if(!OK_TAGS.has(c.tagName)){if(/^(SCRIPT|STYLE|IFRAME|OBJECT|EMBED|TEMPLATE)$/.test(c.tagName))c.remove();else{walk(c);c.replaceWith(...c.childNodes)}return}[...c.attributes].forEach(a=>{if(a.name!=='class'&&a.name!=='data-calc')c.removeAttribute(a.name)});walk(c)}else if(c.nodeType!==3)c.remove()})})(tpl.content);return tpl.innerHTML}
+function renderBoxes(){$$('.xbox[data-box]',stage).forEach(x=>x.remove());(E.boxes||[]).forEach(b=>{const s=slides[b.slide];if(!s)return;const d=document.createElement('div');d.className='xbox';d.dataset.box=b.id;d.setAttribute('data-e','');d.setAttribute('data-m','');d.innerHTML=clean(b.h||'');if(b.s)d.setAttribute('style',String(b.s).replace(/url\(|expression/gi,''));s.appendChild(d)})}
+for(const[id,v]of Object.entries(E.t)){const el=EDS[+id];if(!el)continue;if(v.h!=null&&el.hasAttribute('data-e'))el.innerHTML=clean(v.h);if(v.s!=null)el.setAttribute('style',v.s)}
+renderBoxes();
 E.skip.forEach(i=>slides[i]&&slides[i].setAttribute('data-skip',''));
 let saveT=0;
 function persist(){scheduleSave();clearTimeout(saveT);saveT=setTimeout(()=>{const ok=store.set(EKEY,E);if(SYNC)return updSync();status(ok?'Mentve ebben a böngészőben · '+new Date().toLocaleTimeString('hu-HU',{hour:'2-digit',minute:'2-digit'}):'A böngésző nem engedi a helyi mentést. Használd a Mentés HTML-fájlként gombot.')},300)}
 addEventListener('pagehide',()=>{clearTimeout(saveT);store.set(EKEY,E)});
-function record(el){const id=el.dataset.eid;if(id==null)return;const r=E.t[id]||{};if(el.hasAttribute('data-e'))r.h=el.innerHTML;r.s=el.getAttribute('style')||'';E.t[id]=r;persist()}
+function record(el){if(el.dataset.box){const b=(E.boxes||[]).find(x=>x.id===el.dataset.box);if(b){b.h=el.innerHTML;b.s=el.getAttribute('style')||''}persist();return}const id=el.dataset.eid;if(id==null)return;const r=E.t[id]||{};if(el.hasAttribute('data-e'))r.h=el.innerHTML;r.s=el.getAttribute('style')||'';E.t[id]=r;persist()}
 function status(t){const s=$('#eb-status');if(s)s.textContent=t}
 const isBlank=t=>/^[\s—-]*$/.test(t);
 const markEmpty=()=>$$('[data-live]').forEach(td=>td.classList.toggle('empty',isBlank(td.textContent)));
@@ -1412,7 +1422,9 @@ $('#b-full').onclick=full;
 
 /* ---------- editing ---------- */
 const plainOK=(()=>{const d=document.createElement('div');d.setAttribute('contenteditable','plaintext-only');return d.contentEditable==='plaintext-only'})();
-const CE=plainOK?'plaintext-only':'true';
+const CE='true';
+try{document.execCommand('styleWithCSS',false,false)}catch(e){}
+document.addEventListener('keydown',e=>{const t=e.target;if(e.key==='Enter'&&t&&t.isContentEditable&&t.closest('#stage')){e.preventDefault();document.execCommand('insertLineBreak')}},true);
 function applyEditable(){
   $$('[data-e]').forEach(el=>{if(el.classList.contains('notes'))return;const live=el.hasAttribute('data-live');(editing||live)&&!moving?el.setAttribute('contenteditable',CE):el.removeAttribute('contenteditable')});
   $$('.calc').forEach(c=>c.setAttribute('contenteditable','false'));
@@ -1421,7 +1433,7 @@ function setEditing(on){editing=on;body.classList.toggle('editing',on);if(!on)se
 function setMoving(on){moving=on;body.classList.toggle('moving',on);$('#eb-move').setAttribute('aria-pressed',on);applyEditable();if(on)toast('Fogd meg a sárga keretes elemeket, és húzd őket a helyükre.')}
 $('#b-edit').onclick=()=>setEditing(!editing);$('#eb-done').onclick=()=>setEditing(false);
 $('#eb-move').onclick=()=>setMoving(!moving);
-document.addEventListener('input',e=>{const el=e.target.closest&&e.target.closest('[data-e]');if(el&&el.dataset.eid!=null&&!el.classList.contains('notes')){record(el);if(el.hasAttribute('data-live'))markEmpty()}});
+document.addEventListener('input',e=>{const el=e.target.closest&&e.target.closest('[data-e]');if(el&&(el.dataset.eid!=null||el.dataset.box)&&!el.classList.contains('notes')){record(el);if(el.hasAttribute('data-live'))markEmpty()}});
 document.addEventListener('paste',e=>{const t=e.target.closest&&e.target.closest('[contenteditable]');if(!t)return;e.preventDefault();const txt=(e.clipboardData||window.clipboardData).getData('text/plain');document.execCommand('insertText',false,txt)});
 document.addEventListener('focusin',e=>{const td=e.target.closest&&e.target.closest('[data-live]');if(td&&isBlank(td.textContent)){td.textContent='';td.classList.remove('empty')}});
 document.addEventListener('focusout',e=>{const td=e.target.closest&&e.target.closest('[data-live]');if(td&&!td.textContent.trim()){td.textContent='—';record(td);markEmpty()}});
@@ -1429,6 +1441,11 @@ let lastEd=null;document.addEventListener('focusin',e=>{const el=e.target.closes
 function resize(f){const el=lastEd;if(!el||!editing){toast('Előbb kattints egy szövegre.');return}const cs=parseFloat(getComputedStyle(el).fontSize);el.style.fontSize=Math.round(cs*f*10)/10+'px';record(el)}
 $('#eb-smaller').onmousedown=e=>e.preventDefault();$('#eb-bigger').onmousedown=e=>e.preventDefault();
 $('#eb-smaller').onclick=()=>resize(.92);$('#eb-bigger').onclick=()=>resize(1.08);
+function bold(){const el=lastEd;const sel=getSelection();if(!el||!(editing||el.hasAttribute('data-live'))||!sel.rangeCount||sel.isCollapsed||!el.contains(sel.anchorNode)){toast('Jelölj ki szöveget, és utána nyomd meg a B gombot (vagy Ctrl+B).');return}document.execCommand('bold');record(el)}
+$('#eb-bold').onmousedown=e=>e.preventDefault();$('#eb-bold').onclick=bold;
+function addBox(){if(!editing)return;if(moving)setMoving(false);E.boxes=E.boxes||[];const b={id:'b'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),slide:cur,h:'Új szöveg',s:''};E.boxes.push(b);renderBoxes();applyEditable();persist();const el=$(`.xbox[data-box="${b.id}"]`);el.focus();const rg=document.createRange();rg.selectNodeContents(el);const sel=getSelection();sel.removeAllRanges();sel.addRange(rg);lastEd=el;toast('Írd be a szöveget. A Mozgatás gombbal áthelyezheted.')}
+function delBox(){const el=lastEd;if(!el||!editing||!el.classList.contains('xbox')||!slides[cur].contains(el)){toast('Előbb kattints egy általad létrehozott szövegdobozba.');return}if(el.dataset.box){E.boxes=(E.boxes||[]).filter(x=>x.id!==el.dataset.box);el.remove();persist()}else{el.style.display='none';record(el)}lastEd=null;toast('A szövegdoboz törölve.')}
+$('#eb-addbox').onclick=addBox;$('#eb-delbox').onmousedown=e=>e.preventDefault();$('#eb-delbox').onclick=delBox;
 function spacing(d){const el=lastEd;if(!el||!editing){toast('Előbb kattints egy szövegre.');return}const cs=getComputedStyle(el),fs=parseFloat(cs.fontSize)||1;const cur=cs.letterSpacing==='normal'?0:parseFloat(cs.letterSpacing)/fs;const v=Math.max(-.1,Math.min(.4,Math.round((cur+d)*1000)/1000));el.style.letterSpacing=v+'em';record(el);status('Betűköz: '+v.toFixed(3).replace('.',',')+' em')}
 $('#eb-tight').onmousedown=e=>e.preventDefault();$('#eb-loose').onmousedown=e=>e.preventDefault();
 $('#eb-tight').onclick=()=>spacing(-.01);$('#eb-loose').onclick=()=>spacing(.01);
@@ -1436,7 +1453,7 @@ function toggleSkip(i){const s=slides[i];if(s.hasAttribute('data-skip'))s.remove
 $('#eb-skip').onclick=()=>toggleSkip(cur);
 let resetArm=0;
 $('#eb-reset-slide').onclick=()=>{const b=$('#eb-reset-slide');if(Date.now()-resetArm>4000){resetArm=Date.now();b.textContent='Biztosan? Kattints újra';setTimeout(()=>{b.textContent='Dia visszaállítása'},4000);return}resetArm=0;b.textContent='Dia visszaállítása';
-  const s=slides[cur];[s,...$$('[data-eid]',s)].forEach(el=>{const id=el.dataset.eid;if(id==null||!ORIG[id])return;if(el.hasAttribute('data-e'))el.innerHTML=ORIG[id].h;ORIG[id].s?el.setAttribute('style',ORIG[id].s):el.removeAttribute('style');delete E.t[id]});renderCalcs(s);markEmpty();applyEditable();persist();go(cur);toast('A dia visszaállítva.')};
+  const s=slides[cur];[s,...$$('[data-eid]',s)].forEach(el=>{const id=el.dataset.eid;if(id==null||!ORIG[id])return;if(el.hasAttribute('data-e'))el.innerHTML=ORIG[id].h;ORIG[id].s?el.setAttribute('style',ORIG[id].s):el.removeAttribute('style');delete E.t[id]});if(E.boxes){E.boxes=E.boxes.filter(x=>x.slide!==cur);renderBoxes()}renderCalcs(s);markEmpty();applyEditable();persist();go(cur);toast('A dia visszaállítva.')};
 
 /* drag to move */
 let drag=null;
@@ -1452,6 +1469,7 @@ function exportHTML(){
   const b=c.querySelector('body');b.className='on-cover';b.removeAttribute('data-print');
   $$('[contenteditable]',c).forEach(e=>e.removeAttribute('contenteditable'));
   $$('[data-eid]',c).forEach(e=>e.removeAttribute('data-eid'));
+  $$('.xbox[data-box]',c).forEach(e=>e.removeAttribute('data-box'));
   $$('.skipmark',c).forEach(e=>e.remove());
   $$('.slide',c).forEach(s=>s.classList.remove('current','alarm'));
   $$('.timer[data-timer]',c).forEach(t=>{t.innerHTML='';t.className='timer'});
@@ -1563,8 +1581,9 @@ function updSync(){if(!SYNC)return;const st=syncState();const el=$('#sync');el.h
 function scheduleSave(ms){if(!SYNC)return;clearTimeout(syncT);syncT=setTimeout(()=>save(false),ms==null?900:ms);updSync()}
 function applyEdits(nE){
   EDS.forEach(el=>{const o=ORIG[el.dataset.eid];if(!o)return;if(el.hasAttribute('data-e'))el.innerHTML=o.h;o.s?el.setAttribute('style',o.s):el.removeAttribute('style')});
-  E={t:nE.t||{},skip:Array.isArray(nE.skip)?nE.skip:[]};if(nE.dur)E.dur=nE.dur;if(nE.sound!=null)E.sound=nE.sound;
-  for(const[id,v]of Object.entries(E.t)){const el=EDS[+id];if(!el)continue;if(v.h!=null&&el.hasAttribute('data-e'))el.innerHTML=v.h;if(v.s!=null)el.setAttribute('style',v.s)}
+  E={t:nE.t||{},skip:Array.isArray(nE.skip)?nE.skip:[]};if(nE.dur)E.dur=nE.dur;if(nE.sound!=null)E.sound=nE.sound;if(Array.isArray(nE.boxes))E.boxes=nE.boxes;
+  renderBoxes();
+  for(const[id,v]of Object.entries(E.t)){const el=EDS[+id];if(!el)continue;if(v.h!=null&&el.hasAttribute('data-e'))el.innerHTML=clean(v.h);if(v.s!=null)el.setAttribute('style',v.s)}
   slides.forEach(s=>s.removeAttribute('data-skip'));E.skip.forEach(i=>slides[i]&&slides[i].setAttribute('data-skip',''));
   DUR={...DUR0,...(E.dur||{})};root.dataset.durations=JSON.stringify(DUR);
   root.dataset.sound=E.sound==null?SOUND0:(E.sound?'1':'0');
@@ -1618,7 +1637,7 @@ async function syncBoot(){
   updSync();
   try{
     const j=await fetchRemote();online=true;loaded=true;
-    if(j.empty){remoteVersion='none';savedJSON=null;const has=Object.keys(E.t).length||E.skip.length||E.dur;if(has)save(false);else savedJSON=JSON.stringify(E)}
+    if(j.empty){remoteVersion='none';savedJSON=null;const has=Object.keys(E.t).length||E.skip.length||E.dur||(E.boxes&&E.boxes.length);if(has)save(false);else savedJSON=JSON.stringify(E)}
     else applyRemote(j);
   }catch(e){online=false;setTimeout(syncBoot,8000)}
   updSync();
