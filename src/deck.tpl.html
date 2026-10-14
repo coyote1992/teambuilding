@@ -1,0 +1,1639 @@
+<!doctype html>
+<html lang="hu" data-rev="v5" data-durations='{"open":10,"basics":30,"walk":40,"lunch":60,"r1":20,"p1":10,"r2":20,"p2":10,"brk":10,"r3":20,"p3":10,"sum":30,"rep":5}' data-sound="1">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kockázatkezelési workshop · Fonte Viva</title>
+<style>
+@font-face{font-family:"Outfit";font-style:normal;font-weight:100 900;font-display:swap;src:url(data:font/woff2;base64,__OUTFIT_LATIN__) format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:"Outfit";font-style:normal;font-weight:100 900;font-display:swap;src:url(data:font/woff2;base64,__OUTFIT_EXT__) format("woff2");unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
+
+/* Mélyvíz: dark water depth, one focus per slide, cyan signal, mono labels and timers */
+:root{
+  --logo:url(data:image/jpeg;base64,__LOGO__);
+  --map:url(data:image/png;base64,__MAP__);
+  --abyss:#06121e; --deep:#0b2236;
+  --ink:#eaf4fa; --soft:#adc5d4; --dim:#7590a5; --line:rgba(234,244,250,.12); --line2:rgba(234,244,250,.22);
+  --cyan:#4fd1e8; --cyan-d:rgba(79,209,232,.13); --aqua:#86e0a6; --aqua-d:rgba(134,224,166,.11);
+  --amber:#ffc56b; --amber-d:rgba(255,197,107,.12); --alarm:#ff6b57; --alarm-d:rgba(255,107,87,.13);
+  --slide-bg:radial-gradient(120% 85% at 50% -12%,#17456a 0%,#0c2539 42%,#06121e 100%);
+  --work-bg:radial-gradient(120% 85% at 50% -12%,#0f4a5c 0%,#0a2a36 42%,#05141c 100%);
+  --ui:#0d1c29; --ui-2:#132637; --ui-line:rgba(234,244,250,.14);
+  --f:"Outfit",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --m:"Outfit",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#03090f;color:var(--ink);font-family:var(--f)}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+::selection{background:rgba(79,209,232,.35);color:#fff}
+[hidden]{display:none!important}
+
+/* ===================== stage ===================== */
+#viewport{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+body.editing #viewport{top:58px}
+#stage{position:relative;width:1600px;height:900px;flex:none;transform-origin:center center;overflow:hidden;background:var(--abyss);box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.slide{position:absolute;inset:0;display:none;padding:80px 100px 116px;background:var(--slide-bg);flex-direction:column}
+.slide.current{display:flex}
+.slide.work{background:var(--work-bg)}
+.slide h1,.slide h2,.slide h3,.slide p,.slide ul,.slide ol{margin:0}
+.slide ul,.slide ol{padding:0;list-style:none}
+.notes{display:none}
+
+/* type scale: 112 / 60 / 34 / 31 / 27 / 23 / 19 mono */
+.kick{font-family:var(--m);font-weight:500;font-size:19px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
+.h1{font-weight:800;font-size:112px;line-height:1.02;letter-spacing:-.02em;text-wrap:balance}
+.h2{font-weight:800;font-size:60px;line-height:1.12;letter-spacing:-.012em;text-wrap:balance;max-width:1300px}
+.h3{font-weight:800;font-size:34px;line-height:1.2;letter-spacing:-.015em;text-wrap:balance}
+.slide .lead{font-size:31px;line-height:1.5;color:var(--soft);font-weight:500;text-wrap:pretty;max-width:1180px}
+.slide .body{font-size:27px;line-height:1.55;color:var(--soft);text-wrap:pretty}
+.head{display:flex;flex-direction:column;gap:20px}
+.head .lead{margin-top:6px}
+.lbl{font-family:var(--m);font-weight:500;font-size:16px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim)}
+.logo{background:#fff var(--logo) center/86% auto no-repeat;border-radius:14px}
+
+/* footer, progress */
+#foot{position:absolute;left:100px;right:100px;bottom:40px;display:flex;align-items:center;gap:18px;font-family:var(--m);font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);z-index:3;pointer-events:none}
+#foot .logo{width:58px;height:34px;border-radius:7px;opacity:.92}
+#foot .ph{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#foot .no{font-variant-numeric:tabular-nums}
+#progress{position:absolute;left:0;bottom:0;height:4px;background:linear-gradient(90deg,rgba(79,209,232,.25),var(--cyan));z-index:3;transition:width .35s ease}
+body.on-cover #foot,body.on-cover #progress{display:none}
+
+/* ===================== layouts ===================== */
+/* cover */
+.cover{justify-content:center;align-items:center;text-align:center;padding-bottom:80px}
+.cover::after{content:"";position:absolute;left:50%;bottom:-340px;width:1400px;height:600px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(79,209,232,.16),rgba(79,209,232,0));pointer-events:none}
+.cover .logo{position:absolute;left:88px;top:68px;width:150px;height:96px}
+.cover .h1{max-width:1280px;margin-top:40px}
+.cover .lead{margin-top:44px;max-width:1000px;font-size:33px}
+
+/* goal */
+.goals{display:grid;grid-template-columns:repeat(3,1fr);gap:56px;margin-top:72px}
+.goals>div{display:flex;flex-direction:column;gap:18px;padding-top:32px;border-top:2px solid var(--line2)}
+.goals>div:first-child{border-top-color:var(--cyan)}
+.goals p{font-size:26px;line-height:1.55;color:var(--soft)}
+.rule{margin-top:auto!important;display:flex;gap:22px;align-items:baseline;font-size:28px;line-height:1.5}
+.rule .lbl{color:var(--cyan);flex:none}
+
+/* agenda table */
+.agt{width:100%;border-collapse:collapse;margin-top:34px;font-size:20.5px;table-layout:fixed}
+.agt th{font-family:var(--m);font-weight:500;font-size:15px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);text-align:left;padding:0 16px 12px;border-bottom:1px solid var(--line2)}
+.agt td{padding:10px 16px;border-bottom:1px solid var(--line);vertical-align:baseline;line-height:1.35;color:var(--soft)}
+.agt tbody tr{cursor:pointer;transition:background .15s}
+.agt tbody tr:hover{background:rgba(79,209,232,.07)}
+body.editing .agt tbody tr{cursor:text}
+.agt .t{font-family:var(--m);font-size:18px;color:var(--dim);white-space:nowrap;font-variant-numeric:tabular-nums}
+.agt .nm{color:var(--ink);font-weight:700}
+.agt .fm{white-space:nowrap}
+.agt .fm .ck{display:inline-flex;align-items:center;gap:8px;color:var(--cyan)}
+.agt .fm svg{width:20px;height:20px;flex:none;position:relative;top:3px}
+.agt .out{color:var(--aqua)}
+.agt tr.brk .nm{color:var(--dim);font-weight:600}
+.agt tr.pm td{border-top:1px solid var(--line2)}
+.agenda-foot{margin-top:auto!important;display:flex;justify-content:space-between;align-items:baseline;gap:40px;font-size:24px;color:var(--soft)}
+.agenda-foot b{font-family:var(--m);color:var(--ink);font-size:22px;font-weight:600;white-space:nowrap}
+
+/* collins intro */
+.split{display:grid;grid-template-columns:1.05fr .95fr;gap:100px;align-items:center;flex:1}
+.statement{font-weight:800;font-size:66px;line-height:1.12;letter-spacing:-.015em;text-wrap:balance}
+.statement span{color:var(--cyan)}
+.split .col{display:flex;flex-direction:column;gap:26px}
+.term{font-family:var(--m);font-size:18px;letter-spacing:.1em;color:var(--aqua);text-transform:uppercase;line-height:1.6}
+
+/* practices */
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:48px}
+.card{background:linear-gradient(180deg,rgba(234,244,250,.065),rgba(234,244,250,.02));border:1px solid var(--line);border-radius:20px;padding:34px 34px;display:flex;flex-direction:column;gap:18px}
+.card p{font-size:23px;line-height:1.55;color:var(--soft)}
+.cols3 .ic{width:56px;height:56px;border-radius:14px;background:var(--cyan-d);border:1px solid rgba(79,209,232,.3);display:flex;align-items:center;justify-content:center;color:var(--cyan)}
+.cols3 .ic svg{width:28px;height:28px}
+.aim{margin-top:auto!important;display:flex;gap:22px;align-items:baseline;font-size:28px;line-height:1.5;font-weight:600}
+.aim .lbl{color:var(--aqua);flex:none}
+
+/* four risk types: 2x2 field */
+.quad{position:relative;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;margin-top:26px;flex:1;min-height:0}
+.quad::before{content:"";position:absolute;left:50%;top:6%;bottom:6%;width:1px;background:linear-gradient(180deg,transparent,var(--line2) 20%,var(--line2) 80%,transparent)}
+.quad::after{content:"";position:absolute;top:50%;left:3%;right:3%;height:1px;background:linear-gradient(90deg,transparent,var(--line2) 15%,var(--line2) 85%,transparent)}
+.qd{padding:18px 48px 18px 0;display:flex;flex-direction:column;gap:10px;justify-content:center;cursor:pointer;border-radius:16px;transition:background .15s}
+.qd:nth-child(2n){padding-left:56px;padding-right:0}
+.qd:hover{background:rgba(79,209,232,.05)}
+body.editing .qd{cursor:text}
+.qd .q{font-size:25px;line-height:1.4;font-weight:700;color:var(--cyan)}
+.qd .d{font-size:21px;line-height:1.5;color:var(--soft)}
+.quad-note{margin-top:14px!important;font-size:21px;color:var(--dim)}
+
+/* type detail */
+.type .kq{font-size:31px;line-height:1.45;font-weight:700;color:var(--cyan)}
+.tgrid{display:grid;grid-template-columns:1.3fr 1fr;gap:28px;margin-top:auto}
+.tgrid .card{padding:34px 36px;gap:14px}
+.ex .co{font-size:28px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+.ex .co span{font-family:var(--m);font-weight:500;font-size:19px;color:var(--dim);margin-left:12px;letter-spacing:.06em}
+.ex p.tx{font-size:22.5px;line-height:1.6;color:var(--soft)}
+.mit ul{display:flex;flex-direction:column}
+.mit li{display:flex;gap:16px;align-items:baseline;font-size:24px;line-height:1.45;padding:14px 0;border-top:1px solid var(--line)}
+.mit li:first-child{border-top:0;padding-top:4px}
+.mit li::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--aqua);flex:none;position:relative;top:-3px}
+.type .tlabel{color:var(--cyan)}
+.mit .tlabel{color:var(--aqua)}
+
+/* risk statement (transition) */
+.formula{display:grid;grid-template-columns:1fr 64px 1fr 64px 1fr;align-items:stretch;margin-top:36px}
+.fx{border-radius:18px;padding:20px 26px;display:flex;flex-direction:column;gap:8px;border:1px solid}
+.fx b{font-size:30px;font-weight:800;letter-spacing:-.01em}
+.fx span{font-size:22px;color:var(--soft);line-height:1.45}
+.fx.c1{background:var(--cyan-d);border-color:rgba(79,209,232,.35)}.fx.c1 b{color:#9ae9f6}
+.fx.c2{background:var(--amber-d);border-color:rgba(255,197,107,.35)}.fx.c2 b{color:#ffd99a}
+.fx.c3{background:var(--alarm-d);border-color:rgba(255,107,87,.35)}.fx.c3 b{color:#ffb1a5}
+.arr{display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:34px}
+.stmt{display:grid;grid-template-columns:1.25fr 1fr;gap:28px;margin-top:24px}
+.stmt .card{padding:24px 30px;gap:12px}
+.weak{font-size:24px;color:var(--soft)}
+.weak s{text-decoration-color:rgba(255,107,87,.7);text-decoration-thickness:2px}
+.strong{font-size:24px;line-height:1.6}
+.u1{color:#9ae9f6;border-bottom:2px solid rgba(79,209,232,.6)}
+.u2{color:#ffd99a;border-bottom:2px solid rgba(255,197,107,.6)}
+.u3{color:#ffb1a5;border-bottom:2px solid rgba(255,107,87,.6)}
+.crit4{display:flex;flex-direction:column;gap:8px}
+.crit4 li{font-size:21px;line-height:1.45;color:var(--soft)}
+.crit4 b{color:var(--ink);font-weight:700}
+.bridge{margin-top:auto!important;font-size:26px;font-weight:600;line-height:1.5}
+.bridge span{color:var(--cyan)}
+
+/* map overview + method */
+.mapgrid{display:grid;grid-template-columns:auto 1fr;gap:56px;margin-top:26px;align-items:center;flex:1;min-height:0}
+.plate{background:#fff var(--map) center/contain no-repeat;border-radius:14px;box-shadow:0 0 0 8px rgba(79,209,232,.1),0 26px 60px rgba(0,0,0,.45);cursor:zoom-in}
+.mapgrid .plate{height:450px;aspect-ratio:1092/725}
+.methodcol{display:flex;flex-direction:column;gap:30px}
+.method{display:flex;flex-direction:column;gap:26px}
+.method li{display:grid;grid-template-columns:44px 1fr;gap:4px 16px}
+.method .n{grid-row:span 2;font-family:var(--m);font-size:22px;font-weight:700;color:var(--cyan);line-height:1.4}
+.method b{font-size:26px;line-height:1.35;font-weight:800}
+.method span{font-size:21px;line-height:1.5;color:var(--soft)}
+.legend{font-size:18px;color:var(--dim);line-height:1.5}
+
+/* section crops */
+.sec-body{display:grid;grid-template-columns:auto 1fr;gap:44px;margin-top:30px;flex:1;min-height:0}
+.crops{display:flex;gap:20px;align-items:flex-start}
+.crop{--cw:400;width:calc(var(--cw) * 1px);height:calc(var(--cw) * 1px * var(--h) / var(--w));border-radius:12px;background-color:#fff;background-image:var(--map);background-repeat:no-repeat;background-size:calc(1092px * var(--cw) / var(--w)) auto;background-position:calc(-1px * var(--x) * var(--cw) / var(--w)) calc(-1px * var(--y) * var(--cw) / var(--w));box-shadow:0 0 0 6px rgba(79,209,232,.08),0 18px 40px rgba(0,0,0,.4);cursor:zoom-in}
+.principle{display:flex;flex-direction:column;gap:14px}
+.principle .pr{font-size:26px;line-height:1.35;font-weight:800}
+.principle .pe{font-size:20px;line-height:1.55;color:var(--soft)}
+.stops{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.stop{display:flex;flex-direction:column;gap:6px;padding:12px 18px;border-radius:14px;background:rgba(234,244,250,.04);border:1px solid var(--line)}
+.stop .code{align-self:flex-start;font-family:var(--m);font-size:15px;font-weight:700;color:#06121e;background:var(--cyan);padding:3px 9px;border-radius:6px;letter-spacing:.04em}
+.stop.flag .code{background:var(--amber)}
+.stop p{font-size:19px;line-height:1.5;color:var(--ink)}
+
+/* ===================== work slides + timer ===================== */
+.work-grid{display:grid;grid-template-columns:1fr 470px;gap:80px;flex:1;margin-top:24px;min-height:0}
+.work-grid>div:first-child{display:flex;flex-direction:column;min-width:0}
+.work .h2{font-size:58px}
+.focus{font-size:29px;line-height:1.5;font-weight:600;margin-top:22px!important;max-width:880px;color:var(--ink)}
+.steps{margin-top:34px!important;display:flex;flex-direction:column}
+.steps li{display:grid;grid-template-columns:104px 1fr;align-items:baseline;gap:18px;padding:16px 0;border-top:1px solid var(--line);font-size:25px;line-height:1.4;color:var(--soft);transition:color .3s}
+.steps li:last-child{border-bottom:1px solid var(--line)}
+.steps .mm{font-family:var(--m);font-size:21px;color:var(--dim);font-variant-numeric:tabular-nums}
+.steps li.done{color:var(--dim)}
+.steps li.done .mm::before{content:"✓ "}
+.steps li.now{color:var(--ink)}
+.steps li.now .mm{color:var(--cyan)}
+.steps li.now .mm::before{content:"→ "}
+.steps li.now span:last-child{font-weight:700}
+.result{margin-top:auto!important;display:flex;gap:20px;align-items:baseline;font-size:24px;line-height:1.5;color:var(--ink)}
+.result .lbl{color:var(--aqua);flex:none}
+
+.timer{display:flex;flex-direction:column;align-items:center;justify-content:center;align-self:center}
+.ring{position:relative;width:440px;height:440px}
+.ring svg{position:absolute;inset:0;overflow:visible}
+.ring .bg{stroke:rgba(234,244,250,.09)}
+.ring .fg{stroke:var(--cyan);stroke-linecap:round;filter:drop-shadow(0 0 10px rgba(79,209,232,.55));transition:stroke .3s}
+.ring .tick{stroke:rgba(234,244,250,.35);stroke-width:1.2}
+.ring .head{fill:#dffaff;filter:drop-shadow(0 0 8px var(--cyan))}
+.ring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.t-digits{font-family:var(--m);font-feature-settings:"tnum" 1;font-weight:700;font-size:118px;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.t-state{font-family:var(--m);font-size:17px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan);margin-top:16px}
+.t-of{font-family:var(--m);font-size:15px;letter-spacing:.1em;color:var(--dim);margin-top:8px}
+.t-ctrl{display:flex;gap:14px;margin-top:30px}
+.t-btn{font-size:21px;font-weight:700;padding:14px 28px;border-radius:999px;border:1px solid var(--line2);background:rgba(234,244,250,.05);transition:background .15s,border-color .15s}
+.t-btn:hover{border-color:var(--cyan);background:rgba(79,209,232,.1)}
+.t-btn.pri{background:var(--cyan);color:#04121b;border-color:var(--cyan)}
+.t-btn.pri:hover{background:#7fe2f2}
+.timer.idle .t-state{color:var(--dim)}
+.timer.idle .fg{opacity:.5;filter:none}
+.timer.paused .t-state{color:var(--amber)}
+.timer.paused .fg{stroke:var(--amber);filter:drop-shadow(0 0 8px rgba(255,197,107,.5))}
+.timer.done .t-digits,.timer.done .t-state{color:var(--alarm)}
+.timer.done .bg{stroke:rgba(255,107,87,.55);filter:drop-shadow(0 0 14px rgba(255,107,87,.6))}
+.timer.done .t-digits{animation:pulse 1.2s ease-in-out infinite}
+.slide.alarm{box-shadow:inset 0 0 0 6px var(--alarm),inset 0 0 120px rgba(255,107,87,.25)}
+@keyframes pulse{50%{opacity:.45}}
+@media (prefers-reduced-motion:reduce){.timer.done .t-digits{animation:none}}
+
+/* two timers (reports) */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-self:center}
+.tcol{display:flex;flex-direction:column;align-items:center;gap:18px}
+.tcol .h3{font-size:28px}
+.duo .ring{width:290px;height:290px}
+.duo .t-digits{font-size:76px}
+.duo .t-state{font-size:14px;margin-top:10px}
+.duo .t-of{font-size:13px}
+.duo .t-ctrl{margin-top:20px;gap:10px;flex-wrap:wrap;justify-content:center}
+.duo .t-btn{font-size:17px;padding:11px 20px}
+.rep-grid{grid-template-columns:1fr 640px;gap:60px}
+.pres{display:flex;flex-direction:column;gap:16px;margin-top:18px!important}
+.pres li{display:flex;gap:16px;align-items:baseline;font-size:24px;line-height:1.45;color:var(--soft)}
+.pres li::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--cyan);flex:none;position:relative;top:-3px}
+.askq{display:flex;flex-direction:column;gap:10px;margin-top:16px!important}
+.askq li{font-size:22px;line-height:1.45;padding:12px 18px;border-radius:12px;background:rgba(234,244,250,.045);border:1px solid var(--line)}
+.sub-lbl{margin-top:34px!important;color:var(--cyan)}
+
+/* break */
+.break{align-items:center;text-align:center;justify-content:center}
+.break .h1{font-size:120px;margin-top:24px}
+.break .lead{margin-top:34px}
+
+/* summary table */
+.sumt{width:100%;border-collapse:separate;border-spacing:0;margin-top:34px;table-layout:fixed}
+.sumt th{font-family:var(--m);font-weight:500;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);text-align:left;padding:0 18px 14px}
+.sumt td{padding:22px 18px;font-size:22px;line-height:1.45;color:var(--ink);border-top:1px solid var(--line2);vertical-align:top;height:118px;outline-offset:-3px}
+.sumt tr:last-child td{border-bottom:1px solid var(--line2)}
+.sumt td:first-child{font-family:var(--m);font-size:34px;font-weight:700;color:var(--cyan)}
+.sumt td[data-live]{cursor:text;transition:background .15s}
+.sumt td[data-live]:hover{background:rgba(79,209,232,.05)}
+.sumt td[data-live]:focus{outline:2px solid var(--cyan);background:rgba(79,209,232,.07)}
+.sumt td.empty{color:var(--dim)}
+.crit-line{margin-top:26px!important;display:flex;gap:20px;align-items:baseline;font-size:22px;line-height:1.5;color:var(--soft)}
+.crit-line .lbl{color:var(--cyan);flex:none}
+.followup{margin-top:auto!important;font-size:22px;line-height:1.5;color:var(--soft)}
+
+/* close */
+.close{align-items:center;text-align:center;justify-content:center}
+.close::after{content:"";position:absolute;left:50%;bottom:-360px;width:1500px;height:640px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(79,209,232,.18),rgba(79,209,232,0));pointer-events:none}
+.close .logo{width:150px;height:96px}
+.close .h1{font-size:104px;margin-top:48px}
+.close .lead{margin-top:34px;max-width:1050px}
+.close .next{margin-top:56px;display:flex;gap:18px;align-items:baseline;padding:18px 30px;border-radius:999px;border:1px solid rgba(79,209,232,.35);background:rgba(6,18,30,.5);font-size:24px;position:relative;z-index:1}
+.close .next .lbl{color:var(--cyan)}
+
+/* ===================== editing ===================== */
+body.editing [data-e]{outline:1px dashed rgba(79,209,232,.35);outline-offset:4px;border-radius:4px;cursor:text}
+body.editing [data-e]:hover{outline-color:rgba(79,209,232,.8)}
+body.editing [data-e]:focus{outline:2px solid var(--cyan);outline-offset:4px;background:rgba(79,209,232,.06)}
+body.moving [data-e]{cursor:inherit}
+body.moving [data-m]{outline:2px dashed rgba(255,197,107,.65);outline-offset:6px;cursor:grab}
+body.moving [data-m]:hover{outline-color:var(--amber);background:rgba(255,197,107,.05)}
+body.moving [data-m].dragging{cursor:grabbing;outline-style:solid}
+.calc{font-variant-numeric:tabular-nums}
+.slide[data-skip]>.skipmark{display:block}
+.skipmark{display:none;position:absolute;top:20px;left:50%;transform:translateX(-50%);font-family:var(--m);font-size:16px;letter-spacing:.12em;text-transform:uppercase;padding:8px 16px;border-radius:8px;background:var(--amber);color:#1c1300;z-index:5}
+
+#editbar{position:fixed;top:0;left:0;right:0;height:58px;z-index:40;display:none;align-items:center;gap:8px;padding:0 14px;background:#0f2232;border-bottom:1px solid rgba(79,209,232,.35);font-size:14px;overflow-x:auto}
+body.editing #editbar{display:flex}
+#editbar .lab{font-family:var(--m);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--cyan);white-space:nowrap;margin-right:6px}
+#editbar .sep{width:1px;height:28px;background:var(--ui-line);margin:0 4px;flex:none}
+#editbar .st{color:var(--dim);font-size:12.5px;white-space:nowrap;margin-left:auto;padding-left:10px}
+.eb{white-space:nowrap;border:1px solid var(--ui-line);background:var(--ui-2);border-radius:8px;padding:7px 12px;font-size:13.5px;font-weight:600;min-height:36px}
+.eb:hover{border-color:var(--cyan)}
+.eb[aria-pressed="true"]{background:rgba(255,197,107,.18);border-color:var(--amber);color:var(--amber)}
+.eb.pri{background:var(--cyan);color:#04121b;border-color:var(--cyan)}
+.eb.done{background:transparent}
+
+/* ===================== chrome ===================== */
+#bar{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:30;display:flex;align-items:center;gap:4px;padding:6px;border-radius:16px;background:rgba(13,28,41,.92);border:1px solid var(--ui-line);box-shadow:0 12px 40px rgba(0,0,0,.45);backdrop-filter:blur(10px);transition:opacity .3s,transform .3s}
+body.idle:not(.editing) #bar{opacity:0;transform:translate(-50%,12px);pointer-events:none}
+body.idle:not(.editing){cursor:none}
+.bb{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-width:44px;height:44px;padding:0 12px;border-radius:11px;border:0;background:transparent;font-size:14px;font-weight:600;color:var(--soft);white-space:nowrap}
+.bb:hover{background:rgba(234,244,250,.08);color:var(--ink)}
+.bb svg{width:20px;height:20px;flex:none}
+.bb[aria-pressed="true"]{background:rgba(79,209,232,.16);color:var(--cyan)}
+.bb.edit{background:rgba(79,209,232,.12);color:var(--cyan)}
+#sync{display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 10px;margin:0 2px;border-radius:999px;border:1px solid var(--ui-line);background:transparent;font-size:12.5px;font-weight:600;color:var(--soft);white-space:nowrap}
+#sync i{width:8px;height:8px;border-radius:50%;background:var(--aqua)}
+#sync.wait i,#sync.saving i,#sync.load i{background:var(--amber)}
+#sync.off i{background:var(--dim)}
+#sync.conflict{border-color:var(--alarm);color:var(--alarm)}
+#sync.conflict i{background:var(--alarm)}
+#sync[hidden]{display:none}
+#count{font-family:var(--m);font-size:14px;color:var(--ink);min-width:78px;text-align:center;font-variant-numeric:tabular-nums}
+.bsep{width:1px;height:26px;background:var(--ui-line);margin:0 4px}
+.edge{position:fixed;top:15%;bottom:15%;width:7%;z-index:20;border:0;background:transparent;display:flex;align-items:center;color:rgba(234,244,250,0);transition:color .2s,background .2s}
+.edge svg{width:48px;height:48px}
+.edge.prev{left:0;justify-content:flex-start;padding-left:18px}
+.edge.next{right:0;justify-content:flex-end;padding-right:18px}
+.edge:hover{color:rgba(234,244,250,.75)}
+.edge.prev:hover{background:linear-gradient(90deg,rgba(0,0,0,.25),transparent)}
+.edge.next:hover{background:linear-gradient(270deg,rgba(0,0,0,.25),transparent)}
+body.editing .edge,body.idle .edge{display:none}
+
+#pill{position:fixed;top:14px;right:14px;z-index:35;display:flex;align-items:center;gap:10px;padding:9px 16px;border-radius:999px;border:1px solid rgba(79,209,232,.45);background:rgba(6,18,30,.92);font-family:var(--m);font-size:14px;color:var(--ink);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+#pill i{width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+#pill.paused i{background:var(--amber);box-shadow:none}
+#pill.done{border-color:var(--alarm);color:var(--alarm)}
+#pill.done i{background:var(--alarm);animation:pulse 1s infinite}
+body.editing #pill{top:72px}
+
+#toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);z-index:60;padding:12px 20px;border-radius:10px;background:#e8f4fa;color:#06121e;font-size:15px;font-weight:600;max-width:90vw;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.4);opacity:0;transition:opacity .25s;pointer-events:none}
+#toast.show{opacity:1}
+
+/* drawers & overlays */
+#notes{position:fixed;top:0;right:0;bottom:0;width:min(520px,92vw);z-index:45;background:var(--ui);border-left:1px solid var(--ui-line);display:flex;flex-direction:column;transform:translateX(100%);transition:transform .25s ease;box-shadow:-20px 0 50px rgba(0,0,0,.4)}
+#notes.open{transform:none}
+body.editing #notes{top:58px}
+.dh{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--ui-line)}
+.dh h2{margin:0;font-size:18px;font-weight:800}
+.dh small{display:block;font-family:var(--m);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-top:3px}
+.x{width:38px;height:38px;border-radius:10px;border:1px solid var(--ui-line);background:transparent;font-size:20px;line-height:1}
+.x:hover{border-color:var(--cyan)}
+#notes-body{padding:20px;overflow:auto;flex:1;font-size:17px;line-height:1.65;color:#d4e4ee}
+#notes-body p{margin:0 0 14px}
+#notes-body b{color:#fff}
+#notes-body[contenteditable]{outline:1px dashed rgba(79,209,232,.45);outline-offset:-8px;border-radius:6px}
+#notes .warnline{margin:0;padding:10px 20px;font-size:12.5px;color:var(--amber);border-top:1px solid var(--ui-line)}
+
+dialog{border:0;padding:0;border-radius:18px;background:var(--ui);color:var(--ink);width:min(980px,94vw);max-height:90vh;box-shadow:0 30px 90px rgba(0,0,0,.6)}
+dialog::backdrop{background:rgba(2,8,14,.75);backdrop-filter:blur(3px)}
+.db{padding:22px 24px;overflow:auto;max-height:calc(90vh - 72px);font-size:15.5px;line-height:1.6;color:#d4e4ee}
+.db h3{font-size:14px;margin:24px 0 10px;font-family:var(--m);letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);font-weight:500}
+.db h3:first-child{margin-top:0}
+.db p{margin:0 0 12px}
+.db a{color:var(--cyan)}
+.db li{margin-bottom:6px}
+.keys{display:grid;grid-template-columns:170px 1fr;gap:8px 18px;margin:0}
+.keys dt{font-family:var(--m);font-size:13.5px;color:var(--ink)}
+.keys dd{margin:0;color:var(--soft)}
+kbd{font-family:var(--m);font-size:12.5px;padding:2px 7px;border-radius:5px;border:1px solid var(--ui-line);background:var(--ui-2)}
+
+/* overview */
+#overview{position:fixed;inset:0;z-index:50;background:rgba(3,9,15,.97);overflow:auto;padding:24px clamp(16px,3vw,40px) 120px}
+#overview .dh{border:0;padding:0 0 18px;max-width:1500px;margin:0 auto}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;max-width:1500px;margin:0 auto}
+.thumb{position:relative;border:0;padding:0;background:transparent;text-align:left;border-radius:12px;cursor:pointer}
+.thumb .tv{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:10px;border:2px solid transparent;background:var(--abyss)}
+.thumb .tv>div{position:absolute;left:0;top:0;width:1600px;height:900px;transform-origin:0 0;pointer-events:none}
+.thumb .tv .slide{display:flex}
+.thumb.on .tv{border-color:var(--cyan)}
+.thumb:hover .tv{border-color:rgba(79,209,232,.5)}
+.thumb .cap{display:flex;gap:10px;align-items:baseline;margin-top:8px;font-size:13.5px;color:var(--soft)}
+.thumb .cap b{font-family:var(--m);color:var(--cyan);font-weight:500}
+.thumb.skip .tv{opacity:.35}
+.thumb .skipbtn{position:absolute;top:8px;right:8px;z-index:2;font-size:12px;font-weight:700;padding:5px 9px;border-radius:7px;border:1px solid var(--ui-line);background:rgba(6,18,30,.9)}
+.ovsec{max-width:1500px;margin:26px auto 12px;font-family:var(--m);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+
+/* durations */
+.durs{display:grid;grid-template-columns:1fr 1fr;gap:4px 26px}
+.dur{display:grid;grid-template-columns:1fr 84px 34px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--ui-line)}
+.dur input{width:84px;padding:9px 10px;border-radius:8px;border:1px solid var(--ui-line);background:var(--ui-2);font-family:var(--m);font-size:18px;text-align:center}
+.dur input:disabled{opacity:.45}
+.dur small{grid-column:1/-1;font-size:12px;color:var(--amber)}
+.dur span:last-child{color:var(--dim);font-size:13px}
+.dsec{grid-column:1/-1;font-family:var(--m);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin:14px 0 0}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+.ub{border:1px solid var(--ui-line);background:var(--ui-2);border-radius:9px;padding:10px 16px;font-weight:700;font-size:14.5px}
+.ub:hover{border-color:var(--cyan)}
+.ub.pri{background:var(--cyan);color:#04121b;border-color:var(--cyan)}
+.check{display:flex;gap:10px;align-items:center;margin-top:16px;font-size:15px}
+.check input{width:18px;height:18px;accent-color:var(--cyan)}
+.popts{display:flex;flex-direction:column;gap:10px}
+.popts button{text-align:left;padding:16px 18px;border-radius:12px;border:1px solid var(--ui-line);background:var(--ui-2);font-weight:700;font-size:16px}
+.popts button:hover{border-color:var(--cyan)}
+.popts small{display:block;font-weight:500;font-size:13.5px;color:var(--soft);margin-top:4px}
+
+#mapdlg{width:96vw;height:94vh;max-height:94vh}
+#mapdlg .db{height:calc(94vh - 72px);max-height:none;background:#e9f0f4;padding:16px}
+#mapdlg img{display:block;margin:0 auto;max-width:none}
+.zbar{display:flex;gap:6px}
+.zbar button{border:1px solid var(--ui-line);background:var(--ui-2);border-radius:8px;padding:6px 12px;font-family:var(--m);font-size:13px}
+.zbar button[aria-pressed="true"]{border-color:var(--cyan);color:var(--cyan)}
+
+/* ===================== sheets (print) ===================== */
+#sheets-view{position:fixed;inset:0;z-index:50;background:#2a3640;overflow:auto;padding:20px 16px 120px}
+body.editing #sheets-view{top:58px}
+#sheets-view .dh{max-width:1120px;margin:0 auto 16px;border:0;padding:0}
+.sheets{display:flex;flex-direction:column;gap:22px;align-items:center}
+.sheet{width:1123px;height:794px;background:#fff;color:#12283a;padding:38px 44px;font-family:var(--f);box-shadow:0 10px 30px rgba(0,0,0,.35);display:flex;flex-direction:column;flex:none}
+.sheet h1{margin:0;font-size:32px;font-weight:800;letter-spacing:-.015em}
+.sh-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+.sh-head .logo{width:96px;height:62px;border:1px solid #e4ecf1}
+.sh-meta{font-size:14px;color:#4a6475;margin:8px 0 0}
+.sh-guide{font-size:14px;color:#2b4a5e;margin:12px 0 14px;line-height:1.5}
+.wgrid{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:auto 1fr 1fr;gap:10px;flex:1}
+.wf{border:1.5px solid #b8cdda;border-radius:8px;padding:10px 12px;display:flex;flex-direction:column}
+.wf h2{margin:0;font-size:15px;font-weight:800}
+.wf p{margin:4px 0 0;font-size:12px;color:#4a6475;line-height:1.45}
+.wf.wide{grid-column:1/-1;min-height:126px}
+.wf .tmpl{font-size:13px;color:#12283a;margin-top:6px}
+.cats{display:flex;gap:16px;flex-wrap:wrap;font-size:13.5px;margin-top:6px}
+.dtable{width:100%;border-collapse:collapse;table-layout:fixed;margin-top:14px}
+.dtable th,.dtable td{border:1.5px solid #b8cdda;padding:7px 8px;text-align:left;vertical-align:top;font-size:12.5px}
+.dtable th{background:#eef5f9;font-weight:800}
+.dtable td{height:118px}
+.dtable th:first-child{width:34px}
+.follow{margin-top:14px;font-size:13px;color:#2b4a5e}
+.follow p{margin:0 0 4px}
+.follow .ln{border-bottom:1.5px solid #b8cdda;height:30px}
+.checks{display:flex;gap:28px;margin-top:12px;font-size:13.5px}
+.sheet.mapsheet{align-items:center;justify-content:center;padding:24px}
+.sheet.mapsheet img{max-width:100%;max-height:100%}
+
+/* ===================== print ===================== */
+@page{size:A4 landscape;margin:8mm}
+@media print{
+  html,body{height:auto!important;overflow:visible!important;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  #bar,#editbar,.edge,#pill,#toast,#notes,dialog,#overview,.t-ctrl,.skipmark{display:none!important}
+  body[data-print="slides"] #sheets-view{display:none!important}
+  body[data-print="slides"] #viewport{position:static;display:block}
+  body[data-print="slides"] #stage{transform:none!important;width:1600px;height:auto;zoom:.655;box-shadow:none;overflow:visible;background:none}
+  body[data-print="slides"] .slide{display:flex!important;position:relative;height:900px;break-after:page;page-break-after:always;
+    --ink:#0e2a3e;--soft:#3d5a6c;--dim:#6a8494;--line:rgba(14,42,62,.14);--line2:rgba(14,42,62,.24);--cyan:#0e7fa0;--aqua:#2a7a52;--amber:#9a5b00;--alarm:#b8321f;
+    --cyan-d:rgba(14,127,160,.08);--aqua-d:rgba(42,122,82,.08);--amber-d:rgba(154,91,0,.07);--alarm-d:rgba(184,50,31,.07);
+    background:#fff!important;color:var(--ink);box-shadow:none!important}
+  body[data-print="slides"] .slide::after{display:none}
+  body[data-print="slides"] .slide[data-skip]{display:none!important}
+  body[data-print="slides"] .fx.c1 b,body[data-print="slides"] .u1{color:#0b5f78}
+  body[data-print="slides"] .fx.c2 b,body[data-print="slides"] .u2{color:#7a4800}
+  body[data-print="slides"] .fx.c3 b,body[data-print="slides"] .u3{color:#8f2516}
+  body[data-print="slides"] .stop .code{color:#fff}
+  body[data-print="slides"] .ring .head{fill:var(--cyan)}
+  body[data-print="slides"] .timer.done .t-digits{animation:none}
+  body[data-print="slides"] #foot,body[data-print="slides"] #progress{display:none}
+  body[data-print="slides"] .slide::before{content:attr(data-no);position:absolute;right:100px;bottom:42px;font-family:var(--m);font-size:15px;color:var(--dim)}
+  body[data-print="sheets"] #viewport,body[data-print="map"] #viewport{display:none!important}
+  body[data-print="sheets"] #sheets-view,body[data-print="map"] #sheets-view{display:block!important;position:static;background:#fff;padding:0;overflow:visible}
+  #sheets-view .dh{display:none!important}
+  .sheets{gap:0;display:block}
+  .sheet{box-shadow:none;width:100%;height:190mm;padding:2mm 3mm;break-after:page;page-break-after:always}
+  .sheet:last-child{break-after:auto}
+  body[data-print="map"] .sheet:not(.mapsheet){display:none!important}
+  [data-e],[data-live]{outline:none!important}
+}
+@media (max-width:700px){
+  .bb .bl{display:none}
+  #bar{gap:0;padding:4px;bottom:10px}
+  .bb{min-width:40px;padding:0 9px}
+  .bb.opt{display:none}
+  .durs{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body class="on-cover">
+
+<!-- ============ EDIT BAR ============ -->
+<div id="editbar" role="toolbar" aria-label="Szerkesztés">
+  <span class="lab">Szerkesztés</span>
+  <button class="eb" id="eb-move" aria-pressed="false" title="Szövegdobozok áthelyezése egérrel">✥ Mozgatás</button>
+  <button class="eb" id="eb-smaller" title="A kijelölt szöveg kisebb">A−</button>
+  <button class="eb" id="eb-bigger" title="A kijelölt szöveg nagyobb">A+</button>
+  <button class="eb" id="eb-tight" title="Szűkebb betűköz a kijelölt szövegben">Betűköz −</button>
+  <button class="eb" id="eb-loose" title="Tágabb betűköz a kijelölt szövegben">Betűköz +</button>
+  <span class="sep"></span>
+  <button class="eb" id="eb-skip" title="A dia előadáskor kimarad, de megmarad a fájlban">Dia elrejtése</button>
+  <button class="eb" id="eb-reset-slide" title="Ennek a diának minden szövegét és elrendezését visszaállítja">Dia visszaállítása</button>
+  <button class="eb" id="eb-sheets">Munkalapok</button>
+  <span class="st" id="eb-status">A módosítások ebben a böngészőben mentődnek.</span>
+  <span class="sep"></span>
+  <button class="eb pri" id="eb-save" title="Ctrl+S">Mentés HTML-fájlként</button>
+  <button class="eb done" id="eb-done">Kész</button>
+</div>
+
+<div id="viewport"><div id="stage">
+
+<!-- ================= COVER ================= -->
+<section class="slide cover" data-phase="open">
+  <div class="logo" role="img" aria-label="Fonte Viva"></div>
+  <p class="kick" data-e data-m>Fonte Viva · Vezetői workshop · 2026. október</p>
+  <h1 class="h1" data-e data-m>Kockázatkezelés beszerzéstől értékesítésig</h1>
+  <p class="lead" data-e data-m>Közösen azonosítjuk működésünk legfontosabb kockázatait, és döntünk a kezelésükről.</p>
+  <aside class="notes" data-e>
+    <p><b>Előkészítés:</b> minden résztvevőnek egy nyomtatott folyamatábra, körönként és csapatonként kockázati munkalapok, cetlik, tollak és egy mindenki számára látható közös felület.</p>
+    <p>A nyolc vezetőt két vegyes, négyfős csapatba oszd. Ahol lehet, mindkét csapatba kerüljön a beszerzés, a termelés és az értékesítés egy-egy képviselője.</p>
+    <p>Nyitómondat-javaslat: „Ma azt vizsgáljuk meg, mi akadályozhatja a működésünket a beszerzéstől a vevőig, és mely kockázatok kezelését vállaljuk közösen.”</p>
+  </aside>
+</section>
+
+<!-- ================= GOAL ================= -->
+<section class="slide" data-phase="open">
+  <div class="head" data-m>
+    <p class="kick" data-e>A workshop célja</p>
+    <h2 class="h2" data-e>Három eredménnyel zárjuk a workshopot</h2>
+  </div>
+  <div class="goals" data-m>
+    <div><h3 class="h3" data-e>Közös kockázati kép</h3><p data-e>Látjuk, hol sérülékeny a folyamatunk, és melyik terület érzékeli elsőként a hibát.</p></div>
+    <div><h3 class="h3" data-e>Három vállalati prioritás</h3><p data-e>A hatás súlyossága és a reagálásra rendelkezésre álló idő alapján választjuk ki őket.</p></div>
+    <div><h3 class="h3" data-e>Felelősök és határidők</h3><p data-e>Minden prioritáshoz kijelölt felelős, következő lépés és határidő tartozik.</p></div>
+  </div>
+  <p class="rule" data-m><span class="lbl" data-e>Munkaszabály</span><span data-e>Nyíltan beszélünk a gyenge pontokról, a saját területünkön is. A feltárt kockázat a közös munka eredménye.</span></p>
+  <aside class="notes" data-e>
+    <p>Mondd ki az elején: a cél a kockázatok feltárása, nem a felelősség keresése. Aki a saját területén talál gyenge pontot, a közös munkához járul hozzá.</p>
+    <p>A három eredményt a zárásnál ugyanezekkel a szavakkal ellenőrizzük.</p>
+  </aside>
+</section>
+
+<!-- ================= AGENDA (summary table) ================= -->
+<section class="slide" data-phase="open">
+  <div class="head" data-m>
+    <p class="kick" data-e>A workshop áttekintése</p>
+    <h2 class="h2" data-e>A workshop menete és eredményei</h2>
+  </div>
+  <table class="agt" data-m>
+    <colgroup><col style="width:92px"><col style="width:350px"><col><col style="width:196px"><col style="width:290px"></colgroup>
+    <thead><tr><th data-e>Idő</th><th data-e>Blokk</th><th data-e>Tartalom</th><th data-e>Munkaforma</th><th data-e>Eredmény</th></tr></thead>
+    <tbody>
+      <tr data-goto="open"><td class="t calc" data-calc="min:open"></td><td class="nm" data-e data-phasename="open">Nyitás</td><td data-e>Cél, menet, munkaszabály</td><td class="fm"><span data-e>Közös</span></td><td class="out" data-e>Közös cél</td></tr>
+      <tr data-goto="basics"><td class="t calc" data-calc="min:basics"></td><td class="nm" data-e data-phasename="basics">Elméleti alapok</td><td data-e>Produktív előrelátás, négy kockázattípus</td><td class="fm"><span data-e>Közös</span></td><td class="out" data-e>Egységes fogalmak</td></tr>
+      <tr data-goto="walk"><td class="t calc" data-calc="min:walk"></td><td class="nm" data-e data-phasename="walk">Folyamatbejárás</td><td data-e>A folyamat közös végiggondolása</td><td class="fm"><span data-e>Közös</span></td><td class="out" data-e>Közös kép a folyamatról</td></tr>
+      <tr data-goto="lunch" class="brk"><td class="t calc" data-calc="min:lunch"></td><td class="nm" data-e data-phasename="lunch">Ebédszünet</td><td data-e></td><td class="fm"></td><td class="out" data-e></td></tr>
+      <tr data-goto="r1"><td class="t calc" data-calc="round:1"></td><td class="nm" data-e data-phasename="r1">1. kör: Beszerzés és beérkezés</td><td data-e><span class="calc" data-calc="min:r1">20′</span> csapatmunka, majd 2 × <span class="calc" data-calc="min:rep">5′</span> beszámoló</td><td class="fm"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><span data-e>Csapatmunka</span></span></td><td class="out" data-e>Bemutatott kockázatok</td></tr>
+      <tr data-goto="r2"><td class="t calc" data-calc="round:2"></td><td class="nm" data-e data-phasename="r2">2. kör: Termelés és minőség</td><td data-e><span class="calc" data-calc="min:r2">20′</span> csapatmunka, majd 2 × <span class="calc" data-calc="min:rep">5′</span> beszámoló</td><td class="fm"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><span data-e>Csapatmunka</span></span></td><td class="out" data-e>Bemutatott kockázatok</td></tr>
+      <tr data-goto="brk" class="brk"><td class="t calc" data-calc="min:brk"></td><td class="nm" data-e data-phasename="brk">Szünet</td><td data-e></td><td class="fm"></td><td class="out" data-e></td></tr>
+      <tr data-goto="r3"><td class="t calc" data-calc="round:3"></td><td class="nm" data-e data-phasename="r3">3. kör: Értékesítés és kiszállítás</td><td data-e><span class="calc" data-calc="min:r3">20′</span> csapatmunka, majd 2 × <span class="calc" data-calc="min:rep">5′</span> beszámoló</td><td class="fm"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><span data-e>Csapatmunka</span></span></td><td class="out" data-e>Teljes közös lista</td></tr>
+      <tr data-goto="sum"><td class="t calc" data-calc="min:sum"></td><td class="nm" data-e data-phasename="sum">Összegzés és zárás</td><td data-e>Három prioritás, intézkedés, felelős, határidő</td><td class="fm"><span data-e>Közös</span></td><td class="out" data-e>Akcióterv</td></tr>
+    </tbody>
+  </table>
+  <p class="agenda-foot" data-m><span data-e>Két vegyes, négyfős csapat, mindhárom körben ugyanazon a folyamatszakaszon.</span><b>Délelőtt <span class="calc" data-calc="am">80</span> · délután <span class="calc" data-calc="pm">130</span> · összesen <span class="calc" data-calc="total">210</span> perc</b></p>
+  <aside class="notes" data-e>
+    <p>A táblázat sorai kattinthatók: a megfelelő blokk első diájára ugranak. Szerkesztés módban nem ugranak, ott a szöveget írod át.</p>
+    <p>Egy kör egy sor: a csapatmunka és utána rögtön a két csapat beszámolója. Az óra ikon a mért idejű köröket jelöli. Az összesen az ebéd nélkül értendő. Az időtartamokat a <b>⋯ → Időtartamok</b> menüben állíthatod.</p>
+  </aside>
+</section>
+
+<!-- ================= COLLINS ================= -->
+<section class="slide" data-phase="basics">
+  <p class="kick" data-e data-m>Elméleti alapok · Jim Collins és Morten T. Hansen: Great by Choice</p>
+  <div class="split">
+    <p class="statement" data-e data-m>Bizonytalan környezetben <span>a fegyelmezett felkészülés</span> teremt tartós előnyt.</p>
+    <div class="col" data-m>
+      <p class="body" data-e>Collins és Hansen kilenc éven át elemezte azokat a vállalatokat, amelyek kiszámíthatatlan iparágakban legalább tizenöt évig tízszer jobban teljesítettek iparági indexüknél.</p>
+      <p class="body" data-e>A kutatás szerint ezek a vállalatok nem vállaltak több kockázatot versenytársaiknál. Fegyelmezettebben, tényekre alapozva készültek fel a kedvezőtlen fordulatokra.</p>
+      <p class="term" data-e>A szerzők ezt a magatartást produktív előrelátásnak (productive paranoia) nevezik.</p>
+    </div>
+  </div>
+  <aside class="notes" data-e>
+    <p>Forrás: Jim Collins és Morten T. Hansen, <i>Great by Choice</i> (2011), 5. fejezet: „Leading above the Death Line”. A három gyakorlat: 103. o.; a kockázattípusok: 107. o.; az időalapú kockázat: 110. o. A könyv magyar kiadásának címe a Moly adatbázisa szerint <i>Tudatosan kiváló</i>.</p>
+    <p>Egyetlen gondolatot vigyenek innen: a felkészülés vezetői fegyelem, nem óvatoskodás.</p>
+  </aside>
+</section>
+
+<!-- ================= PRACTICES ================= -->
+<section class="slide" data-phase="basics">
+  <div class="head" data-m>
+    <p class="kick" data-e>Produktív előrelátás</p>
+    <h2 class="h2" data-e>Három gyakorlat teszi a kockázattudatosságot cselekvéssé</h2>
+  </div>
+  <div class="cols3" data-m>
+    <div class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18h16M6 18V11M10 18V8M14 18V10M18 18V6"/></svg></span><h3 class="h3" data-e>Tartalékképzés kedvező időszakban</h3><p data-e>Pénzügyi, készlet- és kapacitástartalékot akkor építünk, amikor még nincs rá szükség.</p></div>
+    <div class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6l8-3z"/></svg></span><h3 class="h3" data-e>A kockázati kitettség korlátozása</h3><p data-e>Nem vállalunk olyan kockázatot, amelynek bekövetkezése a vállalat működését veszélyeztetné.</p></div>
+    <div class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M20 20l-4-4"/></svg></span><h3 class="h3" data-e>Áttekintés, majd fókuszált végrehajtás</h3><p data-e>Rendszeresen felmérjük a környezet változásait, és a feltárt veszélyekre célzott intézkedéssel reagálunk.</p></div>
+  </div>
+  <p class="aim" data-m><span class="lbl" data-e>Cél</span><span data-e>A vállalat bármilyen kedvezőtlen fordulat után működőképes maradjon, és folytathassa növekedési céljait.</span></p>
+  <aside class="notes" data-e>
+    <p>Collins három gyakorlata: tartalékok és biztonsági sáv (buffers, shock absorbers), a kockázati kitettség korlátozása, valamint „Zoom Out, Then Zoom In”.</p>
+    <p>A „Fire Bullets, Then Cannonballs” (kis próba a nagy elköteleződés előtt) kapcsolódó elv, nem negyedik gyakorlat. Az aszimmetrikus kockázatnál kezelési lehetőségként jelenik meg.</p>
+  </aside>
+</section>
+
+<!-- ================= FOUR TYPES ================= -->
+<section class="slide" data-phase="basics">
+  <div class="head" data-m>
+    <p class="kick" data-e>Elméleti alapok</p>
+    <h2 class="h2" data-e>A négy fő kockázattípus</h2>
+  </div>
+  <div class="quad" data-m>
+    <div class="qd" data-gotoslide="1"><h3 class="h3" data-e>Vállalatot veszélyeztető</h3><p class="q" data-e>Veszélybe kerülhet-e a vállalat fennmaradása?</p><p class="d" data-e>Bekövetkezése súlyosan károsíthatja vagy megszüntetheti a vállalatot.</p></div>
+    <div class="qd" data-gotoslide="2"><h3 class="h3" data-e>Aszimmetrikus</h3><p class="q" data-e>Arányban áll-e a várható haszon a lehetséges kárral?</p><p class="d" data-e>A lehetséges veszteség nagyságrendekkel nagyobb a várható nyereségnél.</p></div>
+    <div class="qd" data-gotoslide="3"><h3 class="h3" data-e>Nem kontrollálható</h3><p class="q" data-e>Mire nincs érdemi ráhatásunk, és mennyire függünk tőle?</p><p class="d" data-e>Külső szereplőtől vagy eseménytől függünk, amelyet alig tudunk befolyásolni.</p></div>
+    <div class="qd" data-gotoslide="4"><h3 class="h3" data-e>Időalapú</h3><p class="q" data-e>Mennyi időnk van dönteni, mielőtt a kár megnő?</p><p class="d" data-e>A reagálás gyorsasága közvetlenül meghatározza a kár mértékét.</p></div>
+  </div>
+  <p class="quad-note" data-e data-m>A típusok átfedhetik egymást: egy kockázat több típusba is tartozhat.</p>
+  <aside class="notes" data-e>
+    <p>Collins és Hansen három elsődleges kockázattípust nevez meg (a vállalatot veszélyeztető, az aszimmetrikus és a nem kontrollálható kockázatot), majd külön tárgyalja az időalapú kockázatot. A workshopon mind a négyet fő típusként kezeljük.</p>
+    <p>A négy mező kattintható: a típus részletes diájára ugrik.</p>
+  </aside>
+</section>
+
+<!-- ================= TYPE 1 ================= -->
+<section class="slide type" data-phase="basics" data-type="1">
+  <div class="head" data-m>
+    <p class="kick" data-e>Kockázattípus 1 / 4</p>
+    <h2 class="h2" data-e>Vállalatot veszélyeztető kockázat</h2>
+    <p class="lead" data-e>Bekövetkezése súlyosan károsíthatja vagy akár meg is szüntetheti a vállalatot.</p>
+    <p class="kq" data-e>Kulcskérdés: veszélybe kerülhet-e a vállalat fennmaradása?</p>
+  </div>
+  <div class="tgrid" data-m>
+    <div class="card ex"><p class="lbl tlabel" data-e>Valós példa</p><p class="co" data-e>Perrier<span>1990</span></p><p class="tx" data-e>Amerikai laborvizsgálat a megengedettnél több benzolt mutatott ki a Perrier ásványvízben. A vállalat világszerte mintegy 160 millió palackot hívott vissza. Saját magyarázata szerint egy gázvezeték szűrőjét nem cserélték az előírt időben. A márka hírneve súlyosan sérült, 1992-ben a Nestlé vásárolta fel a vállalatot.</p></div>
+    <div class="card mit"><p class="lbl tlabel" data-e>Kezelési lehetőségek</p><ul><li data-e>Független ellenőrzés a kritikus lépéseknél</li><li data-e>Pénzügyi és készlettartalék</li><li data-e>Begyakorolt visszahívási és válságterv</li></ul></div>
+  </div>
+  <aside class="notes" data-e>
+    <p>A Perrier-eset egy ásványvízgyártó minőségügyi kockázatát mutatja be. Egyetlen elmaradt karbantartási lépés a teljes globális termékkészletet érintette.</p>
+    <p>Forrás: UPI, 1990. február 14., „Perrier recalls supplies worldwide”. A cég először egy munkatárs hibájára hivatkozott, később a szűrőcsere elmaradását nevezte meg okként.</p>
+    <p>Kérdés a csoportnak (egy mondatban): „Melyik helyzetet nem bírnánk ki egy hónapig?”</p>
+  </aside>
+</section>
+
+<!-- ================= TYPE 2 ================= -->
+<section class="slide type" data-phase="basics" data-type="2">
+  <div class="head" data-m>
+    <p class="kick" data-e>Kockázattípus 2 / 4</p>
+    <h2 class="h2" data-e>Aszimmetrikus kockázat</h2>
+    <p class="lead" data-e>A lehetséges veszteség nagyságrendekkel nagyobb, mint a várható nyereség.</p>
+    <p class="kq" data-e>Kulcskérdés: arányban áll-e a várható haszon a lehetséges kárral?</p>
+  </div>
+  <div class="tgrid" data-m>
+    <div class="card ex"><p class="lbl tlabel" data-e>Valós példa</p><p class="co" data-e>Knight Capital<span>2012</span></p><p class="tx" data-e>Az amerikai tőzsdei kereskedőcég új szoftververziót telepített a szervereire. Az egyik szerverre nem került fel a frissítés, és egy régi, használaton kívüli funkció lépett működésbe. 45 perc alatt mintegy 440 millió dollár veszteség keletkezett. A vállalat a következő évben egy versenytársával egyesült.</p></div>
+    <div class="card mit"><p class="lbl tlabel" data-e>Kezelési lehetőségek</p><ul><li data-e>Kísérleti bevezetés korlátozott körben</li><li data-e>Előre rögzített veszteségkorlát</li><li data-e>Visszaállítási terv minden változtatáshoz</li></ul></div>
+  </div>
+  <aside class="notes" data-e>
+    <p>Az aszimmetria: egy gyorsabb, kevésbé ellenőrzött bevezetés kis időnyereséget hoz, a hiba viszont a vállalat létét fenyegette.</p>
+    <p>Forrás: Knight Capital Group 10-Q jelentése (SEC, 2012). A veszteség adózás előtti összege kb. 440 millió dollár. A GETCO-val kötött egyesülés 2013-ban zárult le.</p>
+    <p>A „kísérleti bevezetés” Collins Fire Bullets, Then Cannonballs elvére utal.</p>
+  </aside>
+</section>
+
+<!-- ================= TYPE 3 ================= -->
+<section class="slide type" data-phase="basics" data-type="3">
+  <div class="head" data-m>
+    <p class="kick" data-e>Kockázattípus 3 / 4</p>
+    <h2 class="h2" data-e>Nem kontrollálható kockázat</h2>
+    <p class="lead" data-e>Külső szereplőtől vagy eseménytől függünk, amelyet alig tudunk befolyásolni.</p>
+    <p class="kq" data-e>Kulcskérdés: mire nincs érdemi ráhatásunk, és mennyire függünk tőle?</p>
+  </div>
+  <div class="tgrid" data-m>
+    <div class="card ex"><p class="lbl tlabel" data-e>Valós példa</p><p class="co" data-e>Ericsson és Nokia<span>2000</span></p><p class="tx" data-e>Villámcsapás okozta tűz ütött ki a Philips új-mexikói chipgyárában, amely mindkét cégnek szállított. A Nokia napokon belül alternatív forrásokat biztosított. Az Ericsson egyetlen beszállítóra támaszkodott, hónapokig alkatrészhiánnyal küzdött, és 2001-ben a Sonyval közös vállalatba vitte telefonüzletágát.</p></div>
+    <div class="card mit"><p class="lbl tlabel" data-e>Kezelési lehetőségek</p><ul><li data-e>Második minősített beszállító</li><li data-e>Biztonsági készlet a kritikus tételekből</li><li data-e>Korai jelzések figyelése a beszállítói láncban</li></ul></div>
+  </div>
+  <aside class="notes" data-e>
+    <p>Ugyanaz a külső esemény két versenytársat ért, a kimenetel a felkészültségen múlt. A tüzet nem lehetett befolyásolni, a függőség mértékét igen.</p>
+    <p>Forrás: The Wall Street Journal, 2001. január 29., „Nokia handles supply chain shock with aplomb”. A pénzügyi veszteségre vonatkozó adatok forrásonként eltérnek, ezért a dián nem szerepelnek.</p>
+  </aside>
+</section>
+
+<!-- ================= TYPE 4 ================= -->
+<section class="slide type" data-phase="basics" data-type="4">
+  <div class="head" data-m>
+    <p class="kick" data-e>Kockázattípus 4 / 4</p>
+    <h2 class="h2" data-e>Időalapú kockázat</h2>
+    <p class="lead" data-e>A reagálás gyorsasága közvetlenül meghatározza a kár mértékét.</p>
+    <p class="kq" data-e>Kulcskérdés: mennyi időnk van dönteni, mielőtt a kár megnő vagy a lehetőségek beszűkülnek?</p>
+  </div>
+  <div class="tgrid" data-m>
+    <div class="card ex"><p class="lbl tlabel" data-e>Valós példa</p><p class="co" data-e>Johnson &amp; Johnson<span>1982</span></p><p class="tx" data-e>Chicagóban hét ember halt meg mérgezett Tylenol-kapszuláktól. A vállalat egy héten belül országos visszahívást indított mintegy 31 millió flakonra, és két hónapon belül háromszoros zárású csomagolásban vezette be újra a terméket. A gyors és nyílt fellépés megőrizte a márka iránti bizalmat.</p></div>
+    <div class="card mit"><p class="lbl tlabel" data-e>Kezelési lehetőségek</p><ul><li data-e>Rögzített döntési időablak</li><li data-e>Mérhető figyelmeztető jelek, küszöbértékkel</li><li data-e>Kijelölt döntéshozó azonnali hatáskörrel</li></ul></div>
+  </div>
+  <aside class="notes" data-e>
+    <p>Collins szerint sem az automatikus gyorsaság, sem a halogatás nem elv. A kérdés mindig az, mennyi idő áll rendelkezésre, mielőtt a kockázat természete megváltozik.</p>
+    <p>Forrás: Retail Brew, 2022. október 13., „Total recall: how the Tylenol murders of 1982 ushered in tamper-resistant packaging”. A piaci részesedés visszaszerzésének üteméről a források eltérő adatokat közölnek.</p>
+  </aside>
+</section>
+
+<!-- ================= RISK STATEMENT (transition) ================= -->
+<section class="slide" data-phase="basics">
+  <div class="head" data-m>
+    <p class="kick" data-e>Az elmélettől a gyakorlatig</p>
+    <h2 class="h2" data-e>Egy kockázatot három elemmel írunk le</h2>
+  </div>
+  <div class="formula" data-m>
+    <div class="fx c1"><b data-e>Kiváltó ok</b><span data-e>Milyen gyengeség vagy függőség idézheti elő?</span></div>
+    <div class="arr">→</div>
+    <div class="fx c2"><b data-e>Kockázati esemény</b><span data-e>Mi történhet, melyik folyamatlépésnél?</span></div>
+    <div class="arr">→</div>
+    <div class="fx c3"><b data-e>Üzleti hatás</b><span data-e>Mit okoz, és kit érint?</span></div>
+  </div>
+  <div class="stmt" data-m>
+    <div class="card"><p class="lbl" data-e>Szemléltető példa</p><p class="weak" data-e>Pontatlan: <s>„Beszállítói problémák.”</s></p><p class="strong" data-e>Pontos: <span class="u1">mivel a kritikus alapanyagnak egyetlen minősített beszállítója van,</span> <span class="u2">egy szállítási kiesés leállíthatja a gyártást,</span> <span class="u3">ami késedelmes vevői szállításokhoz vezet.</span></p></div>
+    <div class="card"><p class="lbl" data-e>A jó megfogalmazás ismérvei</p><ul class="crit4"><li data-e><b>Konkrét:</b> folyamatlépéshez vagy átadáshoz köthető.</li><li data-e><b>Ok-okozati:</b> elkülöníti a kiváltó okot az eseménytől.</li><li data-e><b>Mérhető hatású:</b> megnevezi, kit és milyen mértékben érint.</li><li data-e><b>Kezelhető:</b> hozzárendelhető felelős és intézkedés.</li></ul></div>
+  </div>
+  <p class="bridge" data-e data-m>A következő blokkban ezt a módszert <span>a saját folyamatunkra alkalmazzuk.</span></p>
+  <aside class="notes" data-e>
+    <p>Ez az átvezető dia az elmélet és a csapatmunka között. Hangsúlyozd: a kockázattípus csak a megfogalmazás után jön. Előbb pontosan leírjuk, mi történhet, utána döntjük el, melyik típusba tartozik.</p>
+    <p>Gyakori hiba, hogy a kiváltó okot és az eseményt összemossák. A „nincs második beszállító” ok, a „leáll a gyártás” esemény, a „késik a vevői szállítás” hatás.</p>
+    <p>A példa szemléltetés, nem állítás a Fonte Viva beszállítóiról.</p>
+  </aside>
+</section>
+
+<!-- ================= MAP + METHOD ================= -->
+<section class="slide" data-phase="walk">
+  <div class="head" data-m>
+    <p class="kick" data-e>Folyamatbejárás</p>
+    <h2 class="h2" data-e>Így járjuk be a folyamatot</h2>
+    <p class="lead" data-e>Három elv segít a kockázatok rendszerezett azonosításában.</p>
+  </div>
+  <div class="mapgrid">
+    <div class="plate" data-zoom role="button" tabindex="0" aria-label="Az eredeti folyamatábra nagyítása"></div>
+    <div class="methodcol" data-m>
+      <ol class="method">
+        <li><span class="n">1</span><b data-e>Kövessük végig az áramlást</b><span data-e>Lépésről lépésre: mi érkezik, mi történik vele, mi megy tovább?</span></li>
+        <li><span class="n">2</span><b data-e>Álljunk meg minden átadásnál</b><span data-e>Ahol felelős, rendszer vagy helyszín változik, ott nő a hibalehetőség.</span></li>
+        <li><span class="n">3</span><b data-e>Különítsük el a mai működést a tervtől</b><span data-e>A hiányzó és a bevezetés alatt álló lépések külön kockázatot hordoznak.</span></li>
+      </ol>
+      <p class="legend" data-e>Az ábrán sárga jelölés: új vagy módosult lépés. Piros keret: hiányzó, bevezetendő lépés.</p>
+    </div>
+  </div>
+  <aside class="notes" data-e>
+    <p>Ez a blokk nem a 23 lépés felolvasása. A cél, hogy mindenki ugyanazzal a módszerrel nézzen a folyamatra. A következő három dia egy-egy szakaszon mutatja be a három elvet.</p>
+    <p>Szakaszonként a terület vezetője egy-két mondatban mondja el: mi a bemenet, mi az elvárt eredmény, ki adja át kinek, és van-e fontos időfeltétel. Ne találjatok ki működési részleteket: ami nem egyértelmű, az tisztázandó.</p>
+    <p>Az ábra az eredeti, 2026. októberi workshoptervezet, változtatás nélkül. Az ábrára kattintva nagyítható.</p>
+  </aside>
+</section>
+
+<!-- ================= SECTION 1 ================= -->
+<section class="slide" data-phase="walk">
+  <div class="head" data-m>
+    <p class="kick" data-e>Folyamatbejárás · 1. szakasz · 1. elv</p>
+    <h2 class="h2" data-e>Beszerzés és beérkezés</h2>
+  </div>
+  <div class="sec-body">
+    <div class="crops">
+      <div class="crop" data-zoom role="button" tabindex="0" aria-label="Nagyítás" style="--x:14;--y:64;--w:332;--h:318"></div>
+      <div class="crop" data-zoom role="button" tabindex="0" aria-label="Nagyítás" style="--x:14;--y:372;--w:332;--h:318"></div>
+    </div>
+    <div class="principle" data-m>
+      <p class="pr" data-e>Kövessük végig az áramlást lépésről lépésre</p>
+      <p class="pe" data-e>Minden lépésnél: mi a bemenet, mi az elvárt eredmény, mi akadályozhatja, és mi jelzi ma a hibát?</p>
+      <div class="stops">
+        <div class="stop"><span class="code" data-e>P02 → P03</span><p data-e>Mi történik, ha a beérkező szállítmány eltér a megrendeléstől?</p></div>
+        <div class="stop"><span class="code" data-e>P04</span><p data-e>Mi biztosítja, hogy a rendszerben nyilvántartott készlet megegyezzen a valóssal?</p></div>
+        <div class="stop"><span class="code" data-e>→ Termelés</span><p data-e>Milyen állapotban és mikorra kell az alapanyagnak raktáron lennie?</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes" data-e>
+    <p>Lépések: P01.1 Tendereztetés → P01 Árajánlat bekérése → P02 Megrendelés → P03 Szállítólevél ellenőrzése fizikai beérkezéskor → P04 Bevételezés (az alapanyagraktár automatikusan nő) → P05 Számla könyvelése, a rendelés, a számla és a bevételezési jegy egyeztetése.</p>
+    <p>A dián szereplő kérdések gondolkodási minták, nem feltárt hibák. A beszerzés vezetője röviden ismertesse a szakaszt.</p>
+  </aside>
+</section>
+
+<!-- ================= SECTION 2 ================= -->
+<section class="slide" data-phase="walk">
+  <div class="head" data-m>
+    <p class="kick" data-e>Folyamatbejárás · 2. szakasz · 2. elv</p>
+    <h2 class="h2" data-e>Termelés és minőség</h2>
+  </div>
+  <div class="sec-body">
+    <div class="crops">
+      <div class="crop" data-zoom role="button" tabindex="0" aria-label="Nagyítás" style="--x:371;--y:64;--w:318;--h:318"></div>
+      <div class="crop" data-zoom role="button" tabindex="0" aria-label="Nagyítás" style="--x:371;--y:372;--w:318;--h:318"></div>
+    </div>
+    <div class="principle" data-m>
+      <p class="pr" data-e>Álljunk meg minden átadásnál</p>
+      <p class="pe" data-e>Ahol felelős, rendszer vagy fizikai helyszín változik, ott keletkezik a legtöbb rejtett kockázat.</p>
+      <div class="stops">
+        <div class="stop"><span class="code" data-e>P06</span><p data-e>Mennyire megbízható a tervezéshez használt készlet- és kiszállítási adat?</p></div>
+        <div class="stop"><span class="code" data-e>P07</span><p data-e>Mi történik, ha a mintavétel vagy a raklapcímke-beolvasás elmarad?</p></div>
+        <div class="stop flag"><span class="code" data-e>P10 → Ú1</span><p data-e>A lezárt gyártás azonnal növeli a készletet, a felszabadítás 24–48 órát vesz igénybe. Mi akadályozza meg, hogy közben nem felszabadított tétel kerüljön tovább?</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes" data-e>
+    <p>Lépések: P06 Termeléstervezés → P06 Gyártásrendelés felvétele → P07 Gyártás, folyamatos mikrobiológiai mintavétel és raklapcímke-beolvasás → P08 Gyártás utáni leltározás → P09 Valós fogyás felvitele → P10 Gyártásrendelés zárása, automatikus készletfrissítés → Ú1 Késztermék felszabadítása laboreredmény után, 24–48 óra.</p>
+    <p>A P10 → Ú1 átadás vizsgálati kérdés, nem bizonyított hiba. Először azt kérdezd meg, milyen védelem működik már ma (rendszerzár, státusz, címke, ellenőrzés). A 24–48 óra kezdőpontja az ábrából nem egyértelmű: tisztázandó.</p>
+  </aside>
+</section>
+
+<!-- ================= SECTION 3 ================= -->
+<section class="slide" data-phase="walk">
+  <div class="head" data-m>
+    <p class="kick" data-e>Folyamatbejárás · 3. szakasz · 3. elv</p>
+    <h2 class="h2" data-e>Értékesítés és kiszállítás</h2>
+  </div>
+  <div class="sec-body">
+    <div class="crops">
+      <div class="crop" data-zoom role="button" tabindex="0" aria-label="Nagyítás" style="--x:729;--y:64;--w:331;--h:318"></div>
+      <div class="crop" data-zoom role="button" tabindex="0" aria-label="Nagyítás" style="--x:729;--y:372;--w:331;--h:318"></div>
+    </div>
+    <div class="principle" data-m>
+      <p class="pr" data-e>Különítsük el a mai működést a tervezett és a hiányzó lépésektől</p>
+      <p class="pe" data-e>A hiányzó lépés ma is kockázat. Az új lépés addig kockázat, amíg nem működik megbízhatóan.</p>
+      <div class="stops">
+        <div class="stop flag"><span class="code" data-e>Ú2 · Ú3</span><p data-e>A vevő ma nem kap visszaigazolást és érkezési időt. Milyen hatása lehet ennek?</p></div>
+        <div class="stop"><span class="code" data-e>P13</span><p data-e>Az automatikus szállítólevél új lépés. Mi történik, ha a rakomány eltér a rendeléstől?</p></div>
+        <div class="stop"><span class="code" data-e>P14</span><p data-e>A kiszállítás felelőse tisztázandó. Ki lép, ha a szállítás késik?</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes" data-e>
+    <p>Lépések: P11 Megrendelés rögzítése → Ú2 Rendelés visszaigazolása (hiányzik) → P12 Fuvarmegbízás, csak felszabadított készletre → Ú3 Érkezési idő közlése (hiányzik) → Ú4 Kiszedési lista → Ú5 Rakodás FV Ticket Lighttal → P13 Szállítólevél, automatikusan, ha egyezik a rendeléssel → P14 Kiszállítás (felelős tisztázandó) → P15 Átvételi bizonylat → P16 Számlázás.</p>
+    <p>A dián szereplő kérdések lehetséges vizsgálati irányok. Ne döntsd el a csoport helyett, mi lesz a három prioritás.</p>
+  </aside>
+</section>
+
+<!-- ================= LUNCH ================= -->
+<section class="slide break" data-phase="lunch">
+  <p class="kick" data-e data-m>Ebédszünet</p>
+  <h1 class="h1" data-m><span class="calc" data-calc="min:lunch">60′</span> <span data-e>ebéd</span></h1>
+  <p class="lead" data-e data-m>Délután három kör következik. Mindegyikben először a csapatok dolgoznak, utána rögtön bemutatják az eredményt. Az első kör: beszerzés és beérkezés.</p>
+  <aside class="notes" data-e><p>Az ebédnek nincs órája. Ebéd alatt készítsd elő csapatonként a munkalapokat.</p></aside>
+</section>
+
+<!-- ================= ROUND 1 ================= -->
+<section class="slide work" data-phase="r1">
+  <p class="kick" data-m><span data-e>1. kör · Csapatmunka</span> · <span class="calc" data-calc="min:r1">20′</span></p>
+  <div class="work-grid">
+    <div>
+      <h2 class="h2" data-e data-m>Beszerzés és beérkezés</h2>
+      <p class="focus" data-e data-m>Milyen kockázatok veszélyeztetik, hogy a termelés időben és megfelelő minőségben megkapja az alapanyagot?</p>
+      <ol class="steps" data-m data-for="r1">
+        <li><span class="mm calc" data-calc="step:r1:0">3′</span><span data-e>Egyéni ötletgyűjtés, csendben</span></li>
+        <li><span class="mm calc" data-calc="step:r1:1">5′</span><span data-e>Megosztás, 1–2 kockázat kiválasztása</span></li>
+        <li><span class="mm calc" data-calc="step:r1:2">9′</span><span data-e>Kockázati állítás és kezelési javaslat kidolgozása</span></li>
+        <li><span class="mm calc" data-calc="step:r1:3">3′</span><span data-e>Feltevések és átadások ellenőrzése</span></li>
+      </ol>
+      <p class="result" data-m><span class="lbl" data-e>Eredmény</span><span data-e>Legalább egy teljesen kidolgozott kockázat a munkalapon.</span></p>
+    </div>
+    <div class="timer" data-timer="r1" data-steps="3,5,9,3" data-m></div>
+  </div>
+  <aside class="notes" data-e>
+    <p>Az órát <b>a feladat elmagyarázása után</b> indítsd (Szóköz vagy Indítás). A diára lépés soha nem indítja el.</p>
+    <p>Mindkét vegyes csapat ugyanezt a szakaszt vizsgálja. A belső szakaszokat az óra jelzi (→), nem külön időzítők. A váltásoknál szólj be: „Most osszátok meg az ötleteiteket.”</p>
+    <p>A szakaszhatárt is vizsgálják: mit kap a termelés, és mi történik, ha az átadás hibás.</p>
+  </aside>
+</section>
+
+<!-- ================= REPORTS 1 ================= -->
+<section class="slide work" data-phase="p1">
+  <p class="kick" data-m><span data-e>1. kör · Csapatbeszámolók</span> · <span class="calc" data-calc="min:p1">10′</span></p>
+  <div class="work-grid rep-grid">
+    <div>
+      <h2 class="h2" data-e data-m>A csapatok bemutatják a kidolgozott kockázatokat</h2>
+      <p class="lbl sub-lbl" data-m><span data-e>Csapatonként</span> <span class="calc" data-calc="min:rep">5′</span></p>
+      <ul class="pres" data-m>
+        <li data-e>A kockázati állítás: ok, esemény, hatás</li>
+        <li data-e>A bizonyíték és a meglévő kontroll</li>
+        <li data-e>A javasolt intézkedés és felelős</li>
+      </ul>
+      <p class="lbl sub-lbl" data-e data-m>A másik csapat kérdései</p>
+      <ul class="askq" data-m>
+        <li data-e>Melyik feltevés bizonytalan?</li>
+        <li data-e>Milyen következmény maradt ki?</li>
+        <li data-e>Mennyire megbízható a meglévő kontroll?</li>
+      </ul>
+      <p class="result" data-m><span class="lbl" data-e>Utána</span><span data-e>Az átfedő kockázatok összevonása a közös listán.</span></p>
+    </div>
+    <div class="duo" data-m>
+      <div class="tcol"><h3 class="h3" data-e>A csapat</h3><div class="timer" data-timer="p1A"></div></div>
+      <div class="tcol"><h3 class="h3" data-e>B csapat</h3><div class="timer" data-timer="p1B"></div></div>
+    </div>
+  </div>
+  <aside class="notes" data-e>
+    <p>A két órát külön indítod. A Szóköz mindig a dián éppen aktív órát kezeli: ha egyik sem fut, az elsőt indítja, a lejárt óra után a következőt.</p>
+    <p>A két bemutató után (kb. 1 perc) a közös felületen vonjátok össze az ismétlődő tételeket. Körönként jellemzően 2–5 tétel kerül a listára.</p>
+  </aside>
+</section>
+
+<!-- ================= ROUND 2 ================= -->
+<section class="slide work" data-phase="r2">
+  <p class="kick" data-m><span data-e>2. kör · Csapatmunka</span> · <span class="calc" data-calc="min:r2">20′</span></p>
+  <div class="work-grid">
+    <div>
+      <h2 class="h2" data-e data-m>Termelés és minőség</h2>
+      <p class="focus" data-e data-m>Milyen kockázatok veszélyeztetik, hogy csak megfelelő minőségű, felszabadított termék kerüljön tovább?</p>
+      <ol class="steps" data-m data-for="r2">
+        <li><span class="mm calc" data-calc="step:r2:0">3′</span><span data-e>Egyéni ötletgyűjtés, csendben</span></li>
+        <li><span class="mm calc" data-calc="step:r2:1">5′</span><span data-e>Megosztás, 1–2 kockázat kiválasztása</span></li>
+        <li><span class="mm calc" data-calc="step:r2:2">9′</span><span data-e>Kockázati állítás és kezelési javaslat kidolgozása</span></li>
+        <li><span class="mm calc" data-calc="step:r2:3">3′</span><span data-e>Feltevések és átadások ellenőrzése</span></li>
+      </ol>
+      <p class="result" data-m><span class="lbl" data-e>Eredmény</span><span data-e>Legalább egy teljesen kidolgozott kockázat a munkalapon.</span></p>
+    </div>
+    <div class="timer" data-timer="r2" data-steps="3,5,9,3" data-m></div>
+  </div>
+  <aside class="notes" data-e><p>Ha egy csapat a laborfelszabadítás átadását választja, vizsgálati kérdésként kezeljék, a meglévő védelem feltárásával kezdve.</p></aside>
+</section>
+
+<!-- ================= REPORTS 2 ================= -->
+<section class="slide work" data-phase="p2">
+  <p class="kick" data-m><span data-e>2. kör · Csapatbeszámolók</span> · <span class="calc" data-calc="min:p2">10′</span></p>
+  <div class="work-grid rep-grid">
+    <div>
+      <h2 class="h2" data-e data-m>A csapatok bemutatják a kidolgozott kockázatokat</h2>
+      <p class="lbl sub-lbl" data-m><span data-e>Csapatonként</span> <span class="calc" data-calc="min:rep">5′</span></p>
+      <ul class="pres" data-m>
+        <li data-e>A kockázati állítás: ok, esemény, hatás</li>
+        <li data-e>A bizonyíték és a meglévő kontroll</li>
+        <li data-e>A javasolt intézkedés és felelős</li>
+      </ul>
+      <p class="lbl sub-lbl" data-e data-m>A másik csapat kérdései</p>
+      <ul class="askq" data-m>
+        <li data-e>Melyik feltevés bizonytalan?</li>
+        <li data-e>Milyen következmény maradt ki?</li>
+        <li data-e>Mennyire megbízható a meglévő kontroll?</li>
+      </ul>
+      <p class="result" data-m><span class="lbl" data-e>Utána</span><span data-e>Az átfedő kockázatok összevonása a közös listán.</span></p>
+    </div>
+    <div class="duo" data-m>
+      <div class="tcol"><h3 class="h3" data-e>A csapat</h3><div class="timer" data-timer="p2A"></div></div>
+      <div class="tcol"><h3 class="h3" data-e>B csapat</h3><div class="timer" data-timer="p2B"></div></div>
+    </div>
+  </div>
+  <aside class="notes" data-e>
+    <p>A két órát külön indítod. A Szóköz mindig a dián éppen aktív órát kezeli: ha egyik sem fut, az elsőt indítja, a lejárt óra után a következőt.</p>
+    <p>Ugyanúgy, mint az első körben. Ha a két csapat ugyanazt a kockázatot hozta, egy tételként vezessétek, mindkét csapat bizonyítékával.</p>
+  </aside>
+</section>
+
+<!-- ================= BREAK ================= -->
+<section class="slide break" data-phase="brk">
+  <p class="kick" data-e data-m>Szünet</p>
+  <h1 class="h1" data-m><span class="calc" data-calc="min:brk">10′</span> <span data-e>szünet</span></h1>
+  <p class="lead" data-e data-m>Utána a harmadik kör következik: értékesítés és kiszállítás. A munkalapok maradjanak a csapatoknál.</p>
+  <aside class="notes" data-e><p>A szünetnek nincs órája. Ha egy kör órája még fut, a jobb felső sarokban látszik.</p></aside>
+</section>
+
+<!-- ================= ROUND 3 ================= -->
+<section class="slide work" data-phase="r3">
+  <p class="kick" data-m><span data-e>3. kör · Csapatmunka</span> · <span class="calc" data-calc="min:r3">20′</span></p>
+  <div class="work-grid">
+    <div>
+      <h2 class="h2" data-e data-m>Értékesítés és kiszállítás</h2>
+      <p class="focus" data-e data-m>Milyen kockázatok veszélyeztetik, hogy a vevő időben és pontos tájékoztatás mellett megkapja a rendelését?</p>
+      <ol class="steps" data-m data-for="r3">
+        <li><span class="mm calc" data-calc="step:r3:0">3′</span><span data-e>Egyéni ötletgyűjtés, csendben</span></li>
+        <li><span class="mm calc" data-calc="step:r3:1">5′</span><span data-e>Megosztás, 1–2 kockázat kiválasztása</span></li>
+        <li><span class="mm calc" data-calc="step:r3:2">9′</span><span data-e>Kockázati állítás és kezelési javaslat kidolgozása</span></li>
+        <li><span class="mm calc" data-calc="step:r3:3">3′</span><span data-e>Feltevések és átadások ellenőrzése</span></li>
+      </ol>
+      <p class="result" data-m><span class="lbl" data-e>Eredmény</span><span data-e>Legalább egy teljesen kidolgozott kockázat a munkalapon.</span></p>
+    </div>
+    <div class="timer" data-timer="r3" data-steps="3,5,9,3" data-m></div>
+  </div>
+  <aside class="notes" data-e><p>A felszabadított készlet átvételét és a vevőnek történő átadást is vizsgálják. A hiányzó visszaigazolás (Ú2), az érkezési idő (Ú3) és a P14 felelőse lehetséges téma, de a csapatok döntik el, mivel foglalkoznak.</p></aside>
+</section>
+
+<!-- ================= REPORTS 3 ================= -->
+<section class="slide work" data-phase="p3">
+  <p class="kick" data-m><span data-e>3. kör · Csapatbeszámolók</span> · <span class="calc" data-calc="min:p3">10′</span></p>
+  <div class="work-grid rep-grid">
+    <div>
+      <h2 class="h2" data-e data-m>A csapatok bemutatják a kidolgozott kockázatokat</h2>
+      <p class="lbl sub-lbl" data-m><span data-e>Csapatonként</span> <span class="calc" data-calc="min:rep">5′</span></p>
+      <ul class="pres" data-m>
+        <li data-e>A kockázati állítás: ok, esemény, hatás</li>
+        <li data-e>A bizonyíték és a meglévő kontroll</li>
+        <li data-e>A javasolt intézkedés és felelős</li>
+      </ul>
+      <p class="lbl sub-lbl" data-e data-m>A másik csapat kérdései</p>
+      <ul class="askq" data-m>
+        <li data-e>Melyik feltevés bizonytalan?</li>
+        <li data-e>Milyen következmény maradt ki?</li>
+        <li data-e>Mennyire megbízható a meglévő kontroll?</li>
+      </ul>
+      <p class="result" data-m><span class="lbl" data-e>Utána</span><span data-e>Összevonás: a közös lista ezzel teljes.</span></p>
+    </div>
+    <div class="duo" data-m>
+      <div class="tcol"><h3 class="h3" data-e>A csapat</h3><div class="timer" data-timer="p3A"></div></div>
+      <div class="tcol"><h3 class="h3" data-e>B csapat</h3><div class="timer" data-timer="p3B"></div></div>
+    </div>
+  </div>
+  <aside class="notes" data-e>
+    <p>A két órát külön indítod. A Szóköz mindig a dián éppen aktív órát kezeli: ha egyik sem fut, az elsőt indítja, a lejárt óra után a következőt.</p>
+    <p>A harmadik összevonás után számold össze a listát: jellemzően 6–12 tétel. Ha több, a nyilvánvaló duplumokat vonjátok össze, mielőtt az összegzésre lépnétek.</p>
+  </aside>
+</section>
+
+<!-- ================= SUMMARY ================= -->
+<section class="slide" data-phase="sum">
+  <div class="head" data-m>
+    <p class="kick" data-e>Összegzés</p>
+    <h2 class="h2" data-e>Három vállalati prioritás, felelőssel és határidővel</h2>
+  </div>
+  <p class="crit-line" data-m><span class="lbl" data-e>Kiválasztás</span><span data-e>A legrosszabb reális hatás, a rendelkezésre álló időablak, valamint a kitettség és a meglévő kontroll megbízhatósága alapján.</span></p>
+  <table class="sumt" data-m>
+    <colgroup><col style="width:76px"><col style="width:34%"><col style="width:15%"><col style="width:25%"><col style="width:13%"><col style="width:13%"></colgroup>
+    <thead><tr><th>#</th><th data-e>Kockázat</th><th data-e>Típus</th><th data-e>Következő lépés</th><th data-e>Felelős</th><th data-e>Határidő</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td></tr>
+      <tr><td>2</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td></tr>
+      <tr><td>3</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td></tr>
+    </tbody>
+  </table>
+  <p class="followup" data-e data-m>A többi kockázat a követési listára kerül, kijelölt felelőssel és felülvizsgálati dátummal.</p>
+  <aside class="notes" data-e>
+    <p>A táblázat celláiba előadás közben is írhatsz: kattints a cellába, és gépeld be a döntést. A beírt szöveg ebben a böngészőben megmarad, véglegesen a Mentés HTML-fájlként gombbal rögzíted.</p>
+    <p>Rövid csendes szavazás megengedett (például fejenként három pont), de utána indokolt közös döntés kell. Minden reális, vállalatot veszélyeztető forgatókönyvet külön mérlegeljetek, ne a népszerűség döntsön.</p>
+    <p>A vizsgálat is lehet következő lépés, ha az intézkedésről még nem lehet dönteni.</p>
+  </aside>
+</section>
+
+<!-- ================= CLOSE ================= -->
+<section class="slide close" data-phase="sum">
+  <div class="logo" role="img" aria-label="Fonte Viva"></div>
+  <h1 class="h1" data-e data-m>Köszönjük a közös munkát</h1>
+  <p class="lead" data-e data-m>A prioritások felelősei a következő vezetői értekezleten beszámolnak az első lépésekről.</p>
+  <p class="next" data-m><span class="lbl" data-e>Utánkövetés</span><span data-e>2026. ……………</span></p>
+  <aside class="notes" data-e><p>Zárásként olvasd fel a három prioritást a felelősök nevével, és rögzítsétek az utánkövetés dátumát. A dátumot szerkesztés módban írhatod be a diára.</p></aside>
+</section>
+
+<div id="foot"><span class="logo"></span><span class="ph" id="foot-ph"></span><span class="no" id="foot-no"></span></div>
+<div id="progress"></div>
+</div></div>
+
+<!-- ============ CHROME ============ -->
+<button class="edge prev" id="edge-prev" aria-label="Előző dia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+<button class="edge next" id="edge-next" aria-label="Következő dia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg></button>
+
+<button id="pill" hidden></button>
+
+<nav id="bar" aria-label="Vezérlés">
+  <button class="bb" id="b-prev" aria-label="Előző dia" title="Előző (←)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <span id="count">1 / 22</span>
+  <button class="sync" id="sync" hidden title="Közös mentés"><i></i><span class="t">Betöltés…</span></button>
+  <button class="bb" id="b-next" aria-label="Következő dia" title="Következő (→)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg></button>
+  <span class="bsep"></span>
+  <button class="bb" id="b-ov" title="Áttekintés (O)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="7.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="7.5" height="6.5" rx="1.5"/><rect x="3" y="13.5" width="7.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="7.5" height="6.5" rx="1.5"/></svg><span class="bl">Áttekintés</span></button>
+  <button class="bb" id="b-notes" aria-pressed="false" title="Jegyzetek (N)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 4h14v16H5zM8.5 9h7M8.5 13h7M8.5 17h4"/></svg><span class="bl">Jegyzetek</span></button>
+  <button class="bb opt" id="b-presenter" title="Előadói ablak a saját képernyődre (P)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="2.5" y="4" width="12" height="9" rx="1.5"/><rect x="11.5" y="9" width="10" height="11" rx="1.5"/></svg><span class="bl">Előadói ablak</span></button>
+  <button class="bb edit" id="b-edit" title="Szerkesztés (E)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></svg><span class="bl">Szerkesztés</span></button>
+  <span class="bsep"></span>
+  <button class="bb" id="b-full" title="Teljes képernyő (F)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+  <button class="bb" id="b-more" title="További" aria-haspopup="dialog"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>
+</nav>
+
+<aside id="notes" aria-label="Előadói jegyzetek">
+  <div class="dh"><div><h2 id="notes-title">Jegyzetek</h2><small id="notes-sub">Dia 1</small></div><button class="x" id="notes-x" aria-label="Bezárás">×</button></div>
+  <div id="notes-body"></div>
+  <p class="warnline">A jegyzet a kivetített képen is látszik. Vetítés közben használd az Előadói ablakot (P).</p>
+</aside>
+
+<div id="overview" hidden>
+  <div class="dh"><div><h2>Áttekintés</h2><small>Kattints egy diára · Esc: vissza</small></div><button class="x" id="ov-x" aria-label="Bezárás">×</button></div>
+  <div id="thumbs"></div>
+</div>
+
+<div id="sheets-view" hidden>
+  <div class="dh"><div><h2>Munkalapok</h2><small>Szerkesztés módban a lapok szövege is átírható</small></div><div class="row" style="margin:0"><button class="ub" id="sv-print">Munkalapok nyomtatása</button><button class="x" id="sv-x" aria-label="Bezárás">×</button></div></div>
+  <div class="sheets">
+    <section class="sheet">
+      <div class="sh-head"><div><h1 data-e>Kockázati munkalap</h1><p class="sh-meta" data-e>Csapat: ______________________ · Kör: ___ · Folyamatszakasz: __________________ · Dátum: __________</p></div><div class="logo"></div></div>
+      <p class="sh-guide" data-e>Egy lap egy kockázatot tartalmaz. Először fogalmazzátok meg a kockázatot, és írjátok le a meglévő kontrollt, csak utána soroljátok típusba. Jelöljétek, mi bizonyított tény és mi feltevés.</p>
+      <div class="wgrid">
+        <div class="wf wide"><h2 data-e>1 · Folyamatlépés vagy átadás, kockázati állítás</h2><p class="tmpl" data-e>Mivel … (kiváltó ok), bekövetkezhet, hogy … (kockázati esemény), ami … (üzleti hatás).</p><p data-e>Kit érint tovább, és milyen mértékben?</p></div>
+        <div class="wf"><h2 data-e>2 · Bizonyíték és meglévő kontroll</h2><p data-e>Mit tudunk biztosan, és mi feltevés? Mi működik ma, és mi csak terv? Hogyan ellenőrizzük a kontroll működését?</p></div>
+        <div class="wf"><h2 data-e>3 · Kockázattípus</h2><div class="cats" data-e>☐ Vállalatot veszélyeztető &nbsp; ☐ Aszimmetrikus &nbsp; ☐ Nem kontrollálható &nbsp; ☐ Időalapú</div><p data-e>Több is választható. Indoklás:</p></div>
+        <div class="wf"><h2 data-e>4 · Időablak</h2><p data-e>Mennyi idő alatt nő meg a kár, vagy szűkülnek a lehetőségek? Mennyi idő kell a reagáláshoz?</p></div>
+        <div class="wf"><h2 data-e>5 · Javasolt intézkedés, korai jelzés és felelős</h2><p data-e>Megelőzés, tartalékképzés vagy a kitettség korlátozása? Szükséges-e előbb vizsgálat vagy kísérleti lépés? Melyik megfigyelhető jel indít intézkedést, ki figyeli, és ki dönt?</p></div>
+      </div>
+    </section>
+    <section class="sheet">
+      <div class="sh-head"><div><h1 data-e>Három vállalati prioritás</h1><p class="sh-meta" data-e>Dátum: ______________ · Közös utánkövetés: ______________</p></div><div class="logo"></div></div>
+      <p class="sh-guide" data-e>Kiválasztási szempontok: a legrosszabb reális hatás, a rendelkezésre álló időablak, valamint a kitettség és a meglévő kontroll megbízhatósága. Minden reális, vállalatot veszélyeztető forgatókönyvet külön mérlegelünk. A vizsgálat is lehet következő lépés.</p>
+      <table class="dtable">
+        <thead><tr><th>#</th><th data-e>Kockázati állítás</th><th data-e>Típus és indoklás</th><th data-e>Javasolt intézkedés</th><th data-e>Felelős</th><th data-e>Következő lépés</th><th data-e>Határidő</th><th data-e>Korai jelzés</th></tr></thead>
+        <tbody><tr><td>1</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>2</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody>
+      </table>
+      <div class="follow"><p data-e>Követési lista: a többi kockázat, a felelőse és a felülvizsgálat dátuma</p><div class="ln"></div><div class="ln"></div></div>
+      <div class="checks"><span data-e>☐ Minden felelős elfogadta a vállalását</span><span data-e>☐ A határidők és a közös utánkövetés rögzítve</span></div>
+    </section>
+    <section class="sheet mapsheet"><img id="mapimg-sheet" alt="Az eredeti folyamatábra"></section>
+  </div>
+</div>
+
+<dialog id="dlg-conflict" aria-labelledby="cf-h">
+  <div class="dh"><h2 id="cf-h">Valaki más közben mentett</h2><button class="x" data-close aria-label="Bezárás">×</button></div>
+  <div class="db">
+    <p>Amíg itt szerkesztettél, egy másik böngészőben is módosították a diákat. Melyik változat maradjon meg a közös tárhelyen?</p>
+    <div class="row"><button class="ub" id="cf-theirs">Az övék betöltése</button><button class="ub pri" id="cf-mine">Az enyém maradjon</button></div>
+    <p style="margin-top:14px;color:var(--soft)">Az övék betöltése elveti az itteni, még el nem mentett módosításokat. Az enyém maradjon felülírja a másik változatot.</p>
+  </div>
+</dialog>
+
+<dialog id="dlg-more" aria-labelledby="more-h">
+  <div class="dh"><h2 id="more-h">További lehetőségek</h2><button class="x" data-close aria-label="Bezárás">×</button></div>
+  <div class="db"><div class="popts">
+    <button id="m-dur">Időtartamok és hang<small>A blokkok és az órák hossza (például 15 vagy 20 perces körök), hangjelzés lejáratkor.</small></button>
+    <button id="m-sheets">Munkalapok<small>Kockázati munkalap, prioritáslap, eredeti ábra: megtekintés, szerkesztés, nyomtatás.</small></button>
+    <button id="m-print">Nyomtatás<small>Diák világos változatban, munkalapok vagy csak a folyamatábra.</small></button>
+    <button id="m-save">Mentés HTML-fájlként<small>Új fájl az összes szöveges módosítással és beállítással. Ctrl+S</small></button>
+    <button id="m-help">Súgó és források<small>Billentyűk, az órák működése, szerkesztés, forrásmunkák.</small></button>
+  </div></div>
+</dialog>
+
+<dialog id="dlg-dur" aria-labelledby="dur-h">
+  <div class="dh"><h2 id="dur-h">Időtartamok</h2><button class="x" data-close aria-label="Bezárás">×</button></div>
+  <div class="db">
+    <p>A menetrend a blokkok hosszából számol. Csak az <b>indításra váró</b> órák módosíthatók: a futó, szünetelő vagy lejárt órát előbb a diáján állítsd vissza.</p>
+    <div class="row" style="margin:6px 0 14px"><button class="ub" id="q15">15 perces körök</button><button class="ub" id="q20">20 perces körök</button></div>
+    <div class="durs" id="durs"></div>
+    <label class="check"><input type="checkbox" id="snd"> Halk hangjelzés, amikor egy óra lejár</label>
+    <div class="row"><button class="ub pri" id="dur-apply">Alkalmazás</button><button class="ub" data-close>Mégse</button><span id="dur-total" style="margin-left:auto;font-family:var(--m);color:var(--soft)"></span></div>
+  </div>
+</dialog>
+
+<dialog id="dlg-print" aria-labelledby="pr-h">
+  <div class="dh"><h2 id="pr-h">Nyomtatás</h2><button class="x" data-close aria-label="Bezárás">×</button></div>
+  <div class="db">
+    <p>A4 fekvő. A böngésző nyomtatási ablakában kapcsold ki a fejlécet és a láblécet, és kapcsold be a háttérgrafikát. A nyomtatás nem állítja meg a futó órát.</p>
+    <div class="popts">
+      <button data-print="slides">Diák<small>Világos, tintatakarékos változat, egy dia egy oldalon. A rejtett diák kimaradnak.</small></button>
+      <button data-print="sheets">Munkalapok és eredeti ábra<small>3 oldal: kockázati munkalap, prioritáslap, folyamatábra. A kockázati munkalapból körönként és kockázatonként kell egy példány.</small></button>
+      <button data-print="map">Csak az eredeti folyamatábra<small>1 oldal, a résztvevőknek.</small></button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="dlg-help" aria-labelledby="help-h">
+  <div class="dh"><h2 id="help-h">Súgó és források</h2><button class="x" data-close aria-label="Bezárás">×</button></div>
+  <div class="db">
+    <h3>Vezetés</h3>
+    <dl class="keys">
+      <dt><kbd>←</kbd> <kbd>→</kbd> · <kbd>PgUp</kbd> <kbd>PgDn</kbd></dt><dd>Előző vagy következő dia. A képernyő szélére kattintva is lapozhatsz.</dd>
+      <dt><kbd>Home</kbd> <kbd>End</kbd></dt><dd>Első vagy utolsó dia</dd>
+      <dt><kbd>Szóköz</kbd></dt><dd>Órás dián: indítás, szünet, folytatás. Más dián: következő dia.</dd>
+      <dt><kbd>O</kbd></dt><dd>Áttekintés: minden dia egy képernyőn</dd>
+      <dt><kbd>N</kbd> · <kbd>P</kbd></dt><dd>Jegyzetek · Előadói ablak (jegyzet, következő dia és óra a saját képernyődön)</dd>
+      <dt><kbd>F</kbd></dt><dd>Teljes képernyő</dd>
+      <dt><kbd>E</kbd> · <kbd>Ctrl+S</kbd></dt><dd>Szerkesztés · Mentés HTML-fájlként</dd>
+      <dt><kbd>Esc</kbd></dt><dd>Nyitott nézet bezárása, kilépés a szerkesztésből</dd>
+    </dl>
+    <h3>Az órák</h3>
+    <p>Óra csak a három csapatkörben és a körök utáni csapatbeszámolókban van (körönként A és B csapat). Diára lépéskor egyik sem indul el: a feladat elmagyarázása után indítsd. A szünet megőrzi a hátralévő időt, a visszaállítás alaphelyzetbe teszi az órát. Az órák valós időből számolnak, ezért háttérbe tett böngészőben sem csúsznak el. A futó óra másik dián is fut, a jobb felső jelzés visszavisz hozzá. Ugyanebben a böngészőlapban az újratöltés sem nullázza az órákat.</p>
+    <h3>Szerkesztés</h3>
+    <p>Kattints a <b>Szerkesztés</b> gombra (vagy nyomd meg az <kbd>E</kbd> billentyűt), és írd át bármelyik szöveget közvetlenül a dián. A <b>Mozgatás</b> gombbal a szövegdobozokat egérrel áthelyezheted, az <b>A− / A+</b> a kijelölt szöveg méretét, a <b>Betűköz − / +</b> a betűk közti távolságot állítja. A jegyzetek a jegyzetpanelben, a munkalapok a Munkalapok nézetben írhatók át. A <b>Dia elrejtése</b> előadáskor kihagyja a diát. Az összegző táblázat celláiba előadás közben is írhatsz.</p>
+    <p>A webes változatban (fonte-viva-workshop.vercel.app) minden módosítás egy másodpercen belül a közös tárhelyre mentődik, így bárki, akinek megvan a link, ugyanazt látja. A vezérlősáv jelzője mutatja az állapotot: Mentve, Mentésre vár, Offline vagy Ütközés. Más böngészők 15 másodpercenként frissülnek. Ha ketten egyszerre mentenek, választhatsz: az övék betöltése vagy az enyém maradjon.</p>
+    <p>Helyi fájlként megnyitva a módosítások csak ebben a böngészőben mentődnek. Továbbadáshoz használd a <b>Mentés HTML-fájlként</b> gombot: egy új, önálló fájlt kapsz, amely minden módosítást tartalmaz.</p>
+    <h3>Források</h3>
+    <ul style="margin:0;padding-left:18px">
+      <li>Jim Collins és Morten T. Hansen: <i>Great by Choice</i> (2011), 5. fejezet, „Leading above the Death Line” (103., 107., 110. o.). Magyarul <i>Tudatosan kiváló</i> címmel jelent meg. A diák saját magyar összefoglalók.</li>
+      <li><a href="https://www.jimcollins.com/concepts/productive-paranoia.html" target="_blank" rel="noopener">Jim Collins: Productive Paranoia</a> · <a href="https://www.jimcollins.com/concepts/fire-bullets-then-cannonballs.html" target="_blank" rel="noopener">Fire Bullets, Then Cannonballs</a> · <a href="https://www.jimcollins.com/books/great-by-choice.html" target="_blank" rel="noopener">Great by Choice</a></li>
+      <li>Perrier, 1990: <a href="https://www.upi.com/Archives/1990/02/14/Perrier-recalls-supplies-worldwide/9677634971600/" target="_blank" rel="noopener">UPI, 1990. február 14.</a></li>
+      <li>Knight Capital, 2012: <a href="https://www.sec.gov/Archives/edgar/data/0001060749/000119312512346917/d361681d10q.htm" target="_blank" rel="noopener">Knight Capital Group 10-Q, SEC</a></li>
+      <li>Ericsson és Nokia, 2000: <a href="https://stuff.mit.edu/afs/athena/course/15/15.795/WSJ_Nokia%20HandlesSupplyChainShock.pdf" target="_blank" rel="noopener">The Wall Street Journal, 2001</a></li>
+      <li>Johnson &amp; Johnson, 1982: <a href="https://www.retailbrew.com/stories/2022/10/13/total-recall-how-the-tylenol-murders-of-1982-ushered-in-tamper-resistant-packaging" target="_blank" rel="noopener">Retail Brew, 2022</a></li>
+      <li>Kockázati állítás (ok, esemény, hatás): <a href="https://www.isaca.org/resources/isaca-journal/past-issues/2014/writing-good-risk-statements" target="_blank" rel="noopener">ISACA Journal: Writing Good Risk Statements</a>, az ISO 31000 alapján.</li>
+      <li>Folyamatábra: a 2026. októberi workshoptervezet, változatlan forráskép. A dián szereplő kérdések vizsgálati irányok, nem bizonyított vállalati hibák.</li>
+    </ul>
+  </div>
+</dialog>
+
+<dialog id="mapdlg" aria-labelledby="map-h">
+  <div class="dh"><h2 id="map-h">Eredeti folyamatábra</h2><div class="row" style="margin:0"><div class="zbar"><button data-z="1" aria-pressed="true">1×</button><button data-z="1.5">1,5×</button><button data-z="2">2×</button><button data-z="3">3×</button></div><button class="x" data-close aria-label="Bezárás">×</button></div></div>
+  <div class="db"><img id="mapimg" alt="Az eredeti folyamatábra: Beszerzéstől értékesítésig"></div>
+</dialog>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(()=>{
+'use strict';
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const root=document.documentElement, body=document.body;
+const REV=root.dataset.rev||'v2';
+const EKEY='fvw-edits:'+REV, SKEY='fvw-session:'+REV;
+const store={get(k,s){try{return JSON.parse((s||localStorage).getItem(k))}catch(e){return null}},set(k,v,s){try{(s||localStorage).setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+const stage=$('#stage'), slides=$$('.slide',stage);
+slides.forEach(s=>{const m=document.createElement('span');m.className='skipmark';m.textContent='Rejtett dia · előadáskor kimarad';s.appendChild(m)});
+const MAPURL=getComputedStyle(root).getPropertyValue('--map').trim().replace(/^url\(["']?/,'').replace(/["']?\)$/,'');
+$('#mapimg').src=MAPURL; $('#mapimg-sheet').src=MAPURL;
+
+/* ---------- config ---------- */
+let DUR=JSON.parse(root.dataset.durations);
+const DUR0={...DUR},SOUND0=root.dataset.sound;
+const ORDER=['open','basics','walk','lunch','r1','p1','r2','p2','brk','r3','p3','sum'];
+const AM=['open','basics','walk'],PM=['r1','p1','r2','p2','brk','r3','p3','sum'];
+const BLOCKS={open:'Nyitás',basics:'Elméleti alapok',walk:'Folyamatbejárás',lunch:'Ebédszünet',r1:'1. kör',p1:'1. kör: Csapatbeszámolók',r2:'2. kör',p2:'2. kör: Csapatbeszámolók',brk:'Szünet',r3:'3. kör',p3:'3. kör: Csapatbeszámolók',sum:'Összegzés'};
+const TIMERS={r1:'1. kör',r2:'2. kör',r3:'3. kör',p1A:'1. kör · A csapat beszámolója',p1B:'1. kör · B csapat beszámolója',p2A:'2. kör · A csapat beszámolója',p2B:'2. kör · B csapat beszámolója',p3A:'3. kör · A csapat beszámolója',p3B:'3. kör · B csapat beszámolója'};
+const DKEY=k=>/^p\d[AB]$/.test(k)?'rep':k;
+const minOf=k=>+DUR[DKEY(k)]||0;
+const sumOf=ks=>ks.reduce((a,k)=>a+minOf(k),0);
+const total=()=>sumOf(AM)+sumOf(PM);
+function split(D,parts){const B=parts.reduce((a,b)=>a+b,0);const raw=parts.map(p=>p*D/B);const fl=raw.map(Math.floor);let rem=D-fl.reduce((a,b)=>a+b,0);raw.map((r,i)=>[r-fl[i],i]).sort((a,b)=>b[0]-a[0]).forEach(([,i])=>{if(rem>0){fl[i]++;rem--}});return fl}
+function stepsOf(k){const t=$(`.timer[data-timer="${k}"]`);if(!t||!t.dataset.steps)return null;return split(minOf(k),t.dataset.steps.split(',').map(Number))}
+function renderCalcs(scope=document){
+  const starts={};let acc=0;ORDER.forEach(k=>{starts[k]=acc;acc+=minOf(k)});
+  $$('.calc',scope).forEach(el=>{
+    const c=el.dataset.calc;if(!c)return;
+    if(c==='total')el.textContent=total();
+    else if(c==='am')el.textContent=sumOf(AM);
+    else if(c.startsWith('round:')){const n=c.slice(6);el.textContent=(minOf('r'+n)+minOf('p'+n))+'′'}
+    else if(c==='pm')el.textContent=sumOf(PM);
+    else if(c.startsWith('min:'))el.textContent=minOf(c.slice(4))+'′';
+    else if(c.startsWith('range:')){const k=c.slice(6);el.textContent=`${starts[k]}–${starts[k]+minOf(k)}`}
+    else if(c.startsWith('step:')){const[,k,i]=c.split(':');const s=stepsOf(k);if(s)el.textContent=s[+i]+'′'}
+  });
+}
+
+/* ---------- edit ids, originals, stored edits ---------- */
+const EDS=$$('[data-e],[data-m]');
+EDS.forEach((el,i)=>el.dataset.eid=i);
+const ORIG={};EDS.forEach(el=>ORIG[el.dataset.eid]={h:el.innerHTML,s:el.getAttribute('style')||''});
+let E=store.get(EKEY)||{t:{},skip:[]};
+E.t=E.t||{};E.skip=E.skip||[];
+if(E.dur)DUR={...DUR,...E.dur};
+if(E.sound!=null)root.dataset.sound=E.sound?'1':'0';
+for(const[id,v]of Object.entries(E.t)){const el=EDS[+id];if(!el)continue;if(v.h!=null&&el.hasAttribute('data-e'))el.innerHTML=v.h;if(v.s!=null)el.setAttribute('style',v.s)}
+E.skip.forEach(i=>slides[i]&&slides[i].setAttribute('data-skip',''));
+let saveT=0;
+function persist(){scheduleSave();clearTimeout(saveT);saveT=setTimeout(()=>{const ok=store.set(EKEY,E);if(SYNC)return updSync();status(ok?'Mentve ebben a böngészőben · '+new Date().toLocaleTimeString('hu-HU',{hour:'2-digit',minute:'2-digit'}):'A böngésző nem engedi a helyi mentést. Használd a Mentés HTML-fájlként gombot.')},300)}
+addEventListener('pagehide',()=>{clearTimeout(saveT);store.set(EKEY,E)});
+function record(el){const id=el.dataset.eid;if(id==null)return;const r=E.t[id]||{};if(el.hasAttribute('data-e'))r.h=el.innerHTML;r.s=el.getAttribute('style')||'';E.t[id]=r;persist()}
+function status(t){const s=$('#eb-status');if(s)s.textContent=t}
+const isBlank=t=>/^[\s—-]*$/.test(t);
+const markEmpty=()=>$$('[data-live]').forEach(td=>td.classList.toggle('empty',isBlank(td.textContent)));
+
+function phaseName(k){if(k==='open')return 'Fonte Viva · Vezetői workshop';const el=$(`[data-phasename="${k}"]`);return el?el.textContent.trim():(BLOCKS[k]||'')}
+
+/* ---------- timer UI build ---------- */
+const NS='http://www.w3.org/2000/svg';
+$$('.timer[data-timer]').forEach(t=>{
+  t.innerHTML=`<div class="ring"><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="bg" cx="50" cy="50" r="46" fill="none" stroke-width="1.6"/><g class="ticks"></g><circle class="fg" cx="50" cy="50" r="46" fill="none" stroke-width="2.6" pathLength="100" transform="rotate(-90 50 50)"/><g class="hd"><circle class="head" cx="50" cy="4" r="1.9"/></g></svg><div class="c"><div class="t-digits">00:00</div><div class="t-state">Indításra vár</div><div class="t-of"></div></div></div><div class="t-ctrl"><button class="t-btn pri" data-act="toggle">Indítás</button><button class="t-btn" data-act="reset">Visszaállítás</button></div>`;
+  t.classList.add('idle');
+});
+function buildTicks(){
+  $$('.timer[data-timer]').forEach(t=>{
+    const g=$('.ticks',t);g.innerHTML='';const s=stepsOf(t.dataset.timer);if(!s)return;const D=minOf(t.dataset.timer);let acc=0;
+    s.slice(0,-1).forEach(m=>{acc+=m;const a=acc/D*2*Math.PI;const l=document.createElementNS(NS,'line');l.setAttribute('class','tick');l.setAttribute('x1',50+43*Math.sin(a));l.setAttribute('y1',50-43*Math.cos(a));l.setAttribute('x2',50+49*Math.sin(a));l.setAttribute('y2',50-49*Math.cos(a));g.appendChild(l)});
+  });
+}
+
+/* ---------- timer state ---------- */
+const sess=store.get(SKEY,sessionStorage)||{};
+let TS=sess.ts||{};
+Object.keys(TIMERS).forEach(k=>{if(!TS[k])TS[k]={st:'idle'}});
+const fullMs=k=>minOf(k)*60000;
+function leftMs(k){const s=TS[k];if(s.st==='run')return Math.max(0,s.end-Date.now());if(s.st==='pause')return s.left;if(s.st==='done')return 0;return fullMs(k)}
+function saveSess(){store.set(SKEY,{ts:TS,cur},sessionStorage)}
+let actx=null;
+function chime(){if(root.dataset.sound!=='1'||!actx)return;try{const n=actx.currentTime;[[660,0],[880,.28],[660,.56]].forEach(([f,d])=>{const o=actx.createOscillator(),g=actx.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(0,n+d);g.gain.linearRampToValueAtTime(.18,n+d+.03);g.gain.exponentialRampToValueAtTime(.001,n+d+.9);o.connect(g).connect(actx.destination);o.start(n+d);o.stop(n+d+1)})}catch(e){}}
+function tToggle(k){
+  if(!actx){try{actx=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}else if(actx.state==='suspended')actx.resume();
+  const s=TS[k];
+  if(s.st==='idle')TS[k]={st:'run',end:Date.now()+fullMs(k)};
+  else if(s.st==='run')TS[k]={st:'pause',left:Math.max(0,s.end-Date.now())};
+  else if(s.st==='pause')TS[k]={st:'run',end:Date.now()+s.left};
+  else return;
+  saveSess();tick();
+}
+function tReset(k){TS[k]={st:'idle'};saveSess();tick()}
+const fmt=ms=>{const s=Math.ceil(ms/1000);return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
+const STATE={idle:'Indításra vár',run:'Fut',pause:'Szünetel',done:'Lejárt'};
+const BTN={idle:'Indítás',run:'Szünet',pause:'Folytatás',done:'Lejárt'};
+function slideTimers(s){return $$('.timer[data-timer]',s).map(t=>t.dataset.timer)}
+function activeOn(s){const ks=slideTimers(s);for(const st of ['run','pause','idle'])for(const k of ks)if(TS[k].st===st)return k;return ks[0]||null}
+function paintTimer(t){
+  const k=t.dataset.timer,s=TS[k],L=leftMs(k),F=fullMs(k)||1,el=1-L/F;
+  t.classList.remove('idle','running','paused','done');t.classList.add({idle:'idle',run:'running',pause:'paused',done:'done'}[s.st]);
+  $('.t-digits',t).textContent=fmt(L);$('.t-state',t).textContent=STATE[s.st];
+  $('.t-of',t).textContent=s.st==='idle'?'':'/ '+minOf(k)+' perc';
+  const d=Math.min(100,Math.max(0,el*100)),fg=$('.fg',t);
+  fg.setAttribute('stroke-dasharray',`${Math.max(0,100-d)} 200`);fg.setAttribute('stroke-dashoffset',`${-d}`);
+  const hd=$('.hd',t);hd.setAttribute('transform',`rotate(${d*3.6} 50 50)`);hd.style.display=(s.st==='idle'||s.st==='done')?'none':'';
+  const b=$('[data-act="toggle"]',t);b.textContent=BTN[s.st];b.hidden=s.st==='done';b.classList.toggle('pri',s.st!=='run');$('[data-act="reset"]',t).classList.toggle('pri',s.st==='done');
+  const steps=$(`.steps[data-for="${k}"]`);
+  if(steps){const parts=stepsOf(k);const em=(F-L)/60000;let acc=0;$$('li',steps).forEach((li,i)=>{const a=acc;acc+=parts[i];li.classList.toggle('done',s.st==='done'||(s.st!=='idle'&&em>=acc));li.classList.toggle('now',(s.st==='run'||s.st==='pause')&&em>=a&&em<acc)})}
+}
+const paintAll=()=>$$('.timer[data-timer]').forEach(paintTimer);
+addEventListener('beforeprint',paintAll);
+function tick(){
+  let changed=false;
+  for(const k of Object.keys(TIMERS)){const s=TS[k];if(s.st==='run'&&s.end<=Date.now()){TS[k]={st:'done'};changed=true;chime()}}
+  if(changed)saveSess();
+  const cs=slides[cur],ks=slideTimers(cs);$$('.timer[data-timer]',cs).forEach(paintTimer);
+  cs.classList.toggle('alarm',ks.some(k=>TS[k].st==='done')&&!ks.some(k=>TS[k].st==='run'||TS[k].st==='pause'));
+  pill();presenterTick();
+}
+function pill(){
+  const p=$('#pill');const here=slideTimers(slides[cur]);
+  let pick=null;
+  for(const st of ['done','run','pause']){for(const k of Object.keys(TIMERS)){if(TS[k].st===st&&!here.includes(k)){pick=k;break}}if(pick)break}
+  if(!pick){p.hidden=true;return}
+  const s=TS[pick];p.hidden=false;p.className=s.st==='run'?'':s.st==='pause'?'paused':'done';
+  p.innerHTML=`<i></i>${TIMERS[pick]} · ${s.st==='done'?'Lejárt':fmt(leftMs(pick))}${s.st==='pause'?' · szünetel':''}`;
+  p.onclick=()=>go(slides.findIndex(sl=>$(`.timer[data-timer="${pick}"]`,sl)));
+}
+stage.addEventListener('click',e=>{const b=e.target.closest('.t-btn');if(!b||moving)return;const k=b.closest('.timer').dataset.timer;b.dataset.act==='toggle'?tToggle(k):tReset(k)});
+setInterval(tick,200);document.addEventListener('visibilitychange',tick);
+
+/* ---------- navigation ---------- */
+let cur=Math.min(slides.length-1,Math.max(0,(parseInt(location.hash.slice(1))||(sess.cur!=null?sess.cur+1:1))-1));
+let editing=false,moving=false;
+const visible=i=>editing||!slides[i].hasAttribute('data-skip');
+function step(dir){let i=cur+dir;while(i>=0&&i<slides.length&&!visible(i))i+=dir;if(i>=0&&i<slides.length)go(i)}
+function go(i){
+  if(i<0||i>=slides.length)return;
+  const ae=document.activeElement;if(ae&&ae.isContentEditable)ae.blur();
+  slides[cur].classList.remove('current');cur=i;const s=slides[cur];s.classList.add('current');
+  const vis=slides.map((_,j)=>j).filter(visible),pos=vis.indexOf(cur)+1;
+  $('#count').textContent=`${pos||'–'} / ${vis.length}`;
+  $('#foot-no').textContent=`${String(pos).padStart(2,'0')} / ${String(vis.length).padStart(2,'0')}`;
+  $('#foot-ph').textContent=phaseName(s.dataset.phase);
+  $('#progress').style.width=(pos/vis.length*100)+'%';
+  body.classList.toggle('on-cover',s.classList.contains('cover'));
+  history.replaceState(null,'','#'+(cur+1));saveSess();
+  $('#eb-skip').textContent=s.hasAttribute('data-skip')?'Dia megjelenítése':'Dia elrejtése';
+  if($('#notes').classList.contains('open'))fillNotes();
+  tick();presenterRender();
+}
+$('#b-prev').onclick=()=>step(-1);$('#b-next').onclick=()=>step(1);
+$('#edge-prev').onclick=()=>step(-1);$('#edge-next').onclick=()=>step(1);
+$$('.agt tr[data-goto]').forEach(r=>r.addEventListener('click',()=>{if(editing)return;const i=slides.findIndex(s=>s.dataset.phase===r.dataset.goto);if(i>=0)go(i)}));
+$$('.qd[data-gotoslide]').forEach(q=>q.addEventListener('click',()=>{if(editing)return;const i=slides.findIndex(s=>s.dataset.type===q.dataset.gotoslide);if(i>=0)go(i)}));
+
+/* ---------- scale ---------- */
+function fit(){const vp=$('#viewport'),w=vp.clientWidth,h=vp.clientHeight;const sc=Math.min(w/1600,h/900);stage.style.transform=`scale(${sc})`;stage.dataset.scale=sc}
+addEventListener('resize',fit);new ResizeObserver(fit).observe($('#viewport'));
+
+/* ---------- idle chrome ---------- */
+let idleT=0;function wake(){body.classList.remove('idle');clearTimeout(idleT);idleT=setTimeout(()=>{if(!document.querySelector('dialog[open]')&&$('#overview').hidden)body.classList.add('idle')},2600)}
+addEventListener('mousemove',wake);addEventListener('pointerdown',wake);wake();
+
+let toastT=0;function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),3200)}
+
+/* ---------- notes ---------- */
+const nb=$('#notes-body');
+function slideTitle(s){const h=$('h1,h2',s)||$('.kick',s);return h?h.textContent.replace(/\s+/g,' ').trim():''}
+function fillNotes(){const a=$('aside.notes',slides[cur]);nb.innerHTML=a?a.innerHTML:'<p>Ehhez a diához nincs jegyzet.</p>';$('#notes-sub').textContent=`Dia ${cur+1} · ${slideTitle(slides[cur])}`;setNotesEditable()}
+function setNotesEditable(){if(editing&&$('aside.notes',slides[cur]))nb.setAttribute('contenteditable','true');else nb.removeAttribute('contenteditable')}
+nb.addEventListener('input',()=>{const a=$('aside.notes',slides[cur]);if(!a)return;a.innerHTML=nb.innerHTML;record(a)});
+function toggleNotes(on){const n=$('#notes');on=on??!n.classList.contains('open');n.classList.toggle('open',on);$('#b-notes').setAttribute('aria-pressed',on);if(on)fillNotes()}
+$('#b-notes').onclick=()=>toggleNotes();$('#notes-x').onclick=()=>toggleNotes(false);
+
+/* ---------- overview ---------- */
+function cleanClone(s){const c=s.cloneNode(true);c.classList.add('current');$$('[contenteditable]',c).forEach(e=>e.removeAttribute('contenteditable'));$$('[id]',c).forEach(e=>e.removeAttribute('id'));$$('.notes',c).forEach(e=>e.remove());return c}
+function openOverview(){
+  const box=$('#thumbs');box.innerHTML='';let last=null,grid=null;
+  slides.forEach((s,i)=>{
+    const ph=s.dataset.phase;
+    if(ph!==last){last=ph;const h=document.createElement('p');h.className='ovsec';h.textContent=ph==='open'?'Nyitás':phaseName(ph);box.appendChild(h);grid=document.createElement('div');grid.className='thumbs';box.appendChild(grid)}
+    const b=document.createElement('div');b.className='thumb'+(i===cur?' on':'')+(s.hasAttribute('data-skip')?' skip':'');b.tabIndex=0;b.setAttribute('role','button');
+    b.innerHTML=`<div class="tv"><div></div></div><div class="cap"><b>${String(i+1).padStart(2,'0')}</b><span></span></div>`;
+    $('.cap span',b).textContent=slideTitle(s)+(s.hasAttribute('data-skip')?' · rejtett':'');
+    $('.tv>div',b).appendChild(cleanClone(s));
+    if(editing){const k=document.createElement('button');k.className='skipbtn';k.textContent=s.hasAttribute('data-skip')?'Megjelenítés':'Elrejtés';k.onclick=e=>{e.stopPropagation();toggleSkip(i);openOverview()};b.appendChild(k)}
+    b.onclick=()=>{closeOverview();go(i)};b.onkeydown=e=>{if(e.key==='Enter'){closeOverview();go(i)}};
+    grid.appendChild(b);
+  });
+  $('#overview').hidden=false;requestAnimationFrame(()=>{$$('.thumb .tv',box).forEach(tv=>{tv.firstChild.style.transform=`scale(${tv.clientWidth/1600})`});const on=$('.thumb.on',box);on&&on.scrollIntoView({block:'center'})});
+}
+function closeOverview(){$('#overview').hidden=true}
+$('#b-ov').onclick=openOverview;$('#ov-x').onclick=closeOverview;
+addEventListener('resize',()=>{if(!$('#overview').hidden)$$('#thumbs .tv').forEach(tv=>tv.firstChild.style.transform=`scale(${tv.clientWidth/1600})`)});
+
+/* ---------- dialogs ---------- */
+$$('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d||e.target.closest('[data-close]'))d.close()}));
+const openDlg=id=>{$$('dialog[open]').forEach(d=>d.close());$(id).showModal()};
+$('#b-more').onclick=()=>openDlg('#dlg-more');
+$('#m-dur').onclick=()=>openDur();$('#m-print').onclick=()=>openDlg('#dlg-print');$('#m-help').onclick=()=>openDlg('#dlg-help');
+$('#m-save').onclick=()=>{$('#dlg-more').close();exportHTML()};
+$('#m-sheets').onclick=()=>{$('#dlg-more').close();openSheets()};
+
+let zoom=1;function setZoom(z){zoom=z;const img=$('#mapimg');const base=Math.min(innerWidth*.9,1450);img.style.width=(base*z)+'px';$$('#mapdlg .zbar button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.z===z))}
+$$('#mapdlg .zbar button').forEach(b=>b.onclick=()=>setZoom(+b.dataset.z));
+stage.addEventListener('click',e=>{const z=e.target.closest('[data-zoom]');if(!z||moving)return;openDlg('#mapdlg');setZoom(z.classList.contains('crop')?2:1);
+  if(z.classList.contains('crop')){const st=getComputedStyle(z);const x=+st.getPropertyValue('--x'),y=+st.getPropertyValue('--y');requestAnimationFrame(()=>{const db=$('#mapdlg .db'),img=$('#mapimg'),r=img.clientWidth/1092;db.scrollLeft=x*r-20;db.scrollTop=y*r-20})}});
+stage.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('[data-zoom]'))e.target.click()});
+
+/* durations */
+function openDur(){
+  const box=$('#durs');box.innerHTML='';
+  const add=(k,lab,timed)=>{const locked=timed===2?Object.keys(TIMERS).some(x=>DKEY(x)==='rep'&&TS[x].st!=='idle'):timed&&TS[k].st!=='idle';const d=document.createElement('label');d.className='dur';d.innerHTML=`<span></span><input type="number" min="1" max="180" step="1" data-k="${k}" id="dur-${k}"><span>perc</span>`;$('span',d).textContent=lab;const inp=$('input',d);inp.value=DUR[k];inp.disabled=locked;if(locked){const sm=document.createElement('small');sm.textContent='Ez az óra fut, szünetel vagy lejárt: előbb állítsd vissza a diáján.';d.appendChild(sm)}box.appendChild(d)};
+  const h=t=>{const p=document.createElement('p');p.className='dsec';p.textContent=t;box.appendChild(p)};
+  h('Blokkok a menetrendben');ORDER.forEach(k=>add(k,phaseName(k)||BLOCKS[k],['r1','r2','r3'].includes(k)));
+  h('Csapatbeszámolók');add('rep','Egy csapat beszámolója (mind a hat órára)',2);
+  $('#snd').checked=root.dataset.sound==='1';updDurTotal();openDlg('#dlg-dur');
+}
+function updDurTotal(){const tmp={...DUR};$$('#durs input').forEach(i=>tmp[i.dataset.k]=+i.value||0);const m=ks=>ks.reduce((a,k)=>a+(+tmp[k]||0),0);$('#dur-total').textContent=`Délelőtt ${m(AM)} · délután ${m(PM)} · összesen ${m(AM)+m(PM)} perc (+ ebéd ${+tmp.lunch||0})`}
+$('#durs').addEventListener('input',updDurTotal);
+const quick=m=>{['r1','r2','r3'].forEach(k=>{const i=$(`#durs input[data-k="${k}"]`);if(i&&!i.disabled)i.value=m});updDurTotal()};
+$('#q15').onclick=()=>quick(15);$('#q20').onclick=()=>quick(20);
+$('#dur-apply').onclick=()=>{$$('#durs input').forEach(i=>{if(!i.disabled){DUR[i.dataset.k]=Math.max(1,Math.min(180,Math.round(+i.value)||DUR[i.dataset.k]))}});root.dataset.durations=JSON.stringify(DUR);root.dataset.sound=$('#snd').checked?'1':'0';E.dur={...DUR};E.sound=$('#snd').checked;persist();renderCalcs();buildTicks();paintAll();tick();$('#dlg-dur').close();toast('Időtartamok frissítve · összesen '+total()+' perc')};
+
+/* print */
+$$('#dlg-print [data-print]').forEach(b=>b.onclick=()=>{const m=b.dataset.print;$('#dlg-print').close();body.dataset.print=m;if(m!=='slides')$('#sheets-view').hidden=false;paintAll();setTimeout(()=>window.print(),60)});
+addEventListener('afterprint',()=>{const m=body.dataset.print;delete body.dataset.print;if(m!=='slides'&&!sheetsOpen)$('#sheets-view').hidden=true});
+
+/* sheets */
+let sheetsOpen=false;
+function openSheets(){sheetsOpen=true;$('#sheets-view').hidden=false}
+$('#sv-x').onclick=()=>{sheetsOpen=false;$('#sheets-view').hidden=true};
+$('#sv-print').onclick=()=>{body.dataset.print='sheets';window.print()};
+$('#eb-sheets').onclick=()=>sheetsOpen?$('#sv-x').click():openSheets();
+
+function full(){if(document.fullscreenElement)document.exitFullscreen();else root.requestFullscreen&&root.requestFullscreen().catch(()=>toast('A teljes képernyő itt nem engedélyezett. Próbáld az F11 billentyűt.'))}
+$('#b-full').onclick=full;
+
+/* ---------- editing ---------- */
+const plainOK=(()=>{const d=document.createElement('div');d.setAttribute('contenteditable','plaintext-only');return d.contentEditable==='plaintext-only'})();
+const CE=plainOK?'plaintext-only':'true';
+function applyEditable(){
+  $$('[data-e]').forEach(el=>{if(el.classList.contains('notes'))return;const live=el.hasAttribute('data-live');(editing||live)&&!moving?el.setAttribute('contenteditable',CE):el.removeAttribute('contenteditable')});
+  $$('.calc').forEach(c=>c.setAttribute('contenteditable','false'));
+}
+function setEditing(on){editing=on;body.classList.toggle('editing',on);if(!on)setMoving(false);applyEditable();$('#b-edit').setAttribute('aria-pressed',on);setNotesEditable();if(on)status('A módosítások ebben a böngészőben mentődnek. Végleges mentés: Mentés HTML-fájlként.');go(cur);setTimeout(fit,0)}
+function setMoving(on){moving=on;body.classList.toggle('moving',on);$('#eb-move').setAttribute('aria-pressed',on);applyEditable();if(on)toast('Fogd meg a sárga keretes elemeket, és húzd őket a helyükre.')}
+$('#b-edit').onclick=()=>setEditing(!editing);$('#eb-done').onclick=()=>setEditing(false);
+$('#eb-move').onclick=()=>setMoving(!moving);
+document.addEventListener('input',e=>{const el=e.target.closest&&e.target.closest('[data-e]');if(el&&el.dataset.eid!=null&&!el.classList.contains('notes')){record(el);if(el.hasAttribute('data-live'))markEmpty()}});
+document.addEventListener('paste',e=>{const t=e.target.closest&&e.target.closest('[contenteditable]');if(!t)return;e.preventDefault();const txt=(e.clipboardData||window.clipboardData).getData('text/plain');document.execCommand('insertText',false,txt)});
+document.addEventListener('focusin',e=>{const td=e.target.closest&&e.target.closest('[data-live]');if(td&&isBlank(td.textContent)){td.textContent='';td.classList.remove('empty')}});
+document.addEventListener('focusout',e=>{const td=e.target.closest&&e.target.closest('[data-live]');if(td&&!td.textContent.trim()){td.textContent='—';record(td);markEmpty()}});
+let lastEd=null;document.addEventListener('focusin',e=>{const el=e.target.closest&&e.target.closest('[data-e]');if(el)lastEd=el});
+function resize(f){const el=lastEd;if(!el||!editing){toast('Előbb kattints egy szövegre.');return}const cs=parseFloat(getComputedStyle(el).fontSize);el.style.fontSize=Math.round(cs*f*10)/10+'px';record(el)}
+$('#eb-smaller').onmousedown=e=>e.preventDefault();$('#eb-bigger').onmousedown=e=>e.preventDefault();
+$('#eb-smaller').onclick=()=>resize(.92);$('#eb-bigger').onclick=()=>resize(1.08);
+function spacing(d){const el=lastEd;if(!el||!editing){toast('Előbb kattints egy szövegre.');return}const cs=getComputedStyle(el),fs=parseFloat(cs.fontSize)||1;const cur=cs.letterSpacing==='normal'?0:parseFloat(cs.letterSpacing)/fs;const v=Math.max(-.1,Math.min(.4,Math.round((cur+d)*1000)/1000));el.style.letterSpacing=v+'em';record(el);status('Betűköz: '+v.toFixed(3).replace('.',',')+' em')}
+$('#eb-tight').onmousedown=e=>e.preventDefault();$('#eb-loose').onmousedown=e=>e.preventDefault();
+$('#eb-tight').onclick=()=>spacing(-.01);$('#eb-loose').onclick=()=>spacing(.01);
+function toggleSkip(i){const s=slides[i];if(s.hasAttribute('data-skip'))s.removeAttribute('data-skip');else s.setAttribute('data-skip','');E.skip=slides.map((s,j)=>s.hasAttribute('data-skip')?j:-1).filter(j=>j>=0);persist();go(cur)}
+$('#eb-skip').onclick=()=>toggleSkip(cur);
+let resetArm=0;
+$('#eb-reset-slide').onclick=()=>{const b=$('#eb-reset-slide');if(Date.now()-resetArm>4000){resetArm=Date.now();b.textContent='Biztosan? Kattints újra';setTimeout(()=>{b.textContent='Dia visszaállítása'},4000);return}resetArm=0;b.textContent='Dia visszaállítása';
+  const s=slides[cur];[s,...$$('[data-eid]',s)].forEach(el=>{const id=el.dataset.eid;if(id==null||!ORIG[id])return;if(el.hasAttribute('data-e'))el.innerHTML=ORIG[id].h;ORIG[id].s?el.setAttribute('style',ORIG[id].s):el.removeAttribute('style');delete E.t[id]});renderCalcs(s);markEmpty();applyEditable();persist();go(cur);toast('A dia visszaállítva.')};
+
+/* drag to move */
+let drag=null;
+stage.addEventListener('pointerdown',e=>{if(!moving)return;const el=e.target.closest('[data-m]');if(!el||!slides[cur].contains(el))return;e.preventDefault();const sc=+stage.dataset.scale||1;const m=(el.style.translate||'0px 0px').match(/-?[\d.]+/g)||[0,0];drag={el,sx:e.clientX,sy:e.clientY,x:+m[0]||0,y:+(m[1]??0)||0,sc};el.classList.add('dragging');el.setPointerCapture(e.pointerId)});
+stage.addEventListener('pointermove',e=>{if(!drag)return;let dx=(e.clientX-drag.sx)/drag.sc,dy=(e.clientY-drag.sy)/drag.sc;if(e.shiftKey){Math.abs(dx)>Math.abs(dy)?dy=0:dx=0}drag.el.style.translate=`${Math.round(drag.x+dx)}px ${Math.round(drag.y+dy)}px`});
+stage.addEventListener('pointerup',()=>{if(!drag)return;drag.el.classList.remove('dragging');if(/^0px( 0px)?$/.test(drag.el.style.translate))drag.el.style.removeProperty('translate');record(drag.el);drag=null});
+
+/* export */
+function exportHTML(){
+  const a=document.activeElement;if(a&&a.isContentEditable)a.blur();
+  const c=root.cloneNode(true);
+  c.setAttribute('data-rev','r'+Date.now().toString(36));c.setAttribute('data-durations',JSON.stringify(DUR));c.setAttribute('data-sound',root.dataset.sound);
+  const b=c.querySelector('body');b.className='on-cover';b.removeAttribute('data-print');
+  $$('[contenteditable]',c).forEach(e=>e.removeAttribute('contenteditable'));
+  $$('[data-eid]',c).forEach(e=>e.removeAttribute('data-eid'));
+  $$('.skipmark',c).forEach(e=>e.remove());
+  $$('.slide',c).forEach(s=>s.classList.remove('current','alarm'));
+  $$('.timer[data-timer]',c).forEach(t=>{t.innerHTML='';t.className='timer'});
+  $$('.dragging',c).forEach(e=>e.classList.remove('dragging'));
+  const st=c.querySelector('#stage');st.removeAttribute('style');st.removeAttribute('data-scale');
+  c.querySelector('#thumbs').innerHTML='';c.querySelector('#overview').setAttribute('hidden','');c.querySelector('#sheets-view').setAttribute('hidden','');
+  c.querySelector('#notes').className='';c.querySelector('#notes-body').innerHTML='';
+  c.querySelector('#pill').setAttribute('hidden','');c.querySelector('#toast').textContent='';c.querySelector('#toast').className='';
+  $$('dialog',c).forEach(d=>d.removeAttribute('open'));
+  ['#mapimg','#mapimg-sheet'].forEach(s=>{const i=c.querySelector(s);i.removeAttribute('src');i.removeAttribute('style')});
+  const html='<!doctype html>\n'+c.outerHTML;
+  const d=new Date(),p=n=>String(n).padStart(2,'0');
+  const name=`Fonte_Viva_workshop_${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}.html`;
+  const url=URL.createObjectURL(new Blob([html],{type:'text/html'}));
+  const l=document.createElement('a');l.href=url;l.download=name;document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);
+  toast('Letöltve: '+name+' · legközelebb ezt a fájlt nyisd meg.');status('Elmentve fájlba: '+name);
+}
+$('#eb-save').onclick=exportHTML;
+
+/* ---------- presenter window ---------- */
+let pw=null;
+const FONTFACES=(document.querySelector('head style').textContent.match(/@font-face\{[^}]*\}/g)||[]).join('');
+function openPresenter(){
+  if(pw&&!pw.closed){pw.focus();return}
+  pw=window.open('','fvw-presenter','width=1100,height=720');
+  if(!pw){toast('A böngésző letiltotta a felugró ablakot. Engedélyezd, és próbáld újra.');return}
+  pw.document.open();pw.document.write(`<!doctype html><html lang="hu"><head><meta charset="utf-8"><title>Előadói ablak</title><style>${FONTFACES}
+  body{margin:0;background:#081520;color:#eaf4fa;font:16px/1.55 Outfit,system-ui,sans-serif;font-variant-numeric:tabular-nums;display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:auto 1fr auto;height:100vh}
+  header{grid-column:1/-1;display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid rgba(234,244,250,.14)}
+  header b{font-size:22px}header .n{font-family:Outfit,system-ui,sans-serif;color:#4fd1e8}
+  header .sp{flex:1}button{font:inherit;font-weight:700;color:#eaf4fa;background:#132637;border:1px solid rgba(234,244,250,.18);border-radius:10px;padding:10px 18px;cursor:pointer}button:hover{border-color:#4fd1e8}button.pri{background:#4fd1e8;color:#04121b;border-color:#4fd1e8}
+  #nt{padding:20px 24px;overflow:auto;font-size:19px;line-height:1.65;color:#d4e4ee;border-right:1px solid rgba(234,244,250,.14)}#nt p{margin:0 0 14px}#nt b{color:#fff}
+  aside{padding:20px 24px;display:flex;flex-direction:column;gap:22px;overflow:auto}
+  .lbl{font-family:Outfit,system-ui,sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#7590a5;margin:0}
+  #tm{font-family:Outfit,system-ui,sans-serif;font-size:72px;font-weight:700;letter-spacing:-.03em;line-height:1}#tm.done{color:#ff6b57}#tm.pause{color:#ffc56b}
+  #tl{color:#adc5d4}#nx{font-size:20px;font-weight:700}footer{grid-column:1/-1;display:flex;gap:10px;padding:12px 20px;border-top:1px solid rgba(234,244,250,.14)}
+  .clock{font-family:Outfit,system-ui,sans-serif;font-size:22px;color:#adc5d4}
+  </style></head><body><header><span class="n" id="no"></span><b id="ti"></b><span class="sp"></span><span class="clock" id="ck"></span></header>
+  <div id="nt"></div><aside><div><p class="lbl">Óra</p><div id="tm">–</div><p id="tl"></p><div id="tb" style="display:flex;gap:10px;margin-top:10px"></div></div><div><p class="lbl">Következő dia</p><p id="nx"></p></div></aside>
+  <footer><button id="pv">← Előző</button><button class="pri" id="nxb">Következő →</button><span style="flex:1"></span><span class="lbl" style="align-self:center">A billentyűk itt is működnek</span></footer></body></html>`);
+  pw.document.close();
+  const d=pw.document;d.getElementById('pv').onclick=()=>step(-1);d.getElementById('nxb').onclick=()=>step(1);
+  pw.addEventListener('keydown',onKey);
+  presenterRender();
+}
+function presenterRender(){
+  if(!pw||pw.closed)return;const d=pw.document;const s=slides[cur];
+  d.getElementById('no').textContent=String(cur+1).padStart(2,'0')+' / '+slides.length;
+  d.getElementById('ti').textContent=slideTitle(s);
+  const a=$('aside.notes',s);d.getElementById('nt').innerHTML=a?a.innerHTML:'<p>Ehhez a diához nincs jegyzet.</p>';
+  let n=cur+1;while(n<slides.length&&slides[n].hasAttribute('data-skip'))n++;
+  d.getElementById('nx').textContent=n<slides.length?slideTitle(slides[n]):'Vége';
+  presenterTick(true);
+}
+function presenterTick(force){
+  if(!pw||pw.closed)return;const d=pw.document;
+  d.getElementById('ck').textContent=new Date().toLocaleTimeString('hu-HU',{hour:'2-digit',minute:'2-digit'});
+  let k=activeOn(slides[cur]);
+  if(!k){k=Object.keys(TIMERS).find(x=>TS[x].st==='run')||Object.keys(TIMERS).find(x=>TS[x].st==='pause')||Object.keys(TIMERS).find(x=>TS[x].st==='done')}
+  const tm=d.getElementById('tm'),tl=d.getElementById('tl'),tb=d.getElementById('tb');
+  if(!k){tm.textContent='–';tm.className='';tl.textContent='Ezen a dián nincs óra.';if(force||tb.dataset.k){tb.innerHTML='';tb.dataset.k=''}return}
+  const s=TS[k];tm.textContent=fmt(leftMs(k));tm.className=s.st==='done'?'done':s.st==='pause'?'pause':'';
+  tl.textContent=TIMERS[k]+' · '+STATE[s.st];
+  const key=k+s.st;if(force||tb.dataset.k!==key){tb.dataset.k=key;tb.innerHTML='';const b1=d.createElement('button');b1.className='pri';b1.textContent=BTN[s.st];b1.disabled=s.st==='done';b1.onclick=()=>tToggle(k);const b2=d.createElement('button');b2.textContent='Visszaállítás';b2.onclick=()=>tReset(k);tb.append(b1,b2)}
+}
+$('#b-presenter').onclick=openPresenter;
+
+/* ---------- keyboard ---------- */
+function onKey(e){
+  const t=e.target, typing=t&&(t.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();save(false);exportHTML();return}
+  if(e.key==='Escape'){
+    if(typing&&t.isContentEditable){t.blur();return}
+    if(document.querySelector('dialog[open]'))return;
+    if(!$('#overview').hidden){closeOverview();return}
+    if(sheetsOpen){$('#sv-x').click();return}
+    if($('#notes').classList.contains('open')){toggleNotes(false);return}
+    if(moving){setMoving(false);return}
+    if(editing){setEditing(false);return}
+    return;
+  }
+  if(typing||e.ctrlKey||e.metaKey||e.altKey)return;
+  if(document.querySelector('dialog[open]'))return;
+  const k=e.key;
+  if(!$('#overview').hidden&&k!=='o'&&k!=='O')return;
+  if(['ArrowRight','PageDown','ArrowDown'].includes(k)){e.preventDefault();step(1)}
+  else if(['ArrowLeft','PageUp','ArrowUp'].includes(k)){e.preventDefault();step(-1)}
+  else if(k==='Home'){e.preventDefault();go(slides.findIndex((_,i)=>visible(i)))}
+  else if(k==='End'){e.preventDefault();for(let i=slides.length-1;i>=0;i--)if(visible(i)){go(i);break}}
+  else if(k===' '){e.preventDefault();const ks=slideTimers(slides[cur]);if(!ks.length){step(1);return}const a=activeOn(slides[cur]);if(a&&TS[a].st!=='done')tToggle(a)}
+  else if(k==='f'||k==='F')full();
+  else if(k==='o'||k==='O'){$('#overview').hidden?openOverview():closeOverview()}
+  else if(k==='n'||k==='N')toggleNotes();
+  else if(k==='p'||k==='P')openPresenter();
+  else if(k==='e'||k==='E')setEditing(!editing);
+  else if(k==='?'||k==='h'||k==='H')openDlg('#dlg-help');
+}
+addEventListener('keydown',onKey);
+addEventListener('hashchange',()=>{const i=(parseInt(location.hash.slice(1))||1)-1;if(i!==cur)go(i)});
+addEventListener('beforeunload',()=>{if(pw&&!pw.closed)pw.close()});
+
+/* ---------- shared store (Vercel Blob via /api/deck) ---------- */
+const SYNC=/^https?:$/.test(location.protocol);
+const API='api/deck';
+let remoteVersion=null,savedJSON=null,conflict=null,saving=false,online=true,loaded=false,syncT=0,retryT=0;
+const SYNC_TXT={idle:'Mentve a közös tárhelyre',wait:'Mentésre vár…',saving:'Mentés…',off:'Nincs kapcsolat, újrapróbálom',conflict:'Ütközés: valaki más közben mentett',load:'Betöltés…'};
+function syncState(){if(!loaded)return 'load';if(conflict)return 'conflict';if(!online)return 'off';if(saving)return 'saving';if(JSON.stringify(E)!==savedJSON)return 'wait';return 'idle'}
+function updSync(){if(!SYNC)return;const st=syncState();const el=$('#sync');el.hidden=false;el.className='sync '+st;el.title=SYNC_TXT[st];$('.t',el).textContent={idle:'Mentve',wait:'Mentésre vár',saving:'Mentés…',off:'Offline',conflict:'Ütközés',load:'Betöltés…'}[st];status(SYNC_TXT[st]+(st==='idle'?' · '+new Date().toLocaleTimeString('hu-HU',{hour:'2-digit',minute:'2-digit'}):''))}
+function scheduleSave(ms){if(!SYNC)return;clearTimeout(syncT);syncT=setTimeout(()=>save(false),ms==null?900:ms);updSync()}
+function applyEdits(nE){
+  EDS.forEach(el=>{const o=ORIG[el.dataset.eid];if(!o)return;if(el.hasAttribute('data-e'))el.innerHTML=o.h;o.s?el.setAttribute('style',o.s):el.removeAttribute('style')});
+  E={t:nE.t||{},skip:Array.isArray(nE.skip)?nE.skip:[]};if(nE.dur)E.dur=nE.dur;if(nE.sound!=null)E.sound=nE.sound;
+  for(const[id,v]of Object.entries(E.t)){const el=EDS[+id];if(!el)continue;if(v.h!=null&&el.hasAttribute('data-e'))el.innerHTML=v.h;if(v.s!=null)el.setAttribute('style',v.s)}
+  slides.forEach(s=>s.removeAttribute('data-skip'));E.skip.forEach(i=>slides[i]&&slides[i].setAttribute('data-skip',''));
+  DUR={...DUR0,...(E.dur||{})};root.dataset.durations=JSON.stringify(DUR);
+  root.dataset.sound=E.sound==null?SOUND0:(E.sound?'1':'0');
+  renderCalcs();buildTicks();markEmpty();applyEditable();paintAll();store.set(EKEY,E);go(cur);
+}
+function applyRemote(j){
+  remoteVersion=j.version;
+  if(j.data&&j.data.rev===REV&&j.data.edits){applyEdits(j.data.edits);savedJSON=JSON.stringify(E)}
+  else savedJSON=null; // shared copy belongs to an older layout: ours replaces it on the next save
+  updSync();
+}
+async function save(force){
+  if(!SYNC||!loaded)return;
+  clearTimeout(syncT);
+  if(saving){syncT=setTimeout(()=>save(force),700);return}
+  if(conflict&&!force)return;
+  const body=JSON.stringify(E);
+  if(!force&&body===savedJSON){updSync();return}
+  saving=true;updSync();
+  try{
+    const r=await fetch(API,{method:'PUT',headers:{'Content-Type':'application/json'},cache:'no-store',body:JSON.stringify({base:force?'force':(remoteVersion||'none'),data:{rev:REV,edits:E}})});
+    const j=await r.json().catch(()=>({}));
+    if(r.ok){remoteVersion=j.version;savedJSON=body;online=true;conflict=null;$('#dlg-conflict').open&&$('#dlg-conflict').close()}
+    else if(r.status===409){
+      online=true;
+      if(j.data&&j.data.rev===REV){conflict=j;openDlg('#dlg-conflict')}
+      else{remoteVersion=j.version||null;saving=false;return save(false)}
+    }
+    else if(r.status===400||r.status===413){online=true;toast(r.status===413?'A módosítások túl nagyok a közös tárhelyhez.':'A közös tárhely elutasította a mentést.')}
+    else{online=false;clearTimeout(retryT);retryT=setTimeout(()=>save(false),8000)}
+  }catch(e){online=false;clearTimeout(retryT);retryT=setTimeout(()=>save(false),8000)}
+  finally{saving=false;updSync()}
+}
+async function fetchRemote(){const r=await fetch(API,{cache:'no-store'});if(r.status===404)return {empty:true};if(!r.ok)throw new Error(r.status);return r.json()}
+const typingNow=()=>{const a=document.activeElement;return !!a&&(a.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))};
+async function poll(){
+  if(!SYNC||document.hidden||saving||conflict)return;
+  if(!loaded)return syncBoot();
+  try{
+    const j=await fetchRemote();online=true;
+    if(j.empty){updSync();return}
+    if(j.version!==remoteVersion){
+      if(JSON.stringify(E)!==savedJSON||typingNow()){updSync();return}
+      applyRemote(j);toast('Valaki más módosította a diákat. A friss változat betöltve.');
+    }
+  }catch(e){online=false}
+  updSync();
+}
+async function syncBoot(){
+  if(!SYNC)return;
+  updSync();
+  try{
+    const j=await fetchRemote();online=true;loaded=true;
+    if(j.empty){remoteVersion='none';savedJSON=null;const has=Object.keys(E.t).length||E.skip.length||E.dur;if(has)save(false);else savedJSON=JSON.stringify(E)}
+    else applyRemote(j);
+  }catch(e){online=false;setTimeout(syncBoot,8000)}
+  updSync();
+}
+$('#cf-theirs').onclick=()=>{const j=conflict;conflict=null;$('#dlg-conflict').close();applyRemote(j);toast('A közös változat betöltve.')};
+$('#cf-mine').onclick=()=>{conflict=null;$('#dlg-conflict').close();save(true)};
+$('#sync').onclick=()=>{if(conflict)openDlg('#dlg-conflict');else save(false)};
+setInterval(poll,15000);addEventListener('focus',poll);document.addEventListener('visibilitychange',()=>{if(!document.hidden)poll()});
+addEventListener('pagehide',()=>{if(!SYNC||!loaded||conflict||saving)return;const body=JSON.stringify(E);if(body===savedJSON)return;const payload=JSON.stringify({base:remoteVersion||'none',data:{rev:REV,edits:E}});if(payload.length<60000){try{fetch(API,{method:'PUT',headers:{'Content-Type':'application/json'},body:payload,keepalive:true})}catch(e){}}});
+
+/* ---------- init ---------- */
+slides.forEach((s,i)=>s.setAttribute('data-no',String(i+1).padStart(2,'0')));
+renderCalcs();buildTicks();paintAll();markEmpty();applyEditable();fit();slides[cur].classList.add('current');go(cur);
+syncBoot();
+})();
+</script>
+</body>
+</html>
