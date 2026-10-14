@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="hu" data-rev="v4" data-durations='{"open":10,"basics":30,"walk":40,"lunch":60,"r1":20,"p1":15,"r2":20,"p2":15,"brk":10,"r3":20,"p3":15,"sum":30,"rep":7}' data-sound="1">
+<html lang="hu" data-rev="v5" data-durations='{"open":10,"basics":30,"walk":40,"lunch":60,"r1":20,"p1":10,"r2":20,"p2":10,"brk":10,"r3":20,"p3":10,"sum":30,"rep":5}' data-sound="1">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -81,9 +81,9 @@ body.on-cover #foot,body.on-cover #progress{display:none}
 .rule .lbl{color:var(--cyan);flex:none}
 
 /* agenda table */
-.agt{width:100%;border-collapse:collapse;margin-top:26px;font-size:18px;table-layout:fixed}
-.agt th{font-family:var(--m);font-weight:500;font-size:15px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);text-align:left;padding:0 16px 10px;border-bottom:1px solid var(--line2)}
-.agt td{padding:6px 16px;border-bottom:1px solid var(--line);vertical-align:baseline;line-height:1.35;color:var(--soft)}
+.agt{width:100%;border-collapse:collapse;margin-top:34px;font-size:20.5px;table-layout:fixed}
+.agt th{font-family:var(--m);font-weight:500;font-size:15px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);text-align:left;padding:0 16px 12px;border-bottom:1px solid var(--line2)}
+.agt td{padding:10px 16px;border-bottom:1px solid var(--line);vertical-align:baseline;line-height:1.35;color:var(--soft)}
 .agt tbody tr{cursor:pointer;transition:background .15s}
 .agt tbody tr:hover{background:rgba(79,209,232,.07)}
 body.editing .agt tbody tr{cursor:text}
@@ -95,8 +95,8 @@ body.editing .agt tbody tr{cursor:text}
 .agt .out{color:var(--aqua)}
 .agt tr.brk .nm{color:var(--dim);font-weight:600}
 .agt tr.pm td{border-top:1px solid var(--line2)}
-.agenda-foot{margin-top:auto!important;display:flex;justify-content:space-between;align-items:baseline;gap:40px;font-size:21px;color:var(--soft)}
-.agenda-foot b{font-family:var(--m);color:var(--ink);font-size:19px;font-weight:600;white-space:nowrap}
+.agenda-foot{margin-top:auto!important;display:flex;justify-content:space-between;align-items:baseline;gap:40px;font-size:24px;color:var(--soft)}
+.agenda-foot b{font-family:var(--m);color:var(--ink);font-size:22px;font-weight:600;white-space:nowrap}
 
 /* collins intro */
 .split{display:grid;grid-template-columns:1.05fr .95fr;gap:100px;align-items:center;flex:1}
@@ -530,27 +530,24 @@ body.editing #sheets-view{top:58px}
     <h2 class="h2" data-e>A workshop menete és eredményei</h2>
   </div>
   <table class="agt" data-m>
-    <colgroup><col style="width:96px"><col style="width:420px"><col><col style="width:178px"><col style="width:250px"></colgroup>
+    <colgroup><col style="width:92px"><col style="width:350px"><col><col style="width:196px"><col style="width:290px"></colgroup>
     <thead><tr><th data-e>Idő</th><th data-e>Blokk</th><th data-e>Tartalom</th><th data-e>Munkaforma</th><th data-e>Eredmény</th></tr></thead>
     <tbody>
       <tr data-goto="open"><td class="t calc" data-calc="min:open"></td><td class="nm" data-e data-phasename="open">Nyitás</td><td data-e>Cél, menet, munkaszabály</td><td class="fm"><span data-e>Közös</span></td><td class="out" data-e>Közös cél</td></tr>
       <tr data-goto="basics"><td class="t calc" data-calc="min:basics"></td><td class="nm" data-e data-phasename="basics">Elméleti alapok</td><td data-e>Produktív előrelátás, négy kockázattípus</td><td class="fm"><span data-e>Közös</span></td><td class="out" data-e>Egységes fogalmak</td></tr>
-      <tr data-goto="walk"><td class="t calc" data-calc="min:walk"></td><td class="nm" data-e data-phasename="walk">Folyamatbejárás</td><td data-e>A folyamat közös végiggondolása, szakaszonként</td><td class="fm"><span data-e>Közös</span></td><td class="out" data-e>Közös kép a folyamatról</td></tr>
+      <tr data-goto="walk"><td class="t calc" data-calc="min:walk"></td><td class="nm" data-e data-phasename="walk">Folyamatbejárás</td><td data-e>A folyamat közös végiggondolása</td><td class="fm"><span data-e>Közös</span></td><td class="out" data-e>Közös kép a folyamatról</td></tr>
       <tr data-goto="lunch" class="brk"><td class="t calc" data-calc="min:lunch"></td><td class="nm" data-e data-phasename="lunch">Ebédszünet</td><td data-e></td><td class="fm"></td><td class="out" data-e></td></tr>
-      <tr data-goto="r1" class="pm"><td class="t calc" data-calc="min:r1"></td><td class="nm" data-e data-phasename="r1">1. kör: Beszerzés és beérkezés</td><td data-e>Kockázatok azonosítása és kidolgozása</td><td class="fm"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><span data-e>Csapatmunka</span></span></td><td class="out" data-e>Kidolgozott kockázatok</td></tr>
-      <tr data-goto="p1"><td class="t calc" data-calc="min:p1"></td><td class="nm" data-e data-phasename="p1">1. kör: Csapatbeszámolók</td><td data-e>2 × 7 perc bemutatás, majd összevonás</td><td class="fm"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><span data-e>Közös</span></span></td><td class="out" data-e>Közös lista bővül</td></tr>
-      <tr data-goto="r2"><td class="t calc" data-calc="min:r2"></td><td class="nm" data-e data-phasename="r2">2. kör: Termelés és minőség</td><td data-e>Kockázatok azonosítása és kidolgozása</td><td class="fm"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><span data-e>Csapatmunka</span></span></td><td class="out" data-e>Kidolgozott kockázatok</td></tr>
-      <tr data-goto="p2"><td class="t calc" data-calc="min:p2"></td><td class="nm" data-e data-phasename="p2">2. kör: Csapatbeszámolók</td><td data-e>2 × 7 perc bemutatás, majd összevonás</td><td class="fm"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><span data-e>Közös</span></span></td><td class="out" data-e>Közös lista bővül</td></tr>
+      <tr data-goto="r1"><td class="t calc" data-calc="round:1"></td><td class="nm" data-e data-phasename="r1">1. kör: Beszerzés és beérkezés</td><td data-e><span class="calc" data-calc="min:r1">20′</span> csapatmunka, majd 2 × <span class="calc" data-calc="min:rep">5′</span> beszámoló</td><td class="fm"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><span data-e>Csapatmunka</span></span></td><td class="out" data-e>Bemutatott kockázatok</td></tr>
+      <tr data-goto="r2"><td class="t calc" data-calc="round:2"></td><td class="nm" data-e data-phasename="r2">2. kör: Termelés és minőség</td><td data-e><span class="calc" data-calc="min:r2">20′</span> csapatmunka, majd 2 × <span class="calc" data-calc="min:rep">5′</span> beszámoló</td><td class="fm"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><span data-e>Csapatmunka</span></span></td><td class="out" data-e>Bemutatott kockázatok</td></tr>
       <tr data-goto="brk" class="brk"><td class="t calc" data-calc="min:brk"></td><td class="nm" data-e data-phasename="brk">Szünet</td><td data-e></td><td class="fm"></td><td class="out" data-e></td></tr>
-      <tr data-goto="r3"><td class="t calc" data-calc="min:r3"></td><td class="nm" data-e data-phasename="r3">3. kör: Értékesítés és kiszállítás</td><td data-e>Kockázatok azonosítása és kidolgozása</td><td class="fm"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><span data-e>Csapatmunka</span></span></td><td class="out" data-e>Kidolgozott kockázatok</td></tr>
-      <tr data-goto="p3"><td class="t calc" data-calc="min:p3"></td><td class="nm" data-e data-phasename="p3">3. kör: Csapatbeszámolók</td><td data-e>2 × 7 perc bemutatás, majd összevonás</td><td class="fm"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><span data-e>Közös</span></span></td><td class="out" data-e>Teljes közös lista</td></tr>
+      <tr data-goto="r3"><td class="t calc" data-calc="round:3"></td><td class="nm" data-e data-phasename="r3">3. kör: Értékesítés és kiszállítás</td><td data-e><span class="calc" data-calc="min:r3">20′</span> csapatmunka, majd 2 × <span class="calc" data-calc="min:rep">5′</span> beszámoló</td><td class="fm"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><span data-e>Csapatmunka</span></span></td><td class="out" data-e>Teljes közös lista</td></tr>
       <tr data-goto="sum"><td class="t calc" data-calc="min:sum"></td><td class="nm" data-e data-phasename="sum">Összegzés és zárás</td><td data-e>Három prioritás, intézkedés, felelős, határidő</td><td class="fm"><span data-e>Közös</span></td><td class="out" data-e>Akcióterv</td></tr>
     </tbody>
   </table>
-  <p class="agenda-foot" data-m><span data-e>Két vegyes, négyfős csapat, mindhárom körben ugyanazon a folyamatszakaszon.</span><b>Délelőtt <span class="calc" data-calc="am">80</span> · délután <span class="calc" data-calc="pm">145</span> · összesen <span class="calc" data-calc="total">225</span> perc</b></p>
+  <p class="agenda-foot" data-m><span data-e>Két vegyes, négyfős csapat, mindhárom körben ugyanazon a folyamatszakaszon.</span><b>Délelőtt <span class="calc" data-calc="am">80</span> · délután <span class="calc" data-calc="pm">130</span> · összesen <span class="calc" data-calc="total">210</span> perc</b></p>
   <aside class="notes" data-e>
     <p>A táblázat sorai kattinthatók: a megfelelő blokk első diájára ugranak. Szerkesztés módban nem ugranak, ott a szöveget írod át.</p>
-    <p>Az óra ikon a mért idejű blokkokat jelöli: a három csapatkört és utánuk a csapatbeszámolókat (körönként két óra, csapatonként egy). Az összesen az ebéd nélkül értendő. Az időtartamokat a <b>⋯ → Időtartamok</b> menüben állíthatod.</p>
+    <p>Egy kör egy sor: a csapatmunka és utána rögtön a két csapat beszámolója. Az óra ikon a mért idejű köröket jelöli. Az összesen az ebéd nélkül értendő. Az időtartamokat a <b>⋯ → Időtartamok</b> menüben állíthatod.</p>
   </aside>
 </section>
 
@@ -847,11 +844,11 @@ body.editing #sheets-view{top:58px}
 
 <!-- ================= REPORTS 1 ================= -->
 <section class="slide work" data-phase="p1">
-  <p class="kick" data-m><span data-e>1. kör · Csapatbeszámolók</span> · <span class="calc" data-calc="min:p1">15′</span></p>
+  <p class="kick" data-m><span data-e>1. kör · Csapatbeszámolók</span> · <span class="calc" data-calc="min:p1">10′</span></p>
   <div class="work-grid rep-grid">
     <div>
       <h2 class="h2" data-e data-m>A csapatok bemutatják a kidolgozott kockázatokat</h2>
-      <p class="lbl sub-lbl" data-m><span data-e>Csapatonként</span> <span class="calc" data-calc="min:rep">7′</span></p>
+      <p class="lbl sub-lbl" data-m><span data-e>Csapatonként</span> <span class="calc" data-calc="min:rep">5′</span></p>
       <ul class="pres" data-m>
         <li data-e>A kockázati állítás: ok, esemény, hatás</li>
         <li data-e>A bizonyíték és a meglévő kontroll</li>
@@ -898,11 +895,11 @@ body.editing #sheets-view{top:58px}
 
 <!-- ================= REPORTS 2 ================= -->
 <section class="slide work" data-phase="p2">
-  <p class="kick" data-m><span data-e>2. kör · Csapatbeszámolók</span> · <span class="calc" data-calc="min:p2">15′</span></p>
+  <p class="kick" data-m><span data-e>2. kör · Csapatbeszámolók</span> · <span class="calc" data-calc="min:p2">10′</span></p>
   <div class="work-grid rep-grid">
     <div>
       <h2 class="h2" data-e data-m>A csapatok bemutatják a kidolgozott kockázatokat</h2>
-      <p class="lbl sub-lbl" data-m><span data-e>Csapatonként</span> <span class="calc" data-calc="min:rep">7′</span></p>
+      <p class="lbl sub-lbl" data-m><span data-e>Csapatonként</span> <span class="calc" data-calc="min:rep">5′</span></p>
       <ul class="pres" data-m>
         <li data-e>A kockázati állítás: ok, esemény, hatás</li>
         <li data-e>A bizonyíték és a meglévő kontroll</li>
@@ -957,11 +954,11 @@ body.editing #sheets-view{top:58px}
 
 <!-- ================= REPORTS 3 ================= -->
 <section class="slide work" data-phase="p3">
-  <p class="kick" data-m><span data-e>3. kör · Csapatbeszámolók</span> · <span class="calc" data-calc="min:p3">15′</span></p>
+  <p class="kick" data-m><span data-e>3. kör · Csapatbeszámolók</span> · <span class="calc" data-calc="min:p3">10′</span></p>
   <div class="work-grid rep-grid">
     <div>
       <h2 class="h2" data-e data-m>A csapatok bemutatják a kidolgozott kockázatokat</h2>
-      <p class="lbl sub-lbl" data-m><span data-e>Csapatonként</span> <span class="calc" data-calc="min:rep">7′</span></p>
+      <p class="lbl sub-lbl" data-m><span data-e>Csapatonként</span> <span class="calc" data-calc="min:rep">5′</span></p>
       <ul class="pres" data-m>
         <li data-e>A kockázati állítás: ok, esemény, hatás</li>
         <li data-e>A bizonyíték és a meglévő kontroll</li>
@@ -1187,6 +1184,7 @@ function renderCalcs(scope=document){
     const c=el.dataset.calc;if(!c)return;
     if(c==='total')el.textContent=total();
     else if(c==='am')el.textContent=sumOf(AM);
+    else if(c.startsWith('round:')){const n=c.slice(6);el.textContent=(minOf('r'+n)+minOf('p'+n))+'′'}
     else if(c==='pm')el.textContent=sumOf(PM);
     else if(c.startsWith('min:'))el.textContent=minOf(c.slice(4))+'′';
     else if(c.startsWith('range:')){const k=c.slice(6);el.textContent=`${starts[k]}–${starts[k]+minOf(k)}`}
