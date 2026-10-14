@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="hu" data-rev="v5" data-durations='{"open":10,"basics":30,"walk":40,"lunch":60,"r1":20,"p1":10,"r2":20,"p2":10,"brk":10,"r3":20,"p3":10,"sum":30,"rep":5}' data-sound="1">
+<html lang="hu" data-rev="v6" data-durations='{"basics":30,"walk":40,"lunch":60,"r1":20,"p1":10,"r2":20,"p2":10,"brk":10,"r3":20,"p3":10,"sum":30,"rep":5}' data-sound="1">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -81,7 +81,7 @@ body.on-cover #foot,body.on-cover #progress{display:none}
 /* agenda table */
 .agt{width:100%;border-collapse:collapse;margin-top:34px;font-size:20.5px;table-layout:fixed}
 .agt th{font-family:var(--m);font-weight:500;font-size:15px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim);text-align:left;padding:0 16px 12px;border-bottom:1px solid var(--line2)}
-.agt td{padding:10px 16px;border-bottom:1px solid var(--line);vertical-align:baseline;line-height:1.35;color:var(--soft)}
+.agt td{padding:14px 16px;border-bottom:1px solid var(--line);vertical-align:baseline;line-height:1.35;color:var(--soft)}
 .agt tbody tr{cursor:pointer;transition:background .15s}
 .agt tbody tr:hover{background:rgba(79,209,232,.07)}
 body.editing .agt tbody tr{cursor:text}
@@ -160,6 +160,48 @@ body.editing .qd{cursor:text}
 .crit4 b{color:var(--ink);font-weight:700}
 .bridge{margin-top:auto!important;font-size:26px;font-weight:600;line-height:1.5}
 .bridge span{color:var(--cyan)}
+
+/* risk method: description, quantification, probability */
+.rq{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:26px}
+.rq>div{min-width:0;display:flex;flex-direction:column}
+.rq .lbl,.rq .card .lbl{color:var(--cyan);margin-bottom:12px;font-size:16px;line-height:1.4}
+.rq .card{padding:20px 24px;gap:0;border-radius:16px}
+.chain{display:flex;flex-direction:column}
+.chain .fx{padding:11px 18px;gap:3px;border-radius:14px}
+.chain .fx b{font-size:23px}
+.chain .fx span{font-size:17.5px;line-height:1.4}
+.chain .dn{text-align:center;color:var(--dim);font-size:19px;line-height:1;padding:6px 0}
+.rq .card .rq-q{font-size:21px;font-weight:700;line-height:1.35;color:var(--ink)}
+.units,.whys{display:grid;grid-template-columns:auto 1fr;gap:0;margin:12px 0 0}
+.units dt,.whys dt{padding-right:16px!important}
+.units dt,.units dd,.whys dt,.whys dd{margin:0;padding:8px 0;border-top:1px solid var(--line);font-size:18.5px;line-height:1.35}
+.units dt{color:var(--soft)}
+.units dd{font-weight:700;color:var(--cyan);text-align:right}
+.whys dt{color:var(--ink);font-weight:700}
+.whys dd{color:var(--soft)}
+.rq .card .rq-h{margin-top:auto!important;padding-top:10px;font-size:16.5px;line-height:1.4;color:var(--dim)}
+.rq-ex{margin-top:18px;padding:14px 24px 16px;border-radius:16px;background:rgba(234,244,250,.035);border:1px solid var(--line)}
+.rq-ex .row1{display:flex;justify-content:space-between;align-items:baseline;gap:24px}
+.rq-ex .weak{font-size:18px}
+.rq-ex3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;margin-top:10px}
+.rq-ex3 p{font-size:18.5px;line-height:1.5;color:var(--ink)}
+.rq-ex3 b{color:var(--cyan)}
+.acc{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:auto!important}
+.acc li{font-size:18px;line-height:1.4;color:var(--soft);padding-top:10px;border-top:2px solid var(--line2)}
+.acc li b{color:var(--ink);font-weight:700}
+
+/* presentation slides: quantification and probability criteria */
+.crit2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:26px!important}
+.crit2>div{padding:14px 18px;border-radius:12px;background:rgba(234,244,250,.045);border:1px solid var(--line)}
+.crit2 .lbl{color:var(--cyan);display:block;margin-bottom:6px}
+.crit2 li{font-size:18.5px;line-height:1.45;color:var(--ink);padding:3px 0}
+
+/* process walk: bigger map, two questions */
+.mapgrid.walk .plate{height:540px}
+.mapgrid.walk .method{gap:34px}
+.mapgrid.walk .method .n{font-size:34px;line-height:1.1}
+.mapgrid.walk .method b{font-size:32px;line-height:1.25}
+.mapgrid.walk .method span{font-size:22px}
 
 /* map overview + method */
 .mapgrid{display:grid;grid-template-columns:auto 1fr;gap:56px;margin-top:26px;align-items:center;flex:1;min-height:0}
@@ -315,6 +357,8 @@ body.idle:not(.editing){cursor:none}
 #sync.wait i,#sync.saving i,#sync.load i{background:var(--amber)}
 #sync.off i{background:var(--dim)}
 #sync.conflict{border-color:var(--alarm);color:var(--alarm)}
+#sync.stale{border-color:var(--amber);color:var(--amber)}
+#sync.stale i{background:var(--amber)}
 #sync.conflict i{background:var(--alarm)}
 #sync[hidden]{display:none}
 #count{font-family:var(--m);font-size:14px;color:var(--ink);min-width:78px;text-align:center;font-variant-numeric:tabular-nums}
@@ -517,35 +561,16 @@ body.editing #sheets-view{top:58px}
   </aside>
 </section>
 
-<!-- ================= GOAL ================= -->
-<section class="slide" data-phase="open">
-  <div class="head" data-m>
-    <p class="kick" data-e>A workshop célja</p>
-    <h2 class="h2" data-e>Három eredménnyel zárjuk a workshopot</h2>
-  </div>
-  <div class="goals" data-m>
-    <div><h3 class="h3" data-e>Közös kockázati kép</h3><p data-e>Látjuk, hol sérülékeny a folyamatunk, és melyik terület érzékeli elsőként a hibát.</p></div>
-    <div><h3 class="h3" data-e>Három vállalati prioritás</h3><p data-e>A hatás súlyossága és a reagálásra rendelkezésre álló idő alapján választjuk ki őket.</p></div>
-    <div><h3 class="h3" data-e>Felelősök és határidők</h3><p data-e>Minden prioritáshoz kijelölt felelős, következő lépés és határidő tartozik.</p></div>
-  </div>
-  <p class="rule" data-m><span class="lbl" data-e>Munkaszabály</span><span data-e>Nyíltan beszélünk a gyenge pontokról, a saját területünkön is. A feltárt kockázat a közös munka eredménye.</span></p>
-  <aside class="notes" data-e>
-    <p>Mondd ki az elején: a cél a kockázatok feltárása, nem a felelősség keresése. Aki a saját területén talál gyenge pontot, a közös munkához járul hozzá.</p>
-    <p>A három eredményt a zárásnál ugyanezekkel a szavakkal ellenőrizzük.</p>
-  </aside>
-</section>
-
 <!-- ================= AGENDA (summary table) ================= -->
 <section class="slide" data-phase="open">
   <div class="head" data-m>
     <p class="kick" data-e>A workshop áttekintése</p>
-    <h2 class="h2" data-e>A workshop menete és eredményei</h2>
+    <h2 class="h2" data-e>A workshop menete</h2>
   </div>
   <table class="agt" data-m>
     <colgroup><col style="width:92px"><col style="width:350px"><col><col style="width:196px"><col style="width:290px"></colgroup>
     <thead><tr><th data-e>Idő</th><th data-e>Blokk</th><th data-e>Tartalom</th><th data-e>Munkaforma</th><th data-e>Eredmény</th></tr></thead>
     <tbody>
-      <tr data-goto="open"><td class="t calc" data-calc="min:open"></td><td class="nm" data-e data-phasename="open">Nyitás</td><td data-e>Cél, menet, munkaszabály</td><td class="fm"><span data-e>Közös</span></td><td class="out" data-e>Közös cél</td></tr>
       <tr data-goto="basics"><td class="t calc" data-calc="min:basics"></td><td class="nm" data-e data-phasename="basics">Elméleti alapok</td><td data-e>Produktív előrelátás, négy kockázattípus</td><td class="fm"><span data-e>Közös</span></td><td class="out" data-e>Egységes fogalmak</td></tr>
       <tr data-goto="walk"><td class="t calc" data-calc="min:walk"></td><td class="nm" data-e data-phasename="walk">Folyamatbejárás</td><td data-e>A folyamat közös végiggondolása</td><td class="fm"><span data-e>Közös</span></td><td class="out" data-e>Közös kép a folyamatról</td></tr>
       <tr data-goto="lunch" class="brk"><td class="t calc" data-calc="min:lunch"></td><td class="nm" data-e data-phasename="lunch">Ebédszünet</td><td data-e></td><td class="fm"></td><td class="out" data-e></td></tr>
@@ -553,19 +578,18 @@ body.editing #sheets-view{top:58px}
       <tr data-goto="r2"><td class="t calc" data-calc="round:2"></td><td class="nm" data-e data-phasename="r2">2. kör: Termelés és minőség</td><td data-e><span class="calc" data-calc="min:r2">20′</span> csapatmunka, majd 2 × <span class="calc" data-calc="min:rep">5′</span> beszámoló</td><td class="fm"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><span data-e>Csapatmunka</span></span></td><td class="out" data-e>Bemutatott kockázatok</td></tr>
       <tr data-goto="brk" class="brk"><td class="t calc" data-calc="min:brk"></td><td class="nm" data-e data-phasename="brk">Szünet</td><td data-e></td><td class="fm"></td><td class="out" data-e></td></tr>
       <tr data-goto="r3"><td class="t calc" data-calc="round:3"></td><td class="nm" data-e data-phasename="r3">3. kör: Értékesítés és kiszállítás</td><td data-e><span class="calc" data-calc="min:r3">20′</span> csapatmunka, majd 2 × <span class="calc" data-calc="min:rep">5′</span> beszámoló</td><td class="fm"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></svg><span data-e>Csapatmunka</span></span></td><td class="out" data-e>Teljes közös lista</td></tr>
-      <tr data-goto="sum"><td class="t calc" data-calc="min:sum"></td><td class="nm" data-e data-phasename="sum">Összegzés és zárás</td><td data-e>Három prioritás, intézkedés, felelős, határidő</td><td class="fm"><span data-e>Közös</span></td><td class="out" data-e>Akcióterv</td></tr>
+      <tr data-goto="sum"><td class="t calc" data-calc="min:sum"></td><td class="nm" data-e data-phasename="sum">Összegzés és zárás</td><td data-e>Három prioritás: kár, valószínűség, intézkedés</td><td class="fm"><span data-e>Közös</span></td><td class="out" data-e>Akcióterv</td></tr>
     </tbody>
   </table>
-  <p class="agenda-foot" data-m><span data-e>Két vegyes, négyfős csapat, mindhárom körben ugyanazon a folyamatszakaszon.</span><b>Délelőtt <span class="calc" data-calc="am">80</span> · délután <span class="calc" data-calc="pm">130</span> · összesen <span class="calc" data-calc="total">210</span> perc</b></p>
   <aside class="notes" data-e>
     <p>A táblázat sorai kattinthatók: a megfelelő blokk első diájára ugranak. Szerkesztés módban nem ugranak, ott a szöveget írod át.</p>
-    <p>Egy kör egy sor: a csapatmunka és utána rögtön a két csapat beszámolója. Az óra ikon a mért idejű köröket jelöli. Az összesen az ebéd nélkül értendő. Az időtartamokat a <b>⋯ → Időtartamok</b> menüben állíthatod.</p>
+    <p>Egy kör egy sor: a csapatmunka és utána rögtön a két csapat beszámolója. Az óra ikon a mért idejű köröket jelöli. Az időtartamokat a <b>⋯ → Időtartamok</b> menüben állíthatod.</p>
   </aside>
 </section>
 
 <!-- ================= COLLINS ================= -->
 <section class="slide" data-phase="basics">
-  <p class="kick" data-e data-m>Elméleti alapok · Jim Collins és Morten T. Hansen: Great by Choice</p>
+  <p class="kick" data-e data-m>Elméleti alapok · Jim Collins és Morten T. Hansen: Tudatosan kiváló</p>
   <div class="split">
     <p class="statement" data-e data-m>Bizonytalan környezetben <span>a fegyelmezett felkészülés</span> teremt tartós előnyt.</p>
     <div class="col" data-m>
@@ -577,24 +601,6 @@ body.editing #sheets-view{top:58px}
   <aside class="notes" data-e>
     <p>Forrás: Jim Collins és Morten T. Hansen, <i>Great by Choice</i> (2011), 5. fejezet: „Leading above the Death Line”. A három gyakorlat: 103. o.; a kockázattípusok: 107. o.; az időalapú kockázat: 110. o. A könyv magyar kiadásának címe a Moly adatbázisa szerint <i>Tudatosan kiváló</i>.</p>
     <p>Egyetlen gondolatot vigyenek innen: a felkészülés vezetői fegyelem, nem óvatoskodás.</p>
-  </aside>
-</section>
-
-<!-- ================= PRACTICES ================= -->
-<section class="slide" data-phase="basics">
-  <div class="head" data-m>
-    <p class="kick" data-e>Produktív előrelátás</p>
-    <h2 class="h2" data-e>Három gyakorlat teszi a kockázattudatosságot cselekvéssé</h2>
-  </div>
-  <div class="cols3" data-m>
-    <div class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18h16M6 18V11M10 18V8M14 18V10M18 18V6"/></svg></span><h3 class="h3" data-e>Tartalékképzés kedvező időszakban</h3><p data-e>Pénzügyi, készlet- és kapacitástartalékot akkor építünk, amikor még nincs rá szükség.</p></div>
-    <div class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8-8 9-4.6-1-8-4.5-8-9V6l8-3z"/></svg></span><h3 class="h3" data-e>A kockázati kitettség korlátozása</h3><p data-e>Nem vállalunk olyan kockázatot, amelynek bekövetkezése a vállalat működését veszélyeztetné.</p></div>
-    <div class="card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M20 20l-4-4"/></svg></span><h3 class="h3" data-e>Áttekintés, majd fókuszált végrehajtás</h3><p data-e>Rendszeresen felmérjük a környezet változásait, és a feltárt veszélyekre célzott intézkedéssel reagálunk.</p></div>
-  </div>
-  <p class="aim" data-m><span class="lbl" data-e>Cél</span><span data-e>A vállalat bármilyen kedvezőtlen fordulat után működőképes maradjon, és folytathassa növekedési céljait.</span></p>
-  <aside class="notes" data-e>
-    <p>Collins három gyakorlata: tartalékok és biztonsági sáv (buffers, shock absorbers), a kockázati kitettség korlátozása, valamint „Zoom Out, Then Zoom In”.</p>
-    <p>A „Fire Bullets, Then Cannonballs” (kis próba a nagy elköteleződés előtt) kapcsolódó elv, nem negyedik gyakorlat. Az aszimmetrikus kockázatnál kezelési lehetőségként jelenik meg.</p>
   </aside>
 </section>
 
@@ -691,134 +697,88 @@ body.editing #sheets-view{top:58px}
   </aside>
 </section>
 
-<!-- ================= RISK STATEMENT (transition) ================= -->
+<!-- ================= RISK: DESCRIBE, QUANTIFY, PROBABILITY ================= -->
 <section class="slide" data-phase="basics">
   <div class="head" data-m>
     <p class="kick" data-e>Az elmélettől a gyakorlatig</p>
-    <h2 class="h2" data-e>Egy kockázatot három elemmel írunk le</h2>
+    <h2 class="h2" data-e>Leírás, számszerűsítés, valószínűség</h2>
   </div>
-  <div class="formula" data-m>
-    <div class="fx c1"><b data-e>Kiváltó ok</b><span data-e>Milyen gyengeség vagy függőség idézheti elő?</span></div>
-    <div class="arr">→</div>
-    <div class="fx c2"><b data-e>Kockázati esemény</b><span data-e>Mi történhet, melyik folyamatlépésnél?</span></div>
-    <div class="arr">→</div>
-    <div class="fx c3"><b data-e>Üzleti hatás</b><span data-e>Mit okoz, és kit érint?</span></div>
+  <div class="rq" data-m>
+    <div>
+      <p class="lbl" data-e>1 · Leírás</p>
+      <div class="chain">
+        <div class="fx c1"><b data-e>Kiváltó ok</b><span data-e>Milyen gyengeség vagy függőség idézheti elő?</span></div>
+        <div class="dn">↓</div>
+        <div class="fx c2"><b data-e>Kockázati esemény</b><span data-e>Mi történhet, melyik folyamatlépésnél?</span></div>
+        <div class="dn">↓</div>
+        <div class="fx c3"><b data-e>Üzleti hatás</b><span data-e>Mit okoz, és kit érint?</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <p class="lbl" data-e>2 · Számszerűsítés</p>
+      <p class="rq-q" data-e>Mekkora a lehetséges kár forintban?</p>
+      <dl class="units">
+        <dt data-e>Értékesítési kiesés</dt><dd data-e>10 Ft / palack</dd>
+        <dt data-e>Selejtezés</dt><dd data-e>45 Ft / palack</dd>
+        <dt data-e>Direkt kár</dt><dd data-e>az anyagi kár mértéke</dd>
+        <dt data-e>Emberélet</dt><dd data-e>75–100 millió Ft</dd>
+      </dl>
+      <p class="rq-h" data-e>Érintett mennyiség × egységérték</p>
+    </div>
+    <div class="card">
+      <p class="lbl" data-e>3 · Valószínűség</p>
+      <p class="rq-q" data-e>Mennyire valószínű, és mit jelent?</p>
+      <dl class="whys">
+        <dt data-e>Gyakoriság</dt><dd data-e>Milyen gyakran fordulhat elő?</dd>
+        <dt data-e>Indoklás</dt><dd data-e>Miért ennyi? Mi a bizonyíték?</dd>
+        <dt data-e>Következmény</dt><dd data-e>Mit jelent a folyamatra?</dd>
+      </dl>
+      <p class="rq-h" data-e>Pl. évente egyszer, havonta, minden szállításnál</p>
+    </div>
   </div>
-  <div class="stmt" data-m>
-    <div class="card"><p class="lbl" data-e>Szemléltető példa</p><p class="weak" data-e>Pontatlan: <s>„Beszállítói problémák.”</s></p><p class="strong" data-e>Pontos: <span class="u1">mivel a kritikus alapanyagnak egyetlen minősített beszállítója van,</span> <span class="u2">egy szállítási kiesés leállíthatja a gyártást,</span> <span class="u3">ami késedelmes vevői szállításokhoz vezet.</span></p></div>
-    <div class="card"><p class="lbl" data-e>A jó megfogalmazás ismérvei</p><ul class="crit4"><li data-e><b>Konkrét:</b> folyamatlépéshez vagy átadáshoz köthető.</li><li data-e><b>Ok-okozati:</b> elkülöníti a kiváltó okot az eseménytől.</li><li data-e><b>Mérhető hatású:</b> megnevezi, kit és milyen mértékben érint.</li><li data-e><b>Kezelhető:</b> hozzárendelhető felelős és intézkedés.</li></ul></div>
+  <div class="rq-ex" data-m>
+    <div class="row1"><p class="lbl" data-e>Szemléltető példa, feltételezett számokkal</p><p class="weak" data-e>Pontatlan: <s>„Beszállítói problémák.”</s></p></div>
+    <div class="rq-ex3">
+      <p data-e><span class="u1">Mivel a kritikus alapanyagnak egyetlen minősített beszállítója van,</span> <span class="u2">egy szállítási kiesés leállíthatja a palackozást,</span> <span class="u3">ami elmaradt vevői szállításokhoz vezet.</span></p>
+      <p data-e>2 nap × 50 000 palack/nap × 10 Ft = <b>1 millió Ft</b> értékesítési kiesés.</p>
+      <p data-e><b>Évente egyszer reális:</b> egyetlen gyárból szállítanak, biztonsági készlet nincs. Következmény: második beszállító vagy kétnapi készlet.</p>
+    </div>
   </div>
-  <p class="bridge" data-e data-m>A következő blokkban ezt a módszert <span>a saját folyamatunkra alkalmazzuk.</span></p>
+  <ul class="acc" data-m>
+    <li data-e><b>Konkrét:</b> melyik lépésnél történik?</li>
+    <li data-e><b>Ok-okozati:</b> az ok és az esemény külön</li>
+    <li data-e><b>Számszerű:</b> a kár forintban</li>
+    <li data-e><b>Indokolt:</b> a valószínűség tényre épül</li>
+  </ul>
   <aside class="notes" data-e>
-    <p>Ez az átvezető dia az elmélet és a csapatmunka között. Hangsúlyozd: a kockázattípus csak a megfogalmazás után jön. Előbb pontosan leírjuk, mi történhet, utána döntjük el, melyik típusba tartozik.</p>
-    <p>Gyakori hiba, hogy a kiváltó okot és az eseményt összemossák. A „nincs második beszállító” ok, a „leáll a gyártás” esemény, a „késik a vevői szállítás” hatás.</p>
-    <p>A példa szemléltetés, nem állítás a Fonte Viva beszállítóiról.</p>
+    <p>Három lépés: előbb pontosan leírjuk a kockázatot, aztán forintban számszerűsítjük a lehetséges kárt, végül megbecsüljük, mennyire valószínű, és mit jelent ez a folyamatra. A kockázattípus csak ezután jön.</p>
+    <p>Egységértékek a számszerűsítéshez: értékesítési kiesés 10 Ft/palack, selejtezés 45 Ft/palack, direkt kár az anyagi kár mértéke szerint, emberélet 75–100 millió Ft. A kár: érintett mennyiség × egységérték.</p>
+    <p>Gyakori hiba, hogy a kiváltó okot és az eseményt összemossák. A „nincs második beszállító” ok, a „leáll a palackozás” esemény, az „elmaradt vevői szállítás” hatás.</p>
+    <p>A példa szemléltetés feltételezett számokkal, nem állítás a Fonte Viva beszállítóiról vagy termeléséről.</p>
   </aside>
 </section>
 
-<!-- ================= MAP + METHOD ================= -->
+<!-- ================= PROCESS WALK ================= -->
 <section class="slide" data-phase="walk">
   <div class="head" data-m>
     <p class="kick" data-e>Folyamatbejárás</p>
-    <h2 class="h2" data-e>Így járjuk be a folyamatot</h2>
-    <p class="lead" data-e>Három elv segít a kockázatok rendszerezett azonosításában.</p>
+    <h2 class="h2" data-e>Közösen végigmegyünk a teljes folyamaton</h2>
   </div>
-  <div class="mapgrid">
+  <div class="mapgrid walk">
     <div class="plate" data-zoom role="button" tabindex="0" aria-label="Az eredeti folyamatábra nagyítása"></div>
     <div class="methodcol" data-m>
       <ol class="method">
-        <li><span class="n">1</span><b data-e>Kövessük végig az áramlást</b><span data-e>Lépésről lépésre: mi érkezik, mi történik vele, mi megy tovább?</span></li>
-        <li><span class="n">2</span><b data-e>Álljunk meg minden átadásnál</b><span data-e>Ahol felelős, rendszer vagy helyszín változik, ott nő a hibalehetőség.</span></li>
-        <li><span class="n">3</span><b data-e>Különítsük el a mai működést a tervtől</b><span data-e>A hiányzó és a bevezetés alatt álló lépések külön kockázatot hordoznak.</span></li>
+        <li><span class="n">+</span><b data-e>Mit kellene hozzáadni?</b><span data-e>Hiányzó lépés, ellenőrzés vagy átadás</span></li>
+        <li><span class="n">−</span><b data-e>Mi felesleges?</b><span data-e>Ismétlődő vagy elhagyható lépés</span></li>
       </ol>
       <p class="legend" data-e>Az ábrán sárga jelölés: új vagy módosult lépés. Piros keret: hiányzó, bevezetendő lépés.</p>
     </div>
   </div>
   <aside class="notes" data-e>
-    <p>Ez a blokk nem a 23 lépés felolvasása. A cél, hogy mindenki ugyanazzal a módszerrel nézzen a folyamatra. A következő három dia egy-egy szakaszon mutatja be a három elvet.</p>
-    <p>Szakaszonként a terület vezetője egy-két mondatban mondja el: mi a bemenet, mi az elvárt eredmény, ki adja át kinek, és van-e fontos időfeltétel. Ne találjatok ki működési részleteket: ami nem egyértelmű, az tisztázandó.</p>
+    <p>Közös munka a nyomtatott folyamatábrán, szakaszonként: beszerzés és beérkezés, termelés és minőség, értékesítés és kiszállítás. Minden lépésnél két kérdés: kell-e ide új lépés, ellenőrzés vagy átadás, és van-e felesleges vagy ismétlődő lépés.</p>
+    <p>A terület vezetője röviden mondja el, mi a bemenet, mi az elvárt eredmény, és ki adja át kinek. Ne találjatok ki működési részleteket: ami nem egyértelmű, az tisztázandó. A javaslatokat jegyezd fel a közös felületen.</p>
+    <p>Lehetséges kérdések. Beszerzés: mi történik, ha a szállítmány eltér a rendeléstől (P02 → P03), és egyezik-e a rendszerkészlet a valóssal (P04). Termelés: mennyire megbízhatók a tervezési adatok (P06), mi van, ha elmarad a mintavétel vagy a címkebeolvasás (P07), és mi akadályozza, hogy nem felszabadított tétel továbbjusson (P10 → Ú1, 24–48 óra). Értékesítés: a hiányzó visszaigazolás és érkezési idő (Ú2, Ú3), az új automatikus szállítólevél (P13) és a kiszállítás felelőse (P14).</p>
     <p>Az ábra az eredeti, 2026. októberi workshoptervezet, változtatás nélkül. Az ábrára kattintva nagyítható.</p>
-  </aside>
-</section>
-
-<!-- ================= SECTION 1 ================= -->
-<section class="slide" data-phase="walk">
-  <div class="head" data-m>
-    <p class="kick" data-e>Folyamatbejárás · 1. szakasz · 1. elv</p>
-    <h2 class="h2" data-e>Beszerzés és beérkezés</h2>
-  </div>
-  <div class="sec-body">
-    <div class="crops">
-      <div class="crop" data-zoom role="button" tabindex="0" aria-label="Nagyítás" style="--x:14;--y:64;--w:332;--h:318"></div>
-      <div class="crop" data-zoom role="button" tabindex="0" aria-label="Nagyítás" style="--x:14;--y:372;--w:332;--h:318"></div>
-    </div>
-    <div class="principle" data-m>
-      <p class="pr" data-e>Kövessük végig az áramlást lépésről lépésre</p>
-      <p class="pe" data-e>Minden lépésnél: mi a bemenet, mi az elvárt eredmény, mi akadályozhatja, és mi jelzi ma a hibát?</p>
-      <div class="stops">
-        <div class="stop"><span class="code" data-e>P02 → P03</span><p data-e>Mi történik, ha a beérkező szállítmány eltér a megrendeléstől?</p></div>
-        <div class="stop"><span class="code" data-e>P04</span><p data-e>Mi biztosítja, hogy a rendszerben nyilvántartott készlet megegyezzen a valóssal?</p></div>
-        <div class="stop"><span class="code" data-e>→ Termelés</span><p data-e>Milyen állapotban és mikorra kell az alapanyagnak raktáron lennie?</p></div>
-      </div>
-    </div>
-  </div>
-  <aside class="notes" data-e>
-    <p>Lépések: P01.1 Tendereztetés → P01 Árajánlat bekérése → P02 Megrendelés → P03 Szállítólevél ellenőrzése fizikai beérkezéskor → P04 Bevételezés (az alapanyagraktár automatikusan nő) → P05 Számla könyvelése, a rendelés, a számla és a bevételezési jegy egyeztetése.</p>
-    <p>A dián szereplő kérdések gondolkodási minták, nem feltárt hibák. A beszerzés vezetője röviden ismertesse a szakaszt.</p>
-  </aside>
-</section>
-
-<!-- ================= SECTION 2 ================= -->
-<section class="slide" data-phase="walk">
-  <div class="head" data-m>
-    <p class="kick" data-e>Folyamatbejárás · 2. szakasz · 2. elv</p>
-    <h2 class="h2" data-e>Termelés és minőség</h2>
-  </div>
-  <div class="sec-body">
-    <div class="crops">
-      <div class="crop" data-zoom role="button" tabindex="0" aria-label="Nagyítás" style="--x:371;--y:64;--w:318;--h:318"></div>
-      <div class="crop" data-zoom role="button" tabindex="0" aria-label="Nagyítás" style="--x:371;--y:372;--w:318;--h:318"></div>
-    </div>
-    <div class="principle" data-m>
-      <p class="pr" data-e>Álljunk meg minden átadásnál</p>
-      <p class="pe" data-e>Ahol felelős, rendszer vagy fizikai helyszín változik, ott keletkezik a legtöbb rejtett kockázat.</p>
-      <div class="stops">
-        <div class="stop"><span class="code" data-e>P06</span><p data-e>Mennyire megbízható a tervezéshez használt készlet- és kiszállítási adat?</p></div>
-        <div class="stop"><span class="code" data-e>P07</span><p data-e>Mi történik, ha a mintavétel vagy a raklapcímke-beolvasás elmarad?</p></div>
-        <div class="stop flag"><span class="code" data-e>P10 → Ú1</span><p data-e>A lezárt gyártás azonnal növeli a készletet, a felszabadítás 24–48 órát vesz igénybe. Mi akadályozza meg, hogy közben nem felszabadított tétel kerüljön tovább?</p></div>
-      </div>
-    </div>
-  </div>
-  <aside class="notes" data-e>
-    <p>Lépések: P06 Termeléstervezés → P06 Gyártásrendelés felvétele → P07 Gyártás, folyamatos mikrobiológiai mintavétel és raklapcímke-beolvasás → P08 Gyártás utáni leltározás → P09 Valós fogyás felvitele → P10 Gyártásrendelés zárása, automatikus készletfrissítés → Ú1 Késztermék felszabadítása laboreredmény után, 24–48 óra.</p>
-    <p>A P10 → Ú1 átadás vizsgálati kérdés, nem bizonyított hiba. Először azt kérdezd meg, milyen védelem működik már ma (rendszerzár, státusz, címke, ellenőrzés). A 24–48 óra kezdőpontja az ábrából nem egyértelmű: tisztázandó.</p>
-  </aside>
-</section>
-
-<!-- ================= SECTION 3 ================= -->
-<section class="slide" data-phase="walk">
-  <div class="head" data-m>
-    <p class="kick" data-e>Folyamatbejárás · 3. szakasz · 3. elv</p>
-    <h2 class="h2" data-e>Értékesítés és kiszállítás</h2>
-  </div>
-  <div class="sec-body">
-    <div class="crops">
-      <div class="crop" data-zoom role="button" tabindex="0" aria-label="Nagyítás" style="--x:729;--y:64;--w:331;--h:318"></div>
-      <div class="crop" data-zoom role="button" tabindex="0" aria-label="Nagyítás" style="--x:729;--y:372;--w:331;--h:318"></div>
-    </div>
-    <div class="principle" data-m>
-      <p class="pr" data-e>Különítsük el a mai működést a tervezett és a hiányzó lépésektől</p>
-      <p class="pe" data-e>A hiányzó lépés ma is kockázat. Az új lépés addig kockázat, amíg nem működik megbízhatóan.</p>
-      <div class="stops">
-        <div class="stop flag"><span class="code" data-e>Ú2 · Ú3</span><p data-e>A vevő ma nem kap visszaigazolást és érkezési időt. Milyen hatása lehet ennek?</p></div>
-        <div class="stop"><span class="code" data-e>P13</span><p data-e>Az automatikus szállítólevél új lépés. Mi történik, ha a rakomány eltér a rendeléstől?</p></div>
-        <div class="stop"><span class="code" data-e>P14</span><p data-e>A kiszállítás felelőse tisztázandó. Ki lép, ha a szállítás késik?</p></div>
-      </div>
-    </div>
-  </div>
-  <aside class="notes" data-e>
-    <p>Lépések: P11 Megrendelés rögzítése → Ú2 Rendelés visszaigazolása (hiányzik) → P12 Fuvarmegbízás, csak felszabadított készletre → Ú3 Érkezési idő közlése (hiányzik) → Ú4 Kiszedési lista → Ú5 Rakodás FV Ticket Lighttal → P13 Szállítólevél, automatikusan, ha egyezik a rendeléssel → P14 Kiszállítás (felelős tisztázandó) → P15 Átvételi bizonylat → P16 Számlázás.</p>
-    <p>A dián szereplő kérdések lehetséges vizsgálati irányok. Ne döntsd el a csoport helyett, mi lesz a három prioritás.</p>
   </aside>
 </section>
 
@@ -840,7 +800,7 @@ body.editing #sheets-view{top:58px}
       <ol class="steps" data-m data-for="r1">
         <li><span class="mm calc" data-calc="step:r1:0">3′</span><span data-e>Egyéni ötletgyűjtés, csendben</span></li>
         <li><span class="mm calc" data-calc="step:r1:1">5′</span><span data-e>Megosztás, 1–2 kockázat kiválasztása</span></li>
-        <li><span class="mm calc" data-calc="step:r1:2">9′</span><span data-e>Kockázati állítás és kezelési javaslat kidolgozása</span></li>
+        <li><span class="mm calc" data-calc="step:r1:2">9′</span><span data-e>Kockázati állítás, kár, valószínűség és javaslat</span></li>
         <li><span class="mm calc" data-calc="step:r1:3">3′</span><span data-e>Feltevések és átadások ellenőrzése</span></li>
       </ol>
       <p class="result" data-m><span class="lbl" data-e>Eredmény</span><span data-e>Legalább egy teljesen kidolgozott kockázat a munkalapon.</span></p>
@@ -862,16 +822,14 @@ body.editing #sheets-view{top:58px}
       <h2 class="h2" data-e data-m>A csapatok bemutatják a kidolgozott kockázatokat</h2>
       <p class="lbl sub-lbl" data-m><span data-e>Csapatonként</span> <span class="calc" data-calc="min:rep">5′</span></p>
       <ul class="pres" data-m>
-        <li data-e>A kockázati állítás: ok, esemény, hatás</li>
-        <li data-e>A bizonyíték és a meglévő kontroll</li>
-        <li data-e>A javasolt intézkedés és felelős</li>
+        <li data-e>A kockázati állítás: melyik lépés, ok, esemény, hatás</li>
+        <li data-e>A lehetséges kár forintban és a valószínűség, indoklással</li>
+        <li data-e>A javasolt intézkedés</li>
       </ul>
-      <p class="lbl sub-lbl" data-e data-m>A másik csapat kérdései</p>
-      <ul class="askq" data-m>
-        <li data-e>Melyik feltevés bizonytalan?</li>
-        <li data-e>Milyen következmény maradt ki?</li>
-        <li data-e>Mennyire megbízható a meglévő kontroll?</li>
-      </ul>
+      <div class="crit2" data-m>
+        <div><p class="lbl" data-e>Számszerűsítés</p><ul><li data-e>Értékesítési kiesés: 10 Ft/palack</li><li data-e>Selejtezés: 45 Ft/palack</li><li data-e>Direkt kár: az anyagi kár mértéke</li><li data-e>Emberélet: 75–100 millió Ft</li></ul></div>
+        <div><p class="lbl" data-e>Valószínűség</p><ul><li data-e>Mennyire valószínű?</li><li data-e>Miért ennyi? Mi a bizonyíték?</li><li data-e>Mit jelent a folyamatra?</li></ul></div>
+      </div>
       <p class="result" data-m><span class="lbl" data-e>Utána</span><span data-e>Az átfedő kockázatok összevonása a közös listán.</span></p>
     </div>
     <div class="duo" data-m>
@@ -895,7 +853,7 @@ body.editing #sheets-view{top:58px}
       <ol class="steps" data-m data-for="r2">
         <li><span class="mm calc" data-calc="step:r2:0">3′</span><span data-e>Egyéni ötletgyűjtés, csendben</span></li>
         <li><span class="mm calc" data-calc="step:r2:1">5′</span><span data-e>Megosztás, 1–2 kockázat kiválasztása</span></li>
-        <li><span class="mm calc" data-calc="step:r2:2">9′</span><span data-e>Kockázati állítás és kezelési javaslat kidolgozása</span></li>
+        <li><span class="mm calc" data-calc="step:r2:2">9′</span><span data-e>Kockázati állítás, kár, valószínűség és javaslat</span></li>
         <li><span class="mm calc" data-calc="step:r2:3">3′</span><span data-e>Feltevések és átadások ellenőrzése</span></li>
       </ol>
       <p class="result" data-m><span class="lbl" data-e>Eredmény</span><span data-e>Legalább egy teljesen kidolgozott kockázat a munkalapon.</span></p>
@@ -913,16 +871,14 @@ body.editing #sheets-view{top:58px}
       <h2 class="h2" data-e data-m>A csapatok bemutatják a kidolgozott kockázatokat</h2>
       <p class="lbl sub-lbl" data-m><span data-e>Csapatonként</span> <span class="calc" data-calc="min:rep">5′</span></p>
       <ul class="pres" data-m>
-        <li data-e>A kockázati állítás: ok, esemény, hatás</li>
-        <li data-e>A bizonyíték és a meglévő kontroll</li>
-        <li data-e>A javasolt intézkedés és felelős</li>
+        <li data-e>A kockázati állítás: melyik lépés, ok, esemény, hatás</li>
+        <li data-e>A lehetséges kár forintban és a valószínűség, indoklással</li>
+        <li data-e>A javasolt intézkedés</li>
       </ul>
-      <p class="lbl sub-lbl" data-e data-m>A másik csapat kérdései</p>
-      <ul class="askq" data-m>
-        <li data-e>Melyik feltevés bizonytalan?</li>
-        <li data-e>Milyen következmény maradt ki?</li>
-        <li data-e>Mennyire megbízható a meglévő kontroll?</li>
-      </ul>
+      <div class="crit2" data-m>
+        <div><p class="lbl" data-e>Számszerűsítés</p><ul><li data-e>Értékesítési kiesés: 10 Ft/palack</li><li data-e>Selejtezés: 45 Ft/palack</li><li data-e>Direkt kár: az anyagi kár mértéke</li><li data-e>Emberélet: 75–100 millió Ft</li></ul></div>
+        <div><p class="lbl" data-e>Valószínűség</p><ul><li data-e>Mennyire valószínű?</li><li data-e>Miért ennyi? Mi a bizonyíték?</li><li data-e>Mit jelent a folyamatra?</li></ul></div>
+      </div>
       <p class="result" data-m><span class="lbl" data-e>Utána</span><span data-e>Az átfedő kockázatok összevonása a közös listán.</span></p>
     </div>
     <div class="duo" data-m>
@@ -954,7 +910,7 @@ body.editing #sheets-view{top:58px}
       <ol class="steps" data-m data-for="r3">
         <li><span class="mm calc" data-calc="step:r3:0">3′</span><span data-e>Egyéni ötletgyűjtés, csendben</span></li>
         <li><span class="mm calc" data-calc="step:r3:1">5′</span><span data-e>Megosztás, 1–2 kockázat kiválasztása</span></li>
-        <li><span class="mm calc" data-calc="step:r3:2">9′</span><span data-e>Kockázati állítás és kezelési javaslat kidolgozása</span></li>
+        <li><span class="mm calc" data-calc="step:r3:2">9′</span><span data-e>Kockázati állítás, kár, valószínűség és javaslat</span></li>
         <li><span class="mm calc" data-calc="step:r3:3">3′</span><span data-e>Feltevések és átadások ellenőrzése</span></li>
       </ol>
       <p class="result" data-m><span class="lbl" data-e>Eredmény</span><span data-e>Legalább egy teljesen kidolgozott kockázat a munkalapon.</span></p>
@@ -972,16 +928,14 @@ body.editing #sheets-view{top:58px}
       <h2 class="h2" data-e data-m>A csapatok bemutatják a kidolgozott kockázatokat</h2>
       <p class="lbl sub-lbl" data-m><span data-e>Csapatonként</span> <span class="calc" data-calc="min:rep">5′</span></p>
       <ul class="pres" data-m>
-        <li data-e>A kockázati állítás: ok, esemény, hatás</li>
-        <li data-e>A bizonyíték és a meglévő kontroll</li>
-        <li data-e>A javasolt intézkedés és felelős</li>
+        <li data-e>A kockázati állítás: melyik lépés, ok, esemény, hatás</li>
+        <li data-e>A lehetséges kár forintban és a valószínűség, indoklással</li>
+        <li data-e>A javasolt intézkedés</li>
       </ul>
-      <p class="lbl sub-lbl" data-e data-m>A másik csapat kérdései</p>
-      <ul class="askq" data-m>
-        <li data-e>Melyik feltevés bizonytalan?</li>
-        <li data-e>Milyen következmény maradt ki?</li>
-        <li data-e>Mennyire megbízható a meglévő kontroll?</li>
-      </ul>
+      <div class="crit2" data-m>
+        <div><p class="lbl" data-e>Számszerűsítés</p><ul><li data-e>Értékesítési kiesés: 10 Ft/palack</li><li data-e>Selejtezés: 45 Ft/palack</li><li data-e>Direkt kár: az anyagi kár mértéke</li><li data-e>Emberélet: 75–100 millió Ft</li></ul></div>
+        <div><p class="lbl" data-e>Valószínűség</p><ul><li data-e>Mennyire valószínű?</li><li data-e>Miért ennyi? Mi a bizonyíték?</li><li data-e>Mit jelent a folyamatra?</li></ul></div>
+      </div>
       <p class="result" data-m><span class="lbl" data-e>Utána</span><span data-e>Összevonás: a közös lista ezzel teljes.</span></p>
     </div>
     <div class="duo" data-m>
@@ -999,23 +953,23 @@ body.editing #sheets-view{top:58px}
 <section class="slide" data-phase="sum">
   <div class="head" data-m>
     <p class="kick" data-e>Összegzés</p>
-    <h2 class="h2" data-e>Három vállalati prioritás, felelőssel és határidővel</h2>
+    <h2 class="h2" data-e>Három vállalati prioritás, számszerűsítve</h2>
   </div>
-  <p class="crit-line" data-m><span class="lbl" data-e>Kiválasztás</span><span data-e>A legrosszabb reális hatás, a rendelkezésre álló időablak, valamint a kitettség és a meglévő kontroll megbízhatósága alapján.</span></p>
+  <p class="crit-line" data-m><span class="lbl" data-e>Kiválasztás</span><span data-e>A forintban mért kár és a valószínűség együtt dönt. Vállalatot vagy emberéletet veszélyeztető kockázatot alacsony valószínűség mellett is mérlegelünk.</span></p>
   <table class="sumt" data-m>
-    <colgroup><col style="width:76px"><col style="width:34%"><col style="width:15%"><col style="width:25%"><col style="width:13%"><col style="width:13%"></colgroup>
-    <thead><tr><th>#</th><th data-e>Kockázat</th><th data-e>Típus</th><th data-e>Következő lépés</th><th data-e>Felelős</th><th data-e>Határidő</th></tr></thead>
+    <colgroup><col style="width:64px"><col style="width:24%"><col style="width:11%"><col style="width:12%"><col style="width:16%"><col style="width:14%"><col></colgroup>
+    <thead><tr><th>#</th><th data-e>Kockázat</th><th data-e>Lépés</th><th data-e>Típus</th><th data-e>Számszerűsítés</th><th data-e>Valószínűség</th><th data-e>Intézkedés</th></tr></thead>
     <tbody>
-      <tr><td>1</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td></tr>
-      <tr><td>2</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td></tr>
-      <tr><td>3</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td></tr>
+      <tr><td>1</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td></tr>
+      <tr><td>2</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td></tr>
+      <tr><td>3</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td><td class="empty" data-e data-live>—</td></tr>
     </tbody>
   </table>
-  <p class="followup" data-e data-m>A többi kockázat a követési listára kerül, kijelölt felelőssel és felülvizsgálati dátummal.</p>
+  <p class="followup" data-e data-m>A többi kockázat a követési listára kerül.</p>
   <aside class="notes" data-e>
     <p>A táblázat celláiba előadás közben is írhatsz: kattints a cellába, és gépeld be a döntést. A beírt szöveg ebben a böngészőben megmarad, véglegesen a Mentés HTML-fájlként gombbal rögzíted.</p>
-    <p>Rövid csendes szavazás megengedett (például fejenként három pont), de utána indokolt közös döntés kell. Minden reális, vállalatot veszélyeztető forgatókönyvet külön mérlegeljetek, ne a népszerűség döntsön.</p>
-    <p>A vizsgálat is lehet következő lépés, ha az intézkedésről még nem lehet dönteni.</p>
+    <p>Rövid csendes szavazás megengedett (például fejenként három pont), de utána indokolt közös döntés kell. A forintban mért kár és a valószínűség legyen a döntés alapja, ne a népszerűség. Minden reális, vállalatot veszélyeztető forgatókönyvet külön mérlegeljetek.</p>
+    <p>Az intézkedés lehet vizsgálat is, ha még nem dönthető el, mit kell tenni.</p>
   </aside>
 </section>
 
@@ -1024,8 +978,7 @@ body.editing #sheets-view{top:58px}
   <div class="logo" role="img" aria-label="Fonte Viva"></div>
   <h1 class="h1" data-e data-m>Köszönjük a közös munkát</h1>
   <p class="lead" data-e data-m>A prioritások felelősei a következő vezetői értekezleten beszámolnak az első lépésekről.</p>
-  <p class="next" data-m><span class="lbl" data-e>Utánkövetés</span><span data-e>2026. ……………</span></p>
-  <aside class="notes" data-e><p>Zárásként olvasd fel a három prioritást a felelősök nevével, és rögzítsétek az utánkövetés dátumát. A dátumot szerkesztés módban írhatod be a diára.</p></aside>
+  <aside class="notes" data-e><p>Zárásként olvasd fel a három prioritást: a kockázatot, a forintban mért kárt, a valószínűséget és az intézkedést.</p></aside>
 </section>
 
 <div id="foot"><span class="logo"></span><span class="ph" id="foot-ph"></span><span class="no" id="foot-no"></span></div>
@@ -1074,19 +1027,18 @@ body.editing #sheets-view{top:58px}
         <div class="wf wide"><h2 data-e>1 · Folyamatlépés vagy átadás, kockázati állítás</h2><p class="tmpl" data-e>Mivel … (kiváltó ok), bekövetkezhet, hogy … (kockázati esemény), ami … (üzleti hatás).</p><p data-e>Kit érint tovább, és milyen mértékben?</p></div>
         <div class="wf"><h2 data-e>2 · Bizonyíték és meglévő kontroll</h2><p data-e>Mit tudunk biztosan, és mi feltevés? Mi működik ma, és mi csak terv? Hogyan ellenőrizzük a kontroll működését?</p></div>
         <div class="wf"><h2 data-e>3 · Kockázattípus</h2><div class="cats" data-e>☐ Vállalatot veszélyeztető &nbsp; ☐ Aszimmetrikus &nbsp; ☐ Nem kontrollálható &nbsp; ☐ Időalapú</div><p data-e>Több is választható. Indoklás:</p></div>
-        <div class="wf"><h2 data-e>4 · Időablak</h2><p data-e>Mennyi idő alatt nő meg a kár, vagy szűkülnek a lehetőségek? Mennyi idő kell a reagáláshoz?</p></div>
-        <div class="wf"><h2 data-e>5 · Javasolt intézkedés, korai jelzés és felelős</h2><p data-e>Megelőzés, tartalékképzés vagy a kitettség korlátozása? Szükséges-e előbb vizsgálat vagy kísérleti lépés? Melyik megfigyelhető jel indít intézkedést, ki figyeli, és ki dönt?</p></div>
+        <div class="wf"><h2 data-e>4 · Számszerűsítés és valószínűség</h2><p data-e>A lehetséges kár forintban: értékesítési kiesés 10 Ft/palack, selejtezés 45 Ft/palack, direkt kár (anyagi kár), emberélet 75–100 millió Ft. Mennyire valószínű, miért ennyi, és mit jelent a folyamatra?</p></div>
+        <div class="wf"><h2 data-e>5 · Javasolt intézkedés és korai jelzés</h2><p data-e>Megelőzés, tartalékképzés vagy a kitettség korlátozása? Szükséges-e előbb vizsgálat vagy kísérleti lépés? Melyik megfigyelhető jel indít intézkedést?</p></div>
       </div>
     </section>
     <section class="sheet">
-      <div class="sh-head"><div><h1 data-e>Három vállalati prioritás</h1><p class="sh-meta" data-e>Dátum: ______________ · Közös utánkövetés: ______________</p></div><div class="logo"></div></div>
-      <p class="sh-guide" data-e>Kiválasztási szempontok: a legrosszabb reális hatás, a rendelkezésre álló időablak, valamint a kitettség és a meglévő kontroll megbízhatósága. Minden reális, vállalatot veszélyeztető forgatókönyvet külön mérlegelünk. A vizsgálat is lehet következő lépés.</p>
+      <div class="sh-head"><div><h1 data-e>Három vállalati prioritás</h1><p class="sh-meta" data-e>Dátum: ______________</p></div><div class="logo"></div></div>
+      <p class="sh-guide" data-e>Kiválasztási szempontok: a forintban mért kár és a valószínűség. Vállalatot vagy emberéletet veszélyeztető kockázatot alacsony valószínűség mellett is mérlegelünk. Az intézkedés lehet vizsgálat is.</p>
       <table class="dtable">
-        <thead><tr><th>#</th><th data-e>Kockázati állítás</th><th data-e>Típus és indoklás</th><th data-e>Javasolt intézkedés</th><th data-e>Felelős</th><th data-e>Következő lépés</th><th data-e>Határidő</th><th data-e>Korai jelzés</th></tr></thead>
-        <tbody><tr><td>1</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>2</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody>
+        <thead><tr><th>#</th><th data-e>Kockázat</th><th data-e>Folyamatlépés</th><th data-e>Típus</th><th data-e>Számszerűsítés (Ft)</th><th data-e>Valószínűség és indoklás</th><th data-e>Intézkedés</th></tr></thead>
+        <tbody><tr><td>1</td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>2</td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>3</td><td></td><td></td><td></td><td></td><td></td><td></td></tr></tbody>
       </table>
-      <div class="follow"><p data-e>Követési lista: a többi kockázat, a felelőse és a felülvizsgálat dátuma</p><div class="ln"></div><div class="ln"></div></div>
-      <div class="checks"><span data-e>☐ Minden felelős elfogadta a vállalását</span><span data-e>☐ A határidők és a közös utánkövetés rögzítve</span></div>
+      <div class="follow"><p data-e>Követési lista: a többi kockázat</p><div class="ln"></div><div class="ln"></div></div>
     </section>
     <section class="sheet mapsheet"><img id="mapimg-sheet" alt="Az eredeti folyamatábra"></section>
   </div>
@@ -1192,8 +1144,8 @@ $('#mapimg').src=MAPURL; $('#mapimg-sheet').src=MAPURL;
 /* ---------- config ---------- */
 let DUR=JSON.parse(root.dataset.durations);
 const DUR0={...DUR},SOUND0=root.dataset.sound;
-const ORDER=['open','basics','walk','lunch','r1','p1','r2','p2','brk','r3','p3','sum'];
-const AM=['open','basics','walk'],PM=['r1','p1','r2','p2','brk','r3','p3','sum'];
+const ORDER=['basics','walk','lunch','r1','p1','r2','p2','brk','r3','p3','sum'];
+const AM=['basics','walk'],PM=['r1','p1','r2','p2','brk','r3','p3','sum'];
 const BLOCKS={open:'Nyitás',basics:'Elméleti alapok',walk:'Folyamatbejárás',lunch:'Ebédszünet',r1:'1. kör',p1:'1. kör: Csapatbeszámolók',r2:'2. kör',p2:'2. kör: Csapatbeszámolók',brk:'Szünet',r3:'3. kör',p3:'3. kör: Csapatbeszámolók',sum:'Összegzés'};
 const TIMERS={r1:'1. kör',r2:'2. kör',r3:'3. kör',p1A:'1. kör · A csapat beszámolója',p1B:'1. kör · B csapat beszámolója',p2A:'2. kör · A csapat beszámolója',p2B:'2. kör · B csapat beszámolója',p3A:'3. kör · A csapat beszámolója',p3B:'3. kör · B csapat beszámolója'};
 const DKEY=k=>/^p\d[AB]$/.test(k)?'rep':k;
@@ -1574,10 +1526,12 @@ addEventListener('beforeunload',()=>{if(pw&&!pw.closed)pw.close()});
 /* ---------- shared store (Vercel Blob via /api/deck) ---------- */
 const SYNC=/^https?:$/.test(location.protocol);
 const API='api/deck';
-let remoteVersion=null,savedJSON=null,conflict=null,saving=false,online=true,loaded=false,syncT=0,retryT=0;
-const SYNC_TXT={idle:'Mentve a közös tárhelyre',wait:'Mentésre vár…',saving:'Mentés…',off:'Nincs kapcsolat, újrapróbálom',conflict:'Ütközés: valaki más közben mentett',load:'Betöltés…'};
-function syncState(){if(!loaded)return 'load';if(conflict)return 'conflict';if(!online)return 'off';if(saving)return 'saving';if(JSON.stringify(E)!==savedJSON)return 'wait';return 'idle'}
-function updSync(){if(!SYNC)return;const st=syncState();const el=$('#sync');el.hidden=false;el.className='sync '+st;el.title=SYNC_TXT[st];$('.t',el).textContent={idle:'Mentve',wait:'Mentésre vár',saving:'Mentés…',off:'Offline',conflict:'Ütközés',load:'Betöltés…'}[st];status(SYNC_TXT[st]+(st==='idle'?' · '+new Date().toLocaleTimeString('hu-HU',{hour:'2-digit',minute:'2-digit'}):''))}
+let remoteVersion=null,savedJSON=null,conflict=null,saving=false,online=true,loaded=false,stale=false,syncT=0,retryT=0;
+const revN=x=>{const m=/^v(\d+)$/.exec(x||'');return m?+m[1]:NaN};
+const STALE_MSG='A diasor újabb változata érhető el. Töltsd újra az oldalt.';
+const SYNC_TXT={stale:'Újabb változat érhető el: töltsd újra az oldalt',idle:'Mentve a közös tárhelyre',wait:'Mentésre vár…',saving:'Mentés…',off:'Nincs kapcsolat, újrapróbálom',conflict:'Ütközés: valaki más közben mentett',load:'Betöltés…'};
+function syncState(){if(!loaded)return 'load';if(stale)return 'stale';if(conflict)return 'conflict';if(!online)return 'off';if(saving)return 'saving';if(JSON.stringify(E)!==savedJSON)return 'wait';return 'idle'}
+function updSync(){if(!SYNC)return;const st=syncState();const el=$('#sync');el.hidden=false;el.className='sync '+st;el.title=SYNC_TXT[st];$('.t',el).textContent={stale:'Töltsd újra',idle:'Mentve',wait:'Mentésre vár',saving:'Mentés…',off:'Offline',conflict:'Ütközés',load:'Betöltés…'}[st];status(SYNC_TXT[st]+(st==='idle'?' · '+new Date().toLocaleTimeString('hu-HU',{hour:'2-digit',minute:'2-digit'}):''))}
 function scheduleSave(ms){if(!SYNC)return;clearTimeout(syncT);syncT=setTimeout(()=>save(false),ms==null?900:ms);updSync()}
 function applyEdits(nE){
   EDS.forEach(el=>{const o=ORIG[el.dataset.eid];if(!o)return;if(el.hasAttribute('data-e'))el.innerHTML=o.h;o.s?el.setAttribute('style',o.s):el.removeAttribute('style')});
@@ -1591,12 +1545,14 @@ function applyEdits(nE){
 }
 function applyRemote(j){
   remoteVersion=j.version;
-  if(j.data&&j.data.rev===REV&&j.data.edits){applyEdits(j.data.edits);savedJSON=JSON.stringify(E)}
-  else savedJSON=null; // shared copy belongs to an older layout: ours replaces it on the next save
+  const rr=j.data&&j.data.rev;
+  if(rr===REV&&j.data.edits){applyEdits(j.data.edits);savedJSON=JSON.stringify(E)}
+  else if(revN(rr)>revN(REV)){if(!stale)toast(STALE_MSG);stale=true}
+  else{savedJSON=null;scheduleSave(300)} // the shared copy belongs to an older layout: ours replaces it
   updSync();
 }
 async function save(force){
-  if(!SYNC||!loaded)return;
+  if(!SYNC||!loaded||stale)return;
   clearTimeout(syncT);
   if(saving){syncT=setTimeout(()=>save(force),700);return}
   if(conflict&&!force)return;
@@ -1610,6 +1566,7 @@ async function save(force){
     else if(r.status===409){
       online=true;
       if(j.data&&j.data.rev===REV){conflict=j;openDlg('#dlg-conflict')}
+      else if(j.data&&revN(j.data.rev)>revN(REV)){if(!stale)toast(STALE_MSG);stale=true}
       else{remoteVersion=j.version||null;saving=false;return save(false)}
     }
     else if(r.status===400||r.status===413){online=true;toast(r.status===413?'A módosítások túl nagyok a közös tárhelyhez.':'A közös tárhely elutasította a mentést.')}
@@ -1620,7 +1577,7 @@ async function save(force){
 async function fetchRemote(){const r=await fetch(API,{cache:'no-store'});if(r.status===404)return {empty:true};if(!r.ok)throw new Error(r.status);return r.json()}
 const typingNow=()=>{const a=document.activeElement;return !!a&&(a.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName))};
 async function poll(){
-  if(!SYNC||document.hidden||saving||conflict)return;
+  if(!SYNC||document.hidden||saving||conflict||stale)return;
   if(!loaded)return syncBoot();
   try{
     const j=await fetchRemote();online=true;
@@ -1644,9 +1601,9 @@ async function syncBoot(){
 }
 $('#cf-theirs').onclick=()=>{const j=conflict;conflict=null;$('#dlg-conflict').close();applyRemote(j);toast('A közös változat betöltve.')};
 $('#cf-mine').onclick=()=>{conflict=null;$('#dlg-conflict').close();save(true)};
-$('#sync').onclick=()=>{if(conflict)openDlg('#dlg-conflict');else save(false)};
+$('#sync').onclick=()=>{if(stale)location.reload();else if(conflict)openDlg('#dlg-conflict');else save(false)};
 setInterval(poll,15000);addEventListener('focus',poll);document.addEventListener('visibilitychange',()=>{if(!document.hidden)poll()});
-addEventListener('pagehide',()=>{if(!SYNC||!loaded||conflict||saving)return;const body=JSON.stringify(E);if(body===savedJSON)return;const payload=JSON.stringify({base:remoteVersion||'none',data:{rev:REV,edits:E}});if(payload.length<60000){try{fetch(API,{method:'PUT',headers:{'Content-Type':'application/json'},body:payload,keepalive:true})}catch(e){}}});
+addEventListener('pagehide',()=>{if(!SYNC||!loaded||conflict||saving||stale)return;const body=JSON.stringify(E);if(body===savedJSON)return;const payload=JSON.stringify({base:remoteVersion||'none',data:{rev:REV,edits:E}});if(payload.length<60000){try{fetch(API,{method:'PUT',headers:{'Content-Type':'application/json'},body:payload,keepalive:true})}catch(e){}}});
 
 /* ---------- init ---------- */
 slides.forEach((s,i)=>s.setAttribute('data-no',String(i+1).padStart(2,'0')));

@@ -30,7 +30,7 @@ Only the edits are stored, not the deck: text and style changes per editable ele
 - `poll()` loads a newer version only when this tab has no unsaved edits and nobody is typing; otherwise the next save produces the conflict dialog.
 - The control bar shows the status: Mentve, Mentésre vár, Mentés…, Offline, Ütközés. On page close, unsaved edits are sent with a `keepalive` request.
 
-Edits are keyed by element order (`data-eid`) and tied to `data-rev`. When slides are added, removed or reordered, bump `data-rev` so old edits are not applied to the wrong elements.
+Edits are keyed by element order (`data-eid`) and tied to `data-rev` (currently `v6`). When slides are added, removed or reordered, bump `data-rev` so old edits are not applied to the wrong elements, and move any edits worth keeping into `src/deck.tpl.html` first. A client that finds a shared copy from an older layout replaces it with its own; a client that finds a newer layout stops saving and shows "Töltsd újra" (reload), so an outdated tab can never overwrite newer work.
 
 ## 5. Testing by hand
 
