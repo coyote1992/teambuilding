@@ -12,6 +12,7 @@
 :root{
   --logo:url(data:image/jpeg;base64,__LOGO__);
   --map:url(data:image/png;base64,__MAP__);
+  --walkmap:url(data:image/png;base64,__WALKMAP__);
   --abyss:#06121e; --deep:#0b2236;
   --ink:#eaf4fa; --soft:#adc5d4; --dim:#7590a5; --line:rgba(234,244,250,.12); --line2:rgba(234,244,250,.22);
   --cyan:#4fd1e8; --cyan-d:rgba(79,209,232,.13); --aqua:#86e0a6; --aqua-d:rgba(134,224,166,.11);
@@ -197,7 +198,7 @@ body.editing .qd{cursor:text}
 .crit2 li{font-size:18.5px;line-height:1.45;color:var(--ink);padding:3px 0}
 
 /* process walk: bigger map, two questions */
-.mapgrid.walk .plate{height:540px}
+.mapgrid.walk .plate{height:560px;aspect-ratio:2230/1599;background-image:var(--walkmap);border-radius:10px}
 .mapgrid.walk .method{gap:34px}
 .mapgrid.walk .method .n{font-size:34px;line-height:1.1}
 .mapgrid.walk .method b{font-size:32px;line-height:1.25}
@@ -767,20 +768,20 @@ body.editing #sheets-view{top:58px}
     <h2 class="h2" data-e>Közösen végigmegyünk a teljes folyamaton</h2>
   </div>
   <div class="mapgrid walk">
-    <div class="plate" data-zoom role="button" tabindex="0" aria-label="Az eredeti folyamatábra nagyítása"></div>
+    <div class="plate" data-zoom="walk" role="button" tabindex="0" aria-label="A folyamattérkép nagyítása: Beszerzés és beérkezés"></div>
     <div class="methodcol" data-m>
       <ol class="method">
         <li><span class="n">+</span><b data-e>Mit kellene hozzáadni?</b><span data-e>Hiányzó lépés, ellenőrzés vagy átadás</span></li>
         <li><span class="n">−</span><b data-e>Mi felesleges?</b><span data-e>Ismétlődő vagy elhagyható lépés</span></li>
       </ol>
-      <p class="legend" data-e>Az ábrán sárga jelölés: új vagy módosult lépés. Piros keret: hiányzó, bevezetendő lépés.</p>
+      <p class="legend" data-e hidden></p>
     </div>
   </div>
   <aside class="notes" data-e>
     <p>Közös munka a nyomtatott folyamatábrán, szakaszonként: beszerzés és beérkezés, termelés és minőség, értékesítés és kiszállítás. Minden lépésnél két kérdés: kell-e ide új lépés, ellenőrzés vagy átadás, és van-e felesleges vagy ismétlődő lépés.</p>
     <p>A terület vezetője röviden mondja el, mi a bemenet, mi az elvárt eredmény, és ki adja át kinek. Ne találjatok ki működési részleteket: ami nem egyértelmű, az tisztázandó. A javaslatokat jegyezd fel a közös felületen.</p>
     <p>Lehetséges kérdések. Beszerzés: mi történik, ha a szállítmány eltér a rendeléstől (P02 → P03), és egyezik-e a rendszerkészlet a valóssal (P04). Termelés: mennyire megbízhatók a tervezési adatok (P06), mi van, ha elmarad a mintavétel vagy a címkebeolvasás (P07), és mi akadályozza, hogy nem felszabadított tétel továbbjusson (P10 → Ú1, 24–48 óra). Értékesítés: a hiányzó visszaigazolás és érkezési idő (Ú2, Ú3), az új automatikus szállítólevél (P13) és a kiszállítás felelőse (P14).</p>
-    <p>Az ábra az eredeti, 2026. októberi workshoptervezet, változtatás nélkül. Az ábrára kattintva nagyítható.</p>
+    <p>A dián a folyamattérkép 1. oldala látható (Beszerzés és beérkezés, 7 lépés, 3 szereplő). Az ábrára kattintva nagyítható.</p>
   </aside>
 </section>
 
@@ -1141,6 +1142,7 @@ const store={get(k,s){try{return JSON.parse((s||localStorage).getItem(k))}catch(
 const stage=$('#stage'), slides=$$('.slide',stage);
 slides.forEach(s=>{const m=document.createElement('span');m.className='skipmark';m.textContent='Rejtett dia · előadáskor kimarad';s.appendChild(m)});
 const MAPURL=getComputedStyle(root).getPropertyValue('--map').trim().replace(/^url\(["']?/,'').replace(/["']?\)$/,'');
+const WALKURL=getComputedStyle(root).getPropertyValue('--walkmap').trim().replace(/^url\(["']?/,'').replace(/["']?\)$/,'');
 $('#mapimg').src=MAPURL; $('#mapimg-sheet').src=MAPURL;
 
 /* ---------- config ---------- */
@@ -1358,7 +1360,7 @@ $('#m-sheets').onclick=()=>{$('#dlg-more').close();openSheets()};
 
 let zoom=1;function setZoom(z){zoom=z;const img=$('#mapimg');const base=Math.min(innerWidth*.9,1450);img.style.width=(base*z)+'px';$$('#mapdlg .zbar button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.z===z))}
 $$('#mapdlg .zbar button').forEach(b=>b.onclick=()=>setZoom(+b.dataset.z));
-stage.addEventListener('click',e=>{const z=e.target.closest('[data-zoom]');if(!z||moving)return;openDlg('#mapdlg');setZoom(z.classList.contains('crop')?2:1);
+stage.addEventListener('click',e=>{const z=e.target.closest('[data-zoom]');if(!z||moving)return;const walk=z.dataset.zoom==='walk';$('#mapimg').src=walk?WALKURL:MAPURL;$('#map-h').textContent=walk?'Folyamattérkép · Beszerzés és beérkezés':'Eredeti folyamatábra';openDlg('#mapdlg');setZoom(z.classList.contains('crop')?2:1);
   if(z.classList.contains('crop')){const st=getComputedStyle(z);const x=+st.getPropertyValue('--x'),y=+st.getPropertyValue('--y');requestAnimationFrame(()=>{const db=$('#mapdlg .db'),img=$('#mapimg'),r=img.clientWidth/1092;db.scrollLeft=x*r-20;db.scrollTop=y*r-20})}});
 stage.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.matches('[data-zoom]'))e.target.click()});
 
