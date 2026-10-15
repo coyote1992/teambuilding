@@ -1,0 +1,92 @@
+<!doctype html><html lang="hu"><head><meta charset="utf-8"><title>Kockázatok egy pillantásra · B</title>
+<style>
+__COMMON__
+@page{size:A4 landscape;margin:0}
+.page{width:297mm;height:210mm;padding:10mm 12mm 8mm;display:flex;flex-direction:column}
+header{display:flex;justify-content:space-between;align-items:flex-end;padding-bottom:3mm;border-bottom:1.4pt solid var(--navy)}
+header h1{font-size:22pt;line-height:1;font-weight:800;letter-spacing:-.01em;color:var(--navy)}
+header p{font-size:9.4pt;color:var(--soft);margin-top:1.4mm}
+header .logo{width:24mm;height:13mm}
+.grid{flex:1;display:grid;grid-template-columns:78mm 1fr;gap:7mm;padding-top:4mm;min-height:0}
+/* left: the anatomy of a risk */
+.left h2,.right h2{font-size:12pt;font-weight:700;color:var(--navy);margin-bottom:2.4mm;display:flex;align-items:baseline;gap:2mm}
+.left h2 small,.right h2 small{font-size:8.6pt;font-weight:500;color:var(--dim)}
+.steps li{display:grid;grid-template-columns:7mm 1fr;gap:2.4mm;padding:2.3mm 0;border-top:.6pt solid var(--line)}
+.steps li:last-child{border-bottom:.6pt solid var(--line)}
+.steps .mk{width:6.2mm;height:6.2mm;font-size:9.6pt}
+.steps h3{font-size:10.4pt;font-weight:700;color:var(--ink);line-height:1.2}
+.steps p{font-size:8.5pt;line-height:1.4;color:var(--soft);margin-top:.6mm}
+.steps p b{color:var(--ink)}
+.sent{margin-top:1.2mm;font-size:8.5pt;line-height:1.5;color:var(--ink)}
+.sent span{padding-bottom:.2mm}
+.mini{width:100%;border-collapse:collapse;font-size:8.4pt;margin-top:1mm}
+.mini td{padding:.7mm 0;border-bottom:.4pt dotted var(--line);color:var(--soft)}
+.mini td:last-child{text-align:right;font-weight:700;color:var(--teal);white-space:nowrap}
+.mini tr:last-child td{border-bottom:0}
+.scale{display:grid;grid-template-columns:repeat(4,1fr);gap:1mm;margin-top:1.2mm}
+.scale span{font-size:7.6pt;text-align:center;padding:1mm 0;border-radius:1mm;background:var(--teal-l);color:var(--c1);font-weight:600}
+.scale span:nth-child(2){background:#cfe9f1}.scale span:nth-child(3){background:#a9d7e6}.scale span:nth-child(4){background:var(--c1);color:#fff}
+/* right: categorisation table */
+.tt{width:100%;border-collapse:separate;border-spacing:0 1.6mm;margin-top:-1.6mm}
+.tt th{font-size:7.4pt;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--dim);text-align:left;padding:0 2.6mm .4mm}
+.tt td{vertical-align:top;padding:2.3mm 2.6mm;font-size:8.5pt;line-height:1.38;color:var(--soft);background:#f3f7fa}
+.tt td:first-child{border-radius:2mm 0 0 2mm;width:40mm;background:var(--navy);color:#fff}
+.tt td:last-child{border-radius:0 2mm 2mm 0}
+.tt td:first-child b{display:block;font-size:11pt;line-height:1.15;margin-top:1mm}
+.tt td:first-child .n{font-size:7.4pt;letter-spacing:.14em;text-transform:uppercase;color:#9fd3e6;font-weight:600}
+.tt .q{font-weight:700;color:var(--teal);font-size:9pt}
+.tt .sig{color:var(--ink)}
+.tt .fv b{color:var(--ink)}
+.tt .mit{color:var(--green)}
+.tt .src{display:block;margin-top:.8mm;font-size:7.6pt;color:var(--dim)}
+.rule{display:flex;gap:4mm;margin-top:1.2mm;font-size:8.4pt;color:var(--soft);line-height:1.4}
+.rule p{flex:1;border-left:2pt solid var(--c3);padding-left:2.4mm}
+.rule p:first-child{border-color:var(--teal)}
+.rule b{color:var(--ink)}
+/* bottom strip */
+.strip{display:flex;justify-content:space-between;gap:3mm;align-items:center;margin-top:3mm;padding-top:2.6mm;border-top:1.4pt solid var(--navy)}
+.strip .lbl{white-space:nowrap}
+.chips{display:flex;gap:1.2mm;white-space:nowrap}
+.chips span{font-size:7.7pt;padding:.9mm 1.9mm;border-radius:5mm;background:#eef3f6;color:var(--ink)}
+.chips.ok span{background:#e5f2ea;color:#1d5a3b}
+.chips.ok span::before{content:"✓ ";font-weight:700}
+.foot{display:flex;justify-content:space-between;font-size:7.2pt;color:var(--dim);margin-top:2.2mm}
+</style></head><body><div class="page">
+<header><div><h1>Kockázatok egy pillantásra</h1><p>Bal oldalt: hogyan írjuk le a kockázatot. Jobb oldalt: melyik típusba tartozik, és mit kezdünk vele.</p></div><div class="logo"></div></header>
+
+<div class="grid">
+<div class="left">
+<h2>A kockázat felépítése <small>négy lépésben</small></h2>
+<ol class="steps">
+<li><span class="mk">1</span><div><h3>Hol?</h3><p>Nevezd meg a <b>folyamatlépést</b> a térképen: beszerzés, gyártás, raktár, szállítás, értékesítés.</p></div></li>
+<li><span class="mk">2</span><div><h3>Mi történhet?</h3><p>Egy mondat: <b>ok → esemény → hatás</b>.</p>
+<p class="sent"><span class="u1">Mivel egyetlen beszállítónk van,</span> <span class="u2">egy kiesés leállíthatja a palackozást,</span> <span class="u3">ami elmaradt szállításokhoz vezet.</span></p></div></li>
+<li><span class="mk">3</span><div><h3>Mennyibe kerülhet?</h3><p><b>Kár = érintett mennyiség × egységérték</b></p>
+<table class="mini"><tr><td>Értékesítési kiesés</td><td>10 Ft / palack fedezet</td></tr><tr><td>Selejtezés</td><td>45 Ft / palack selejtkár</td></tr><tr><td>Direkt kár</td><td>az anyagi kár mértéke</td></tr><tr><td>Emberélet</td><td>100 millió Ft</td></tr></table>
+<p>Pl. 2 nap × 500 000 palack × 10 Ft = <b>10 millió Ft</b></p></div></li>
+<li><span class="mk">4</span><div><h3>Mennyire valószínű?</h3><p>Adj <b>gyakoriságot</b> és <b>indoklást</b>: mi a bizonyíték, mi véd ma ellene? Mit jelent ez a folyamatra?</p>
+<div class="scale"><span>10+ évente</span><span>néhány évente</span><span>évente</span><span>havonta</span></div></div></li>
+</ol>
+</div>
+
+<div class="right">
+<h2>Melyik típus? <small>tedd fel mind a négy kérdést; egy kockázat több típusba is tartozhat</small></h2>
+<table class="tt">
+<tr><th>Típus</th><th>Kérdés</th><th>Erre utaló jelek</th><th>Példa a mi folyamatunkból</th><th>Mit teszünk?</th></tr>
+<tr><td><span class="n">1. típus</span><b>Vállalatot veszélyeztető</b></td><td class="q">Veszélybe kerülhet-e a vállalat fennmaradása?</td><td class="sig">Termékbiztonság, egészség, emberélet; visszahívás, hatósági tiltás, márkabizalom elvesztése.</td><td class="fv"><b>Szennyezett forrásvíz</b> jut a palackokba, és a piacon derül ki.<span class="src">Vö. Perrier, 1990: benzol, 160 millió palack visszahívása</span></td><td class="mit">Független ellenőrzés a kritikus pontokon, begyakorolt visszahívási terv, tartalék.</td></tr>
+<tr><td><span class="n">2. típus</span><b>Aszimmetrikus</b></td><td class="q">Arányban áll-e a várható haszon a lehetséges kárral?</td><td class="sig">„Kis megtakarítás, nagy kockázat”: rövidített tesztelés, gyors átállás, olcsóbb, ismeretlen anyag.</td><td class="fv"><b>Új, olcsóbb kupak</b> bevezetése próbagyártás nélkül; tömítetlen palackok egy egész tételben.<span class="src">Vö. Knight Capital, 2012: 45 perc, 440 millió dollár</span></td><td class="mit">Kísérleti bevezetés kis körben, előre rögzített veszteségkorlát, visszaállási terv.</td></tr>
+<tr><td><span class="n">3. típus</span><b>Nem kontrollálható</b></td><td class="q">Mire nincs ráhatásunk, és mennyire függünk tőle?</td><td class="sig">Egyetlen beszállító, időjárás, energiaár, hatóság, logisztikai partner, nagy vevő döntése.</td><td class="fv"><b>A PET-előforma egyetlen beszállítója</b> leáll; nincs minősített alternatíva.<span class="src">Vö. Ericsson és Nokia, 2000: leégett chipgyár</span></td><td class="mit">Második minősített beszállító, biztonsági készlet, korai jelzések figyelése.</td></tr>
+<tr><td><span class="n">4. típus</span><b>Időalapú</b></td><td class="q">Mennyi időnk van dönteni, mielőtt a kár megnő?</td><td class="sig">Várakozás laboreredményre, tétel-felszabadítás, szavatosság, kiszállítási határidő, eszkaláció.</td><td class="fv"><b>Késik a labor</b>, a tétel mégis kimegy; minden óra több érintett palackot jelent.<span class="src">Vö. Johnson &amp; Johnson, 1982: egy héten belüli visszahívás</span></td><td class="mit">Rögzített döntési időablak, küszöbértékes riasztás, kijelölt döntéshozó.</td></tr>
+</table>
+<div class="rule"><p><b>Előbb leírás, aztán besorolás.</b> A típus a kezelés módját segít kiválasztani, nem a leírást helyettesíti.</p><p><b>Az 1. típust nem mérlegeljük:</b> vállalatot vagy emberéletet veszélyeztető kockázatot alacsony valószínűség mellett is komolyan veszünk.</p></div>
+</div>
+</div>
+
+<div class="strip">
+<span class="lbl">Hol keresd?</span>
+<div class="chips"><span>átadásoknál</span><span>egyetlen ponton</span><span>hiányzó vagy új lépésnél</span><span>időnyomásnál</span></div>
+<span class="lbl">Jó a leírás, ha</span>
+<div class="chips ok"><span>konkrét lépés</span><span>ok és esemény külön</span><span>kár forintban</span><span>indokolt valószínűség</span></div>
+</div>
+<div class="foot"><span>Fonte Viva · Vezetői workshop · Kockázatkezelés beszerzéstől értékesítésig</span><span>Forrás: J. Collins – M. T. Hansen: Tudatosan kiváló (Great by Choice), 5. fejezet</span></div>
+</div></body></html>

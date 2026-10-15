@@ -1,0 +1,88 @@
+<!doctype html><html lang="hu"><head><meta charset="utf-8"><title>Kockázati segédlet · A</title>
+<style>
+__COMMON__
+@page{size:A4 portrait;margin:0}
+.page{width:210mm;height:297mm;padding:10mm 13mm 8mm;display:flex;flex-direction:column}
+header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:3.2mm;border-bottom:1.4pt solid var(--navy)}
+header h1{font-size:23pt;line-height:1.05;font-weight:800;letter-spacing:-.01em;color:var(--navy)}
+header p{font-size:9.6pt;color:var(--soft);margin-top:1.4mm}
+header .logo{width:24mm;height:15mm}
+.sec{display:grid;grid-template-columns:9mm 1fr;gap:0 3mm;padding:2.5mm 0;border-bottom:.6pt solid var(--line)}
+.sec>.mk{width:7.2mm;height:7.2mm;font-size:11pt;margin-top:.3mm}
+.sec h2{font-size:12.6pt;font-weight:700;line-height:1.2;color:var(--navy)}
+.sec h2 small{font-size:9pt;font-weight:500;color:var(--dim);margin-left:2mm}
+.sec .body{margin-top:1.6mm;font-size:9.3pt;line-height:1.42;color:var(--soft)}
+.where{display:grid;grid-template-columns:repeat(4,1fr);gap:2.2mm;margin-top:1.8mm}
+.where li{background:#f2f6f9;border-radius:2mm;padding:2mm 2.4mm;font-size:8.6pt;line-height:1.35;color:var(--soft)}
+.where b{display:block;color:var(--ink);font-size:9.4pt;margin-bottom:.4mm}
+.chain{display:grid;grid-template-columns:1fr 4mm 1fr 4mm 1fr;align-items:stretch;margin-top:2mm}
+.chain>div{border-radius:2mm;padding:2mm 2.6mm;font-size:8.6pt;line-height:1.35;color:var(--soft)}
+.chain>div b{display:block;font-size:9.8pt;margin-bottom:.4mm}
+.chain .c1{background:var(--c1l)}.chain .c1 b{color:var(--c1)}
+.chain .c2{background:var(--c2l)}.chain .c2 b{color:var(--c2)}
+.chain .c3{background:var(--c3l)}.chain .c3 b{color:var(--c3)}
+.chain .ar{display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:10pt;padding:0}
+.ex{margin-top:2mm;font-size:9pt;line-height:1.55;color:var(--ink)}
+.ex s{color:var(--dim);text-decoration-color:var(--c3)}
+.ex .k{font-weight:700;color:var(--dim);font-size:7.6pt;letter-spacing:.12em;text-transform:uppercase;margin-right:1.6mm}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:5mm;margin-top:1.6mm}
+.units{width:100%;border-collapse:collapse;font-size:9.2pt}
+.units td{padding:1.15mm 0;border-bottom:.5pt solid var(--line)}
+.units td:last-child{text-align:right;font-weight:700;color:var(--teal);white-space:nowrap}
+.note{font-size:8.6pt;color:var(--soft);line-height:1.45}
+.note b{color:var(--ink)}
+.prob li{display:grid;grid-template-columns:25mm 1fr;padding:1.15mm 0;border-bottom:.5pt solid var(--line);font-size:9.2pt;color:var(--soft)}
+.prob li b{color:var(--ink)}
+.types{display:grid;grid-template-columns:1fr 1fr;gap:2.2mm;margin-top:2mm}
+.type{border:.8pt solid var(--line);border-radius:2.2mm;padding:2.2mm 3mm 2.3mm;display:flex;flex-direction:column;gap:.8mm}
+.type .hd{display:flex;align-items:center;gap:2mm}
+.type .hd .mk{width:5.6mm;height:5.6mm;font-size:8.6pt;background:var(--teal)}
+.type h3{font-size:11pt;font-weight:700;color:var(--navy);line-height:1.15}
+.type .q{font-size:9pt;font-weight:600;color:var(--teal);line-height:1.35}
+.type .d{font-size:8.6pt;color:var(--soft);line-height:1.4}
+.type .eg{font-size:8.2pt;color:var(--soft);line-height:1.4}
+.type .eg b{color:var(--ink)}
+.type .mit{font-size:8.2pt;color:var(--green);line-height:1.4}
+.tnote{font-size:8.6pt;color:var(--soft);margin-top:1.8mm}
+.check{margin-top:auto;display:grid;grid-template-columns:auto repeat(4,1fr);gap:3mm;align-items:baseline;padding-top:3mm;border-top:1.4pt solid var(--navy);font-size:8.8pt;color:var(--soft)}
+.check b{color:var(--ink)}
+.foot{display:flex;justify-content:space-between;font-size:7.4pt;color:var(--dim);margin-top:2.4mm}
+</style></head><body><div class="page">
+<header><div><h1>Kockázati segédlet</h1><p>Így gondoljuk végig, írjuk le és soroljuk be a kockázatokat. Tartsd magad előtt a csapatmunka alatt.</p></div><div class="logo"></div></header>
+
+<section class="sec"><span class="mk">1</span><div><h2>Hol keressük a kockázatot?</h2>
+<ul class="where">
+<li><b>Átadásoknál</b>ahol felelős, rendszer vagy helyszín változik</li>
+<li><b>Egyetlen ponton</b>egy beszállító, egy ember, egy rendszer</li>
+<li><b>Hiányzó vagy új lépésnél</b>ami ma nincs, vagy még nem működik biztosan</li>
+<li><b>Időnyomásnál</b>várakozás, felszabadítás, határidő</li>
+</ul></div></section>
+
+<section class="sec"><span class="mk">2</span><div><h2>Írd le egy mondatban <small>ok → esemény → hatás</small></h2>
+<div class="chain"><div class="c1"><b>Mivel …</b>kiváltó ok: milyen gyengeség vagy függőség?</div><div class="ar">→</div><div class="c2"><b>bekövetkezhet, hogy …</b>kockázati esemény: mi történik, melyik lépésnél?</div><div class="ar">→</div><div class="c3"><b>ami …</b>üzleti hatás: mit okoz, kit érint?</div></div>
+<p class="ex"><span class="k">Pontatlan</span><s>„Beszállítói problémák.”</s></p>
+<p class="ex"><span class="k">Pontos</span><span class="u1">Mivel a kritikus alapanyagnak egyetlen minősített beszállítója van,</span> <span class="u2">egy szállítási kiesés leállíthatja a palackozást,</span> <span class="u3">ami elmaradt vevői szállításokhoz vezet.</span></p>
+</div></section>
+
+<section class="sec"><span class="mk">3</span><div><h2>Számszerűsítsd és becsüld meg a valószínűségét</h2>
+<div class="two">
+<div><p class="lbl">Mekkora a lehetséges kár forintban?</p>
+<table class="units"><tr><td>Értékesítési kiesés</td><td>10 Ft / palack fedezet</td></tr><tr><td>Selejtezés</td><td>45 Ft / palack selejtkár</td></tr><tr><td>Direkt kár</td><td>az anyagi kár mértéke</td></tr><tr><td>Emberélet</td><td>100 millió Ft</td></tr></table>
+<p class="note" style="margin-top:1.6mm"><b>Kár = érintett mennyiség × egységérték.</b> Például 2 nap × 500 000 palack/nap × 10 Ft = 10 millió Ft fedezetkiesés.</p></div>
+<div><p class="lbl">Mennyire valószínű, és mit jelent?</p>
+<ul class="prob"><li><b>Gyakoriság</b><span>Milyen gyakran fordulhat elő? Pl. évente egyszer, havonta, minden szállításnál.</span></li><li><b>Indoklás</b><span>Miért ennyi? Mi a bizonyíték, és mi véd ma ellene?</span></li><li><b>Következmény</b><span>Mit jelent a folyamatra? Mit kellene változtatni?</span></li></ul></div>
+</div></div></section>
+
+<section class="sec" style="border-bottom:0"><span class="mk">4</span><div><h2>Sorold be: a négy kockázattípus <small>a besorolás a leírás után jön</small></h2>
+<div class="types">
+<div class="type"><div class="hd"><span class="mk">1</span><h3>Vállalatot veszélyeztető</h3></div><p class="q">Veszélybe kerülhet-e a vállalat fennmaradása?</p><p class="d">Bekövetkezése súlyosan károsíthatja vagy megszüntetheti a vállalatot.</p><p class="eg"><b>Perrier, 1990:</b> benzol az ásványvízben, 160 millió palack visszahívása; a márka nem heverte ki.</p><p class="mit">Kezelés: független ellenőrzés a kritikus lépéseknél, tartalék, begyakorolt visszahívási terv.</p></div>
+<div class="type"><div class="hd"><span class="mk">2</span><h3>Aszimmetrikus</h3></div><p class="q">Arányban áll-e a várható haszon a lehetséges kárral?</p><p class="d">A lehetséges veszteség nagyságrendekkel nagyobb a várható nyereségnél.</p><p class="eg"><b>Knight Capital, 2012:</b> egy elsietett szoftvertelepítés 45 perc alatt kb. 440 millió dollár veszteséget okozott.</p><p class="mit">Kezelés: kísérleti bevezetés kis körben, előre rögzített veszteségkorlát, visszaállítási terv.</p></div>
+<div class="type"><div class="hd"><span class="mk">3</span><h3>Nem kontrollálható</h3></div><p class="q">Mire nincs érdemi ráhatásunk, és mennyire függünk tőle?</p><p class="d">Külső szereplőtől vagy eseménytől függünk, amelyet alig tudunk befolyásolni.</p><p class="eg"><b>Ericsson és Nokia, 2000:</b> leégett a közös chipbeszállító gyára; a Nokiának volt alternatívája, az Ericssonnak nem.</p><p class="mit">Kezelés: második minősített beszállító, biztonsági készlet, korai jelzések figyelése.</p></div>
+<div class="type"><div class="hd"><span class="mk">4</span><h3>Időalapú</h3></div><p class="q">Mennyi időnk van dönteni, mielőtt a kár megnő?</p><p class="d">A reagálás gyorsasága közvetlenül meghatározza a kár mértékét.</p><p class="eg"><b>Johnson &amp; Johnson, 1982:</b> egy héten belüli országos visszahívás, és a márka megőrizte a bizalmat.</p><p class="mit">Kezelés: rögzített döntési időablak, figyelmeztető jelek küszöbértékkel, kijelölt döntéshozó.</p></div>
+</div>
+<p class="tnote">Egy kockázat több típusba is tartozhat. Vállalatot vagy emberéletet veszélyeztető kockázatot alacsony valószínűség mellett is komolyan veszünk.</p>
+</div></section>
+
+<div class="check"><span class="lbl">Jó a leírás, ha</span><span><b>Konkrét:</b> melyik lépésnél történik</span><span><b>Ok-okozati:</b> az ok és az esemény külön</span><span><b>Számszerű:</b> a kár forintban</span><span><b>Indokolt:</b> a valószínűség tényre épül</span></div>
+<div class="foot"><span>Fonte Viva · Vezetői workshop · Kockázatkezelés beszerzéstől értékesítésig</span><span>Forrás: J. Collins – M. T. Hansen: Tudatosan kiváló (Great by Choice), 5. fejezet</span></div>
+</div></body></html>
